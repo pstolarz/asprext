@@ -1,0 +1,64 @@
+oep_env_t:
+    0008[dword]: esp            esp at the oep entry
+    000c[dword]: eip_rva_obf    oep rva obfuscated
+    0010[dword]: mod_base
+    0014[dword]: oep_decr_addr  oep decrypting section address
+
+
+-------- protected_jmp()
+Deobfuscated version
+
+The entry section pushes 3 params on the stack for the main proc (starting from 00B20000). The arguments are:
+pj_esp: stack pointer at the moment of protected jump
+pj_eip_rel_obf: eip's rva of the protected jump. Obfuscated . Deobfuscation begins at decrypted_sec_start.
+mod_base: Module base for computing the eip
+
+NOTE: The entry section is polymorfic - may change from call to call. The parameters to pass and the address
+of the decrypt_sect are wrritten to the section's appropriate places by the preparation routine.
+entry:
+00444057 8d9c115cff1200  lea     ebx,[ecx+edx+12FF5Ch]
+00444063 2bda            sub     ebx,edx
+00444065 2bd9            sub     ebx,ecx
+00444067 53              push    ebx                                                    ; push 0012FF5C   (pj_esp)
+00444095 8db428b4d51a0c  lea     esi,[eax+ebp+0C1AD5B4h]
+0044409c 2bf5            sub     esi,ebp
+004440a2 2bf0            sub     esi,eax
+004440a4 56              push    esi                                                    ; push 0C1AD5B4   (pj_eip_rel_obf)
+004440b9 8d9f00004000    lea     ebx,image00400000 (00400000)[edi]
+004440bf 2bdf            sub     ebx,edi
+004440c1 53              push    ebx                                                    ; push 00400000   (mod_base)
+004440db 680000b200      push    0B20000h
+004440e6 5e              pop     esi
+004440e7 56              push    esi
+004440f3 c3              ret                                                            ; jmp: decrypt_sect
+
+Decrypting section prepares decrypted section deobfucating the eip. This part is prepared by the protector!
+decrypt_sect:
+00b20006 e80a000000      call    00b20015
+00b2001d 5f              pop     edi                                                    ; edi = 00b2000b
+00b2002a 81c7a5010000    add     edi,1A5h                                               ; edi += 1a5            00b201b0: decrypted_sec_end
+00b2006d 6800000000      push    0
+00b20086 5b              pop     ebx                                                    ; ebx = 0
+decr_iter:
+00b2008c 8b341f          mov     esi,dword ptr [edi+ebx]
+00b2009a 81c69c314e54    add     esi,544E319Ch
+00b200a2 81c6a5d71033    add     esi,3310D7A5h
+00b200c0 81ee7a477e0e    sub     esi,0E7E477Ah
+00b200e4 89341f          mov     dword ptr [edi+ebx],esi                                ; *(edi+ebx) += 78e0c1c7
+00b20123 81ebdae5ef10    sub     ebx,10EFE5DAh
+00b2012c 81c3d6e5ef10    add     ebx,10EFE5D6h                                          ; ebx -= 4
+00b20150 81fbccffffff    cmp     ebx,0FFFFFFCCh
+00b20156 0f8530ffffff    jne     00b2008c                                               ; if (ebx!=-0x34) jmp decr_iter         00b201b0-34=00b2017c: decrypted_sec_start
+
+Deofbuscating proc and a jump to the destination place.
+decrypted_sec_start:
+00b2017c                 ???
+00b20189 5b              pop     ebx                                                    ; mod_base
+00b2018e 58              pop     eax                                                    ; pj_eip_rel_obf
+00b20194 8d84384c3ae5f3  lea     eax,[eax+edi-0C1AC5B4h]
+00b2019b 2bc7            sub     eax,edi
+00b2019d 03c3            add     eax,ebx                                                ; pj_eip = mod_base+pj_eip_rel_obf-0C1AC5B4
+00b2019f 5c              pop     esp                                                    ; esp = pj_esp
+00b201a0 ffe0            jmp     eax {image00400000+0x1000 (00401000)}                  ; jmp pj_eip
+decrypted_sec_end:
+00b201b0                 ???

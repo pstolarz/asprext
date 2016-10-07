@@ -1,0 +1,375 @@
+esp:
+    00445744    MAIN entrance (by ret)
+    00427000    mod_hndl
+    00000001    lib interface type: 0 - mod_0_tab, 1 - lib_repo
+    00000000    ???
+
+    00000000 00405517   MAIN's params
+
+    the rest seems irrelevant:
+    00f7f6ee 00f7f724 0012fff0 0012ffc4 7ffdf000 7c90e514 0012ffb0 00000000
+
+
+INIT PROC ENTRANCE -------------------------------------------------------------
+
+INIT proc is responsible for loading some libs to memory (needed by the packer)
+and do some initialization. At this statge the whole packer's code is decrypted
+except VM stuff - this is the task of the MAIN proc.
+
+00451b18 55              push    ebp
+00451b19 8bec            mov     ebp,esp
+00451b1b 83c4b4          add     esp,0FFFFFFB4h                                     ; -0x4C
+00451b1e b8f0184500      mov     eax,offset image00400000+0x518f0 (004518f0)
+00451b23 e8b0acfdff      call    image00400000+0x2c7d8 (0042c7d8)                   ; PART1
+00451b28 e86f8afdff      call    image00400000+0x2a59c (0042a59c)                   ; PART3
+
+PART1 ------
+
+0042c7d8 baa4204500      mov     edx,offset image00400000+0x520a4 (004520a4)        ; &lib_repo
+0042c7dd 837d0c01        cmp     dword ptr [ebp+0Ch],1                              ; param2==1
+0042c7e1 752a            jne     image00400000+0x2c80d (0042c80d)
+0042c7e3 50              push    eax
+0042c7e4 52              push    edx
+0042c7e5 c605c834450001  mov     byte ptr [image00400000+0x534c8 (004534c8)],1      ; lib_repo_mode=1
+0042c7ec 8b4d08          mov     ecx,dword ptr [ebp+8]
+0042c7ef 890dd4344500    mov     dword ptr [image00400000+0x534d4 (004534d4)],ecx   ; mod_hndl=param1
+0042c7f5 894a04          mov     dword ptr [edx+4],ecx                              ; lib_repo.mod_hndl=prm1
+0042c7f8 c7420800000000  mov     dword ptr [edx+8],0                                ; lib_repo.unknw1=0
+0042c7ff c7420c00000000  mov     dword ptr [edx+0Ch],0                              ; lib_repo.unknw2=0
+0042c806 e881ffffff      call    image00400000+0x2c78c (0042c78c)                   ; set_lib_repo()
+0042c80b 5a              pop     edx
+0042c80c 58              pop     eax
+
+0042c80d ff35d8344500    push    dword ptr [image00400000+0x534d8 (004534d8)]       ; call_mod_0_init
+0042c813 b9bc204500      mov     ecx,offset image00400000+0x520bc (004520bc)
+0042c818 e81bdcffff      call    image00400000+0x2a438 (0042a438)                   ; PART2
+0042c81d c3              ret
+
+PART2 ------
+
+0042a438 51              push    ecx
+0042a439 56              push    esi
+0042a43a 57              push    edi
+0042a43b be9c344500      mov     esi,offset image00400000+0x5349c (0045349c)
+0042a440 8d7dc4          lea     edi,[ebp-3Ch]
+0042a443 b90b000000      mov     ecx,0Bh
+0042a448 f3a5            rep movs dword ptr es:[edi],dword ptr [esi]                    ; save original context (11 dwords)
+0042a44a 8f05bc344500    pop     dword ptr [image00400000+0x534bc (004534bc)]
+0042a450 8f05b8344500    pop     dword ptr [image00400000+0x534b8 (004534b8)]
+0042a456 892db0344500    mov     dword ptr [image00400000+0x534b0 (004534b0)],ebp
+0042a45c 891db4344500    mov     dword ptr [image00400000+0x534b4 (004534b4)],ebx
+0042a462 8905a4344500    mov     dword ptr [image00400000+0x534a4 (004534a4)],eax
+0042a468 8915ac344500    mov     dword ptr [image00400000+0x534ac (004534ac)],edx
+0042a46e 8d4dc4          lea     ecx,[ebp-3Ch]
+0042a471 890d9c344500    mov     dword ptr [image00400000+0x5349c (0045349c)],ecx
+0042a477 31c9            xor     ecx,ecx
+0042a479 837d0c00        cmp     dword ptr [ebp+0Ch],0
+0042a47d 7502            jne     image00400000+0x2a481 (0042a481)
+0042a47f 8b08            mov     ecx,dword ptr [eax]
+0042a481 890da8344500    mov     dword ptr [image00400000+0x534a8 (004534a8)],ecx       ; context.mod_0_tab.tab_sz = mod_0_tab.tab_sz
+0042a487 e8a4feffff      call    image00400000+0x2a330 (0042a330)                       ; set context.seh
+0042a48c 8b450c          mov     eax,dword ptr [ebp+0Ch]
+0042a48f 40              inc     eax
+0042a490 a2c0344500      mov     byte ptr [image00400000+0x534c0 (004534c0)],al
+0042a495 48              dec     eax
+0042a496 59              pop     ecx
+0042a497 8b11            mov     edx,dword ptr [ecx]
+0042a499 8915c4344500    mov     dword ptr [image00400000+0x534c4 (004534c4)],edx       ; mod_0_init
+0042a49f 7403            je      image00400000+0x2a4a4 (0042a4a4)
+0042a4a1 ff1481          call    dword ptr [ecx+eax*4]                                  ; call mod_1_init
+
+0042a4a4 8b542404        mov     edx,dword ptr [esp+4]
+0042a4a8 85d2            test    edx,edx
+0042a4aa 7405            je      image00400000+0x2a4b1 (0042a4b1)
+0042a4ac 8b450c          mov     eax,dword ptr [ebp+0Ch]
+0042a4af ffd2            call    edx                                                    ; if (call_mod_0_init) mod_0_init
+
+0042a4b1 833d1c30450000  cmp     dword ptr [image00400000+0x5301c (0045301c)],0         ; *0045301c==0
+0042a4b8 750d            jne     image00400000+0x2a4c7 (0042a4c7)
+0042a4ba c6052430450001  mov     byte ptr [image00400000+0x53024 (00453024)],1
+0042a4c1 d93d00204500    fnstcw  word ptr [image00400000+0x52000 (00452000)]
+
+0042a4c7 8b450c          mov     eax,dword ptr [ebp+0Ch]
+0042a4ca 48              dec     eax
+0042a4cb 0f85cb000000    jne     image00400000+0x2a59c (0042a59c)                       ; PART3 (if lib int. mode==0)
+0042a4d1 e802ffffff      call    image00400000+0x2a3d8 (0042a3d8)                       ; mode==1
+0042a4d6 c20400          ret     4
+
+PART3 ------
+
+0042a59c 53              push    ebx
+0042a59d 56              push    esi
+0042a59e 57              push    edi
+0042a59f 55              push    ebp
+0042a5a0 bb9c344500      mov     ebx,offset image00400000+0x5349c (0045349c)
+0042a5a5 be30304500      mov     esi,offset image00400000+0x53030 (00453030)
+0042a5aa bf34304500      mov     edi,offset image00400000+0x53034 (00453034)
+0042a5af 807b2400        cmp     byte ptr [ebx+24h],0
+0042a5b3 7516            jne     image00400000+0x2a5cb (0042a5cb)
+0042a5b5 833f00          cmp     dword ptr [edi],0
+0042a5b8 7411            je      image00400000+0x2a5cb (0042a5cb)
+0042a5ba 8b17            mov     edx,dword ptr [edi]
+0042a5bc 89d0            mov     eax,edx
+0042a5be 33d2            xor     edx,edx
+0042a5c0 8917            mov     dword ptr [edi],edx
+0042a5c2 8be8            mov     ebp,eax
+0042a5c4 ffd5            call    ebp
+0042a5c6 833f00          cmp     dword ptr [edi],0
+0042a5c9 75ef            jne     image00400000+0x2a5ba (0042a5ba)
+0042a5cb 833d3830450000  cmp     dword ptr [image00400000+0x53038 (00453038)],0
+0042a5d2 7447            je      image00400000+0x2a61b (0042a61b)
+0042a5d4 e83fffffff      call    image00400000+0x2a518 (0042a518)
+0042a5d9 803d4030450000  cmp     byte ptr [image00400000+0x53040 (00453040)],0
+0042a5e0 7416            je      image00400000+0x2a5f8 (0042a5f8)
+0042a5e2 ba28204500      mov     edx,offset image00400000+0x52028 (00452028)
+0042a5e7 b814324500      mov     eax,offset image00400000+0x53214 (00453214)
+0042a5ec e86f190000      call    image00400000+0x2bf60 (0042bf60)
+0042a5f1 e8ed180000      call    image00400000+0x2bee3 (0042bee3)
+0042a5f6 eb1c            jmp     image00400000+0x2a614 (0042a614)
+0042a5f8 803d0c20450000  cmp     byte ptr [image00400000+0x5200c (0045200c)],0
+0042a5ff 7513            jne     image00400000+0x2a614 (0042a614)
+0042a601 6a00            push    0
+0042a603 6848204500      push    offset image00400000+0x52048 (00452048)
+0042a608 6828204500      push    offset image00400000+0x52028 (00452028)
+0042a60d 6a00            push    0
+0042a60f e8c4daffff      call    image00400000+0x280d8 (004280d8)
+0042a614 33c0            xor     eax,eax
+0042a616 a338304500      mov     dword ptr [image00400000+0x53038 (00453038)],eax
+0042a61b 807b2402        cmp     byte ptr [ebx+24h],2
+0042a61f 750a            jne     image00400000+0x2a62b (0042a62b)
+0042a621 833e00          cmp     dword ptr [esi],0
+0042a624 7505            jne     image00400000+0x2a62b (0042a62b)
+0042a626 33c0            xor     eax,eax
+0042a628 89430c          mov     dword ptr [ebx+0Ch],eax
+0042a62b e848fdffff      call    image00400000+0x2a378 (0042a378)
+0042a630 807b2401        cmp     byte ptr [ebx+24h],1
+0042a634 7605            jbe     image00400000+0x2a63b (0042a63b)
+0042a636 833e00          cmp     dword ptr [esi],0
+0042a639 741d            je      image00400000+0x2a658 (0042a658)
+0042a63b 8b4310          mov     eax,dword ptr [ebx+10h]
+0042a63e 85c0            test    eax,eax
+0042a640 7416            je      image00400000+0x2a658 (0042a658)
+0042a642 e885120000      call    image00400000+0x2b8cc (0042b8cc)
+0042a647 8b4310          mov     eax,dword ptr [ebx+10h]
+0042a64a 8b5010          mov     edx,dword ptr [eax+10h]
+0042a64d 3b5004          cmp     edx,dword ptr [eax+4]
+0042a650 7406            je      image00400000+0x2a658 (0042a658)
+0042a652 52              push    edx
+0042a653 e898daffff      call    image00400000+0x280f0 (004280f0)
+0042a658 e8f3fcffff      call    image00400000+0x2a350 (0042a350)
+0042a65d 807b2401        cmp     byte ptr [ebx+24h],1
+0042a661 7503            jne     image00400000+0x2a666 (0042a666)
+0042a663 ff5328          call    dword ptr [ebx+28h]
+0042a666 807b2400        cmp     byte ptr [ebx+24h],0
+0042a66a 7405            je      image00400000+0x2a671 (0042a671)
+0042a66c e8f7feffff      call    image00400000+0x2a568 (0042a568)                   ; jmp MAIN
+0042a671 833b00          cmp     dword ptr [ebx],0
+0042a674 7508            jne     image00400000+0x2a67e (0042a67e)
+0042a676 8b06            mov     eax,dword ptr [esi]
+0042a678 50              push    eax
+0042a679 e852daffff      call    image00400000+0x280d0 (004280d0)
+0042a67e 8b03            mov     eax,dword ptr [ebx]
+0042a680 56              push    esi
+0042a681 8bf0            mov     esi,eax
+0042a683 8bfb            mov     edi,ebx
+0042a685 b90b000000      mov     ecx,0Bh
+0042a68a f3a5            rep movs dword ptr es:[edi],dword ptr [esi]
+0042a68c 5e              pop     esi
+0042a68d eb8c            jmp     image00400000+0x2a61b (0042a61b)
+
+
+
+
+
+set_lib_repo() -----------------------------------------------------------------
+
+0042c78c 53              push    ebx
+0042c78d 81c4f8feffff    add     esp,0FFFFFEF8h                                     ; -0x108
+0042c793 6805010000      push    105h
+0042c798 8d442404        lea     eax,[esp+4]                                        ; l_mfn_buf
+0042c79c 50              push    eax
+0042c79d a1d4344500      mov     eax,dword ptr [image00400000+0x534d4 (004534d4)]
+0042c7a2 50              push    eax
+0042c7a3 e8a4feffff      call    image00400000+0x2c64c (0042c64c)                   ; kernel32!GetModuleFileNameA(mod_hndl, l_mfn_buf, 0x105)
+0042c7a8 8bc4            mov     eax,esp                                            ; eax = l_mfn_buf
+0042c7aa e8b5eeffff      call    image00400000+0x2b664 (0042b664)                   ; ret_hndl = load_library(l_mfn_buf)
+0042c7af 8bd8            mov     ebx,eax
+0042c7b1 891db4204500    mov     dword ptr [image00400000+0x520b4 (004520b4)],ebx   ; lib_repo.lib_ext_hndl = ret_hndl
+0042c7b7 85db            test    ebx,ebx
+0042c7b9 750a            jne     image00400000+0x2c7c5 (0042c7c5)
+0042c7bb a1a8204500      mov     eax,dword ptr [image00400000+0x520a8 (004520a8)]
+0042c7c0 a3b4204500      mov     dword ptr [image00400000+0x520b4 (004520b4)],eax   ; if (!ret_hndl) lib_repo.lib_ext_hndl = mod_hndl
+0042c7c5 b8a4204500      mov     eax,offset image00400000+0x520a4 (004520a4)
+0042c7ca e8edf0ffff      call    image00400000+0x2b8bc (0042b8bc)                   ; lib_repo.prev_lib_repo = lib_repo_tail.last_lib_repo, lib_repo_tail.last_lib_repo = &lib_repo
+0042c7cf 81c408010000    add     esp,108h
+0042c7d5 5b              pop     ebx
+0042c7d6 c3              ret
+
+load_library() -----------------------------------------------------------------
+Load library (possibly localized version if available). A module file name is pointed
+by eax. Loaded handle of library in eax. NULL - loading unsuccessfully
+
+0042b664 55              push    ebp
+0042b665 8bec            mov     ebp,esp
+0042b667 81c4e0feffff    add     esp,0FFFFFEE0h                                     ; -0x120
+0042b66d 53              push    ebx
+0042b66e 56              push    esi
+0042b66f 8945fc          mov     dword ptr [ebp-4],eax                              ; l_mfn_buf
+0042b672 6805010000      push    105h
+0042b677 8d85e3feffff    lea     eax,[ebp-11Dh]                                     ; l_curr_mfn_buf
+0042b67d 50              push    eax
+0042b67e 6a00            push    0
+0042b680 e88bcaffff      call    image00400000+0x28110 (00428110)                   ; kernel32!GetModuleFileNameA(0, l_curr_mfn_buf, 0x105)
+0042b685 c645ee00        mov     byte ptr [ebp-12h],0
+0042b689 8d45f8          lea     eax,[ebp-8]                                        ; l_kreg
+0042b68c 50              push    eax
+0042b68d 683f000f00      push    0F003Fh
+0042b692 6a00            push    0
+0042b694 6820b84200      push    offset image00400000+0x2b820 (0042b820)
+0042b699 6801000080      push    80000001h
+0042b69e e8cdcaffff      call    image00400000+0x28170 (00428170)                   ; ADVAPI32!RegOpenKeyExA(HKEY_CURRENT_USER, "Software\Borland\Locales", 0, 0xF003F, &l_kreg)
+0042b6a3 85c0            test    eax,eax
+0042b6a5 741e            je      image00400000+0x2b6c5 (0042b6c5)                   ; ==ERROR_SUCCESS
+0042b6a7 8d45f8          lea     eax,[ebp-8]
+0042b6aa 50              push    eax
+0042b6ab 683f000f00      push    0F003Fh
+0042b6b0 6a00            push    0
+0042b6b2 683cb84200      push    offset image00400000+0x2b83c (0042b83c)
+0042b6b7 6801000080      push    80000001h
+0042b6bc e8afcaffff      call    image00400000+0x28170 (00428170)                   ; ADVAPI32!RegOpenKeyExA(HKEY_CURRENT_USER, "Software\Borland\Delphi\Locales", 0, 0xF003F, &l_kreg)
+0042b6c1 85c0            test    eax,eax
+0042b6c3 7572            jne     image00400000+0x2b737 (0042b737)                   ; !=ERROR_SUCCESS
+
+; locale reg open success
+0042b6c5 33c0            xor     eax,eax
+0042b6c7 55              push    ebp
+0042b6c8 6830b74200      push    offset image00400000+0x2b730 (0042b730)
+0042b6cd 64ff30          push    dword ptr fs:[eax]
+0042b6d0 648920          mov     dword ptr fs:[eax],esp
+0042b6d3 c745e805000000  mov     dword ptr [ebp-18h],5
+0042b6da 8d45e8          lea     eax,[ebp-18h]                                      ; l_regloc_len=5
+0042b6dd 50              push    eax
+0042b6de 8d45ee          lea     eax,[ebp-12h]                                      ; l_regloc
+0042b6e1 50              push    eax
+0042b6e2 6a00            push    0
+0042b6e4 6a00            push    0
+0042b6e6 8d85e3feffff    lea     eax,[ebp-11Dh]                                     ; l_curr_mfn_buf
+0042b6ec e8cbfdffff      call    image00400000+0x2b4bc (0042b4bc)                   ; get value name for module
+0042b6f1 50              push    eax
+0042b6f2 8b45f8          mov     eax,dword ptr [ebp-8]
+0042b6f5 50              push    eax
+0042b6f6 e87dcaffff      call    image00400000+0x28178 (00428178)                   ; ADVAPI32!RegQueryValueExA(l_kreg, locale name, ..., &l_regloc, &l_regloc_len)
+0042b6fb 85c0            test    eax,eax
+0042b6fd 741a            je      image00400000+0x2b719 (0042b719)
+0042b6ff 8d45e8          lea     eax,[ebp-18h]
+0042b702 50              push    eax
+0042b703 8d45ee          lea     eax,[ebp-12h]
+0042b706 50              push    eax
+0042b707 6a00            push    0
+0042b709 6a00            push    0
+0042b70b 685cb84200      push    offset image00400000+0x2b85c (0042b85c)
+0042b710 8b45f8          mov     eax,dword ptr [ebp-8]
+0042b713 50              push    eax
+0042b714 e85fcaffff      call    image00400000+0x28178 (00428178)                   ; ADVAPI32!RegQueryValueExA(l_kreg, ..., &l_regloc, &l_regloc_len)
+0042b719 33c0            xor     eax,eax
+0042b71b 5a              pop     edx
+0042b71c 59              pop     ecx
+0042b71d 59              pop     ecx
+0042b71e 648910          mov     dword ptr fs:[eax],edx
+0042b721 6837b74200      push    offset image00400000+0x2b737 (0042b737)
+0042b726 8b45f8          mov     eax,dword ptr [ebp-8]
+0042b729 50              push    eax
+0042b72a e839caffff      call    image00400000+0x28168 (00428168)                   ; ADVAPI32!RegCloseKey(l_kreg)
+0042b72f c3              ret                                                        ; jmp 0042b737
+; expeption hndlr
+0042b730 e9c3e9ffff      jmp     image00400000+0x2a0f8 (0042a0f8)
+0042b735 ebef            jmp     image00400000+0x2b726 (0042b726)
+
+; locale reg not open
+0042b737 8b45fc          mov     eax,dword ptr [ebp-4]
+0042b73a 50              push    eax
+0042b73b 8d85e3feffff    lea     eax,[ebp-11Dh]
+0042b741 50              push    eax
+0042b742 e801caffff      call    image00400000+0x28148 (00428148)                   ; kernel32!lstrcpy   [l_curr_mfn_buf = l_mfn_buf]
+0042b747 6a05            push    5
+0042b749 8d45f3          lea     eax,[ebp-0Dh]                                      ; &l_loc
+0042b74c 50              push    eax
+0042b74d 6a03            push    3
+0042b74f e8dcc9ffff      call    image00400000+0x28130 (00428130)                   ; ret_loc = kernel32!GetThreadLocale()
+0042b754 50              push    eax
+0042b755 e8aec9ffff      call    image00400000+0x28108 (00428108)                   ; kernel32!GetLocaleInfoA(ret_loc, CUSTOM_DEFAULT, &l_loc, 5)
+0042b75a 33f6            xor     esi,esi                                            ; ret = 0
+0042b75c 80bde3feffff00  cmp     byte ptr [ebp-11Dh],0
+0042b763 0f84af000000    je      image00400000+0x2b818 (0042b818)                   ; if no module name return 0
+0042b769 807df300        cmp     byte ptr [ebp-0Dh],0
+0042b76d 750a            jne     image00400000+0x2b779 (0042b779)
+0042b76f 807dee00        cmp     byte ptr [ebp-12h],0
+0042b773 0f849f000000    je      image00400000+0x2b818 (0042b818)                   ; no local info from reg neither API call -> return 0
+
+0042b779 8d85e3feffff    lea     eax,[ebp-11Dh]
+0042b77f 50              push    eax
+0042b780 e8d3c9ffff      call    image00400000+0x28158 (00428158)                   ; kernel32!lstrlenA(l_mfn_buf)
+0042b785 8bd8            mov     ebx,eax
+0042b787 8d85e3feffff    lea     eax,[ebp-11Dh]
+0042b78d 03d8            add     ebx,eax
+0042b78f eb01            jmp     image00400000+0x2b792 (0042b792)
+0042b791 4b              dec     ebx
+0042b792 803b2e          cmp     byte ptr [ebx],2Eh
+0042b795 740a            je      image00400000+0x2b7a1 (0042b7a1)
+0042b797 8d85e3feffff    lea     eax,[ebp-11Dh]
+0042b79d 3bd8            cmp     ebx,eax
+0042b79f 75f0            jne     image00400000+0x2b791 (0042b791)
+
+0042b7a1 8d85e3feffff    lea     eax,[ebp-11Dh]
+0042b7a7 3bd8            cmp     ebx,eax
+0042b7a9 746d            je      image00400000+0x2b818 (0042b818)                   ; '.' not found in mod file name -> return 0
+0042b7ab 43              inc     ebx
+0042b7ac 807dee00        cmp     byte ptr [ebp-12h],0
+0042b7b0 741c            je      image00400000+0x2b7ce (0042b7ce)
+0042b7b2 8d45ee          lea     eax,[ebp-12h]                                      ; l_regloc!=0
+0042b7b5 50              push    eax
+0042b7b6 53              push    ebx
+0042b7b7 e88cc9ffff      call    image00400000+0x28148 (00428148)                   ; kernel32!lstrcpy  [l_mfn_buf = mod file name + locale str]
+0042b7bc 6a02            push    2
+0042b7be 6a00            push    0
+0042b7c0 8d85e3feffff    lea     eax,[ebp-11Dh]
+0042b7c6 50              push    eax
+0042b7c7 e86cc9ffff      call    image00400000+0x28138 (00428138)                   ; kernel32!LoadLibraryExA   [load localized library]
+0042b7cc 8bf0            mov     esi,eax
+0042b7ce 85f6            test    esi,esi
+0042b7d0 7546            jne     image00400000+0x2b818 (0042b818)
+
+0042b7d2 807df300        cmp     byte ptr [ebp-0Dh],0                               ; try further - witn local returned by API
+0042b7d6 7440            je      image00400000+0x2b818 (0042b818)
+0042b7d8 8d45f3          lea     eax,[ebp-0Dh]
+0042b7db 50              push    eax
+0042b7dc 53              push    ebx
+0042b7dd e866c9ffff      call    image00400000+0x28148 (00428148)                   ; kernel32!lstrcpy
+0042b7e2 6a02            push    2
+0042b7e4 6a00            push    0
+0042b7e6 8d85e3feffff    lea     eax,[ebp-11Dh]
+0042b7ec 50              push    eax
+0042b7ed e846c9ffff      call    image00400000+0x28138 (00428138)                   ; kernel32!LoadLibraryExA   [load localized library]
+0042b7f2 8bf0            mov     esi,eax
+0042b7f4 85f6            test    esi,esi
+0042b7f6 7520            jne     image00400000+0x2b818 (0042b818)
+
+0042b7f8 c645f500        mov     byte ptr [ebp-0Bh],0                               ; try further - with no localized library
+0042b7fc 8d45f3          lea     eax,[ebp-0Dh]
+0042b7ff 50              push    eax
+0042b800 53              push    ebx
+0042b801 e842c9ffff      call    image00400000+0x28148 (00428148)                   ; kernel32!lstrcpy
+0042b806 6a02            push    2
+0042b808 6a00            push    0
+0042b80a 8d85e3feffff    lea     eax,[ebp-11Dh]
+0042b810 50              push    eax
+0042b811 e822c9ffff      call    image00400000+0x28138 (00428138)                   ; kernel32!LoadLibraryExA
+0042b816 8bf0            mov     esi,eax
+
+; exit
+0042b818 8bc6            mov     eax,esi
+0042b81a 5e              pop     esi
+0042b81b 5b              pop     ebx
+0042b81c 8be5            mov     esp,ebp
+0042b81e 5d              pop     ebp
+0042b81f c3              ret

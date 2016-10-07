@@ -1,0 +1,53 @@
+-------- dbg check
+
+00443be8 53              push    ebx
+00443be9 8bd8            mov     ebx,eax
+00443beb a12c294500      mov     eax,dword ptr [image00400000+0x5292c (0045292c)]
+00443bf0 83782400        cmp     dword ptr [eax+24h],0
+00443bf4 7419            je      image00400000+0x43c0f (00443c0f)
+00443bf6 a12c294500      mov     eax,dword ptr [image00400000+0x5292c (0045292c)]
+00443bfb 8b4024          mov     eax,dword ptr [eax+24h]
+00443bfe ffd0            call    eax
+00443c00 84c0            test    al,al
+00443c02 740b            je      image00400000+0x43c0f (00443c0f)
+00443c04 53              push    ebx
+00443c05 68143c4400      push    offset image00400000+0x43c14 (00443c14)
+00443c0a e8a58bffff      call    image00400000+0x3c7b4 (0043c7b4)
+00443c0f 5b              pop     ebx
+00443c10 c3              ret
+
+-------- msg box
+
+0043c7b4 55              push    ebp
+0043c7b5 8bec            mov     ebp,esp
+0043c7b7 51              push    ecx
+0043c7b8 837d0800        cmp     dword ptr [ebp+8],0
+0043c7bc 7508            jne     image00400000+0x3c7c6 (0043c7c6)
+0043c7be b810c84300      mov     eax,offset image00400000+0x3c810 (0043c810)
+0043c7c3 894508          mov     dword ptr [ebp+8],eax
+0043c7c6 8b450c          mov     eax,dword ptr [ebp+0Ch]
+0043c7c9 e81e15ffff      call    image00400000+0x2dcec (0042dcec)
+0043c7ce 85c0            test    eax,eax
+0043c7d0 750d            jne     image00400000+0x3c7df (0043c7df)
+0043c7d2 6aff            push    0FFFFFFFFh
+0043c7d4 bbc1c84200      mov     ebx,offset image00400000+0x2c8c1 (0042c8c1)
+0043c7d9 4b              dec     ebx
+0043c7da 53              push    ebx
+0043c7db c3              ret
+0043c7dc eb01            jmp     image00400000+0x3c7df (0043c7df)
+0043c7de e8              ???
+0043c7df 83c464          add     esp,64h
+0043c7e2 e84102ffff      call    image00400000+0x2ca28 (0042ca28)
+0043c7e7 8945fc          mov     dword ptr [ebp-4],eax
+0043c7ea b857ca4200      mov     eax,offset image00400000+0x2ca57 (0042ca57)
+0043c7ef 40              inc     eax
+0043c7f0 6aff            push    0FFFFFFFFh
+0043c7f2 bbc1c84200      mov     ebx,offset image00400000+0x2c8c1 (0042c8c1)
+0043c7f7 4b              dec     ebx
+0043c7f8 6830200000      push    2030h
+0043c7fd ff7508          push    dword ptr [ebp+8]
+0043c800 ff750c          push    dword ptr [ebp+0Ch]
+0043c803 ff75fc          push    dword ptr [ebp-4]
+0043c806 53              push    ebx
+0043c807 50              push    eax
+0043c808 c3              ret

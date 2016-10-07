@@ -1,0 +1,25 @@
+$$ 32-bit
+bp GetModuleFileNameA 2; g; bc *; bp IsDebuggerPresent; g; bc *; g poi(esp); r eax=0; ba e1 00caf85b; g; bc *; !load asprext;
+
+$$ 64-bit
+g; bp GetModuleFileNameA 2; g; bc *; pt; t; r $t0=00c74c65-@eip; bp IsDebuggerPresent; g; bc *; g poi(esp); r eax=0; ba e1 00c969c0-@$t0; !load asprext;
+
+
+
+004f7ad4: init table
+!aspr_init dump 0x004f7ad4 0x00590000 script/init.bin
+
+bp 400000+000DE0E2;bp 400000+000DE5BF;bp 400000+000DFC58;bp 400000+000E072D;bp 400000+000E15E9;bp 400000+000E18DA;bp 400000+000E1BF9;bp 400000+000E2057;bp 400000+000E4B65;bp 400000+000E536E
+
+g; bp GetModuleFileNameA 2; g; bc *; pt; t; r $t0=00c74c65-@eip; bp IsDebuggerPresent; g; bc *; g poi(esp); r eax=0; ba e1 004e5d0c; g; bc *
+
+; app vm call
+004e5d0c 6866d9a961      push    61A9D966h          ; vary
+004e5d11 685549edd0      push    0D0ED4955h         ; eip
+004e5d16 681003eb01      push    1EB0310h           ; vm_in
+004e5d1b e8740c1300      call    00616994
+
+004e5d0c 6800000000      push    0
+004e5d11 685549add0      push    0D0AD4955h
+004e5d16 6870cef501      push    1F5CE70h
+004e5d1b e8a00c1300      call    006169c0

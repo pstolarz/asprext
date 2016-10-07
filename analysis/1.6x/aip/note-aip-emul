@@ -1,0 +1,619 @@
+Confidential emulated opcode data specification:
+    hndl_1: get_emul_opc()    [byte ] emulated opcode id
+    hndl_2: get_ptch_sz_obf() [dword] whole patch size: AIP call + emul opcode (obfuscated)
+    hndl_3: get_addr_rva_obf()[dword] rva addr operand (obfuscated)
+    hndl_4: get_cond_code()   [dword] enum{jo=0, jno, jb, jae, je, jne, jp, jnp, js, jns, jbe, ja, jl, jge, jle, jg}
+    hndl_5: get_gpr_id()      [byte ] gpr id as an dword index in the ctx_t: enum{eax=0, ecx, edx, ebx, esp, ebp, esi, edi}
+    hndl_6: get_gpr2_id()     [byte ] gpr2 id
+    hndl_7: get_imm()         [dword] immediate operand
+    hndl_8: get_imm2()        [dword] 2nd immediate operand
+    hndl_9: get_args_tpy()    [byte ] types of args encoded in modr/m: enum{a1_mem_dw=2, a2_mem_dw, a1_mem_b, a1_mem_b, a12_nomem}
+
+
+aip_emul_opc() --------
+aip_emul_opc(env_t *env (eax), void *aip_eip (edx), void *new_esp (ecx),
+    dword last_err, void *call_seh, proc_ctx_t *ctx, dword flags, conf_dt_t **pemul_dt)
+
+aip_eip: points to AIP patch
+new_esp: esp ater AIP patch exec
+
+0044e0ac 55              push    ebp
+0044e0ad 8bec            mov     ebp,esp
+0044e0af 83c4e8          add     esp,0FFFFFFE8h
+0044e0b2 53              push    ebx
+0044e0b3 56              push    esi
+0044e0b4 57              push    edi
+0044e0b5 894dfc          mov     dword ptr [ebp-4],ecx                                  ; new_esp
+0044e0b8 8955f4          mov     dword ptr [ebp-0Ch],edx                                ; aip_eip
+0044e0bb 8945f8          mov     dword ptr [ebp-8],eax                                  ; env
+0044e0be 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e0c1 8d7040          lea     esi,[eax+40h]                                          ; env->permtab
+0044e0c4 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e0c7 8b80e4000000    mov     eax,dword ptr [eax+0E4h]
+0044e0cd e872b4fdff      call    image00000000_00400000+0x29544 (00429544)              ; emul_dt = malloc(env->dt_sz)
+0044e0d2 8bf8            mov     edi,eax
+0044e0d4 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e0d7 8b88e4000000    mov     ecx,dword ptr [eax+0E4h]
+0044e0dd 8b5518          mov     edx,dword ptr [ebp+18h]
+0044e0e0 8b12            mov     edx,dword ptr [edx]
+0044e0e2 8bc7            mov     eax,edi
+0044e0e4 e8afe9fdff      call    image00000000_00400000+0x2ca98 (0042ca98)              ; memcpy(emul_dt, *pemul_dt, env->dt_sz)
+0044e0e9 6a10            push    10h                                                    ; sizeof(dec_key) == 0x10
+0044e0eb b9a4264500      mov     ecx,offset image00000000_00400000+0x526a4 (004526a4)   ; dec_key: buffer 01, 02 .. 0x10 with env->obfus written on the first 4 bytes
+0044e0f0 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e0f3 8b90e4000000    mov     edx,dword ptr [eax+0E4h]
+0044e0f9 8bc7            mov     eax,edi
+0044e0fb e8b4acfeff      call    image00000000_00400000+0x38db4 (00438db4)              ; decode(emul_dt, env->dt_sz, dec_key, sizeof(dec_key))
+0044e100 8bdf            mov     ebx,edi
+0044e102 eb01            jmp     image00000000_00400000+0x4e105 (0044e105)
+0044e104 e8              ???
+0044e105 a1a4284500      mov     eax,dword ptr [image00000000_00400000+0x528a4 (004528a4)]
+0044e10a c600d3          mov     byte ptr [eax],0D3h
+0044e10d 33c0            xor     eax,eax
+0044e10f 8a4602          mov     al,byte ptr [esi+2]
+0044e112 8d0440          lea     eax,[eax+eax*2]
+0044e115 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e118 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e11c 8bc3            mov     eax,ebx
+0044e11e ffd2            call    edx
+0044e120 8945f0          mov     dword ptr [ebp-10h],eax                                ; ptch_sz_obf = get_ptch_sz_obf(emul_dt)
+0044e123 33c0            xor     eax,eax
+0044e125 8a4603          mov     al,byte ptr [esi+3]
+0044e128 8d0440          lea     eax,[eax+eax*2]
+0044e12b 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e12e 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e132 8bc3            mov     eax,ebx
+0044e134 ffd2            call    edx
+0044e136 8945ec          mov     dword ptr [ebp-14h],eax                                ; addr_rva_obf = get_addr_rva_obf(emul_dt)
+0044e139 eb01            jmp     image00000000_00400000+0x4e13c (0044e13c)
+0044e13b e9              ???
+0044e13c 33c0            xor     eax,eax
+0044e13e 8a4601          mov     al,byte ptr [esi+1]
+0044e141 8d0440          lea     eax,[eax+eax*2]
+0044e144 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e147 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e14b 8bc3            mov     eax,ebx
+0044e14d ffd2            call    edx                                                    ; emul_opc = get_emul_opc(emul_dt)
+0044e14f 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e152 3a424a          cmp     al,byte ptr [edx+4Ah]
+0044e155 740b            je      image00000000_00400000+0x4e162 (0044e162)              ; emul_opc == env->opc_call
+0044e157 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e15a 3a424b          cmp     al,byte ptr [edx+4Bh]
+0044e15d 753e            jne     image00000000_00400000+0x4e19d (0044e19d)              ; (emul_opc != env->opc_call) && (emul_opc != env->opc_jmp)
+0044e15f eb01            jmp     image00000000_00400000+0x4e162 (0044e162)
+0044e161 9a              ???
+
+; CALL/JMP addr_rva_obf
+; set new_eip (for both CALL/JMP)
+0044e162 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e165 8b9ae0000000    mov     ebx,dword ptr [edx+0E0h]
+0044e16b 035dec          add     ebx,dword ptr [ebp-14h]                                ; addr_rva = addr_rva_obf + env->obfus
+0044e16e 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e171 035a14          add     ebx,dword ptr [edx+14h]                                ; new_eip = addr_rva + env->mod_base
+0044e174 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e177 3a424a          cmp     al,byte ptr [edx+4Ah]
+0044e17a 0f85a6020000    jne     image00000000_00400000+0x4e426 (0044e426)
+; put call ret addr (CALL only)
+0044e180 836dfc04        sub     dword ptr [ebp-4],4                                    ; new_esp = new_esp-4  (make place for the call_ret_addr)
+0044e184 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e187 8b80e0000000    mov     eax,dword ptr [eax+0E0h]
+0044e18d 0345f0          add     eax,dword ptr [ebp-10h]                                ; ptch_sz = ptch_sz_obf + env->obfus
+0044e190 0345f4          add     eax,dword ptr [ebp-0Ch]
+0044e193 8b55fc          mov     edx,dword ptr [ebp-4]
+0044e196 8902            mov     dword ptr [edx],eax                                    ; *new_esp = aip_eip+ptch_sz  (call_ret_addr after AIP call)
+0044e198 e989020000      jmp     image00000000_00400000+0x4e426 (0044e426)
+
+; ADD gpr_id, imm
+0044e19d 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e1a0 3a424f          cmp     al,byte ptr [edx+4Fh]
+0044e1a3 756f            jne     image00000000_00400000+0x4e214 (0044e214)              ; emul_opc != env->opc_add
+0044e1a5 33c0            xor     eax,eax
+0044e1a7 8a4605          mov     al,byte ptr [esi+5]
+0044e1aa 8d0440          lea     eax,[eax+eax*2]
+0044e1ad 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e1b0 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e1b4 8bc3            mov     eax,ebx
+0044e1b6 ffd2            call    edx
+0044e1b8 8845eb          mov     byte ptr [ebp-15h],al                                  ; gpr_id = get_gpr_id(emul_dt)
+0044e1bb eb01            jmp     image00000000_00400000+0x4e1be (0044e1be)
+0044e1bd e9              ???
+0044e1be 33c0            xor     eax,eax
+0044e1c0 8a4607          mov     al,byte ptr [esi+7]
+0044e1c3 8d0440          lea     eax,[eax+eax*2]
+0044e1c6 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e1c9 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e1cd 8bc3            mov     eax,ebx
+0044e1cf ffd2            call    edx
+0044e1d1 8bd8            mov     ebx,eax                                                ; imm = get_imm(emul_dt)
+0044e1d3 eb01            jmp     image00000000_00400000+0x4e1d6 (0044e1d6)
+0044e1d5 9a              ???
+0044e1d6 807deb04        cmp     byte ptr [ebp-15h],4
+0044e1da 7421            je      image00000000_00400000+0x4e1fd (0044e1fd)              ; gpr_id==esp
+0044e1dc 8a4deb          mov     cl,byte ptr [ebp-15h]
+0044e1df 8b5510          mov     edx,dword ptr [ebp+10h]
+0044e1e2 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e1e5 e8aa020000      call    image00000000_00400000+0x4e494 (0044e494)              ; gpr_val = read_gpr(env, ctx, gpr_id)
+0044e1ea 03c3            add     eax,ebx                                                ; gpr_val += imm
+0044e1ec 50              push    eax
+0044e1ed 8a4deb          mov     cl,byte ptr [ebp-15h]
+0044e1f0 8b5510          mov     edx,dword ptr [ebp+10h]
+0044e1f3 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e1f6 e875020000      call    image00000000_00400000+0x4e470 (0044e470)              ; ctx[4*gpr_id]=gpr_val
+0044e1fb eb03            jmp     image00000000_00400000+0x4e200 (0044e200)
+0044e1fd 015dfc          add     dword ptr [ebp-4],ebx                                  ; new_esp = new_esp+imm
+0044e200 8b5df0          mov     ebx,dword ptr [ebp-10h]
+0044e203 035df4          add     ebx,dword ptr [ebp-0Ch]
+0044e206 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e209 0398e0000000    add     ebx,dword ptr [eax+0E0h]                               ; new_eip = aip_eip + ptch_sz
+0044e20f e912020000      jmp     image00000000_00400000+0x4e426 (0044e426)
+
+; MOV gpr_id, gpr2_id
+0044e214 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e217 3a4250          cmp     al,byte ptr [edx+50h]
+0044e21a 7563            jne     image00000000_00400000+0x4e27f (0044e27f)              ; emul_opc != env->opc_mov_rr
+0044e21c 33c0            xor     eax,eax
+0044e21e 8a4605          mov     al,byte ptr [esi+5]
+0044e221 8d0440          lea     eax,[eax+eax*2]
+0044e224 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e227 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e22b 8bc3            mov     eax,ebx
+0044e22d ffd2            call    edx
+0044e22f 8845eb          mov     byte ptr [ebp-15h],al                                  ; gpr_id = get_gpr_id(emul_dt)
+0044e232 eb01            jmp     image00000000_00400000+0x4e235 (0044e235)
+0044e234 e8              ???
+0044e235 33c0            xor     eax,eax
+0044e237 8a4606          mov     al,byte ptr [esi+6]
+0044e23a 8d0440          lea     eax,[eax+eax*2]
+0044e23d 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e240 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e244 8bc3            mov     eax,ebx
+0044e246 ffd2            call    edx
+0044e248 8845ea          mov     byte ptr [ebp-16h],al                                  ; gpr2_id = get_gpr2_id(emul_dt)
+0044e24b 8a4dea          mov     cl,byte ptr [ebp-16h]
+0044e24e 8b5510          mov     edx,dword ptr [ebp+10h]
+0044e251 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e254 e83b020000      call    image00000000_00400000+0x4e494 (0044e494)              ; gpr2_val = read_gpr(env, ctx, gpr2_id)
+0044e259 eb01            jmp     image00000000_00400000+0x4e25c (0044e25c)
+0044e25b 9a              ???
+0044e25c 50              push    eax
+0044e25d 8a4deb          mov     cl,byte ptr [ebp-15h]
+0044e260 8b5510          mov     edx,dword ptr [ebp+10h]
+0044e263 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e266 e805020000      call    image00000000_00400000+0x4e470 (0044e470)              ; ctx[4*gpr_id]=gpr2_val
+0044e26b 8b5df0          mov     ebx,dword ptr [ebp-10h]
+0044e26e 035df4          add     ebx,dword ptr [ebp-0Ch]
+0044e271 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e274 0398e0000000    add     ebx,dword ptr [eax+0E0h]                               ; new_eip = aip_eip + ptch_sz
+0044e27a e9a7010000      jmp     image00000000_00400000+0x4e426 (0044e426)
+
+; MOV [mem_addr], gpr_id    where: mem_addr:=imm as RVA
+0044e27f 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e282 3a4251          cmp     al,byte ptr [edx+51h]
+0044e285 755e            jne     image00000000_00400000+0x4e2e5 (0044e2e5)              ; emul_opc != env->opc_mov_mr
+0044e287 eb01            jmp     image00000000_00400000+0x4e28a (0044e28a)
+0044e289 e8              ???
+0044e28a 33c0            xor     eax,eax
+0044e28c 8a4605          mov     al,byte ptr [esi+5]
+0044e28f 8d0440          lea     eax,[eax+eax*2]
+0044e292 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e295 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e299 8bc3            mov     eax,ebx
+0044e29b ffd2            call    edx
+0044e29d 8845eb          mov     byte ptr [ebp-15h],al                                  ; gpr_id = get_gpr_id(emul_dt)
+0044e2a0 eb01            jmp     image00000000_00400000+0x4e2a3 (0044e2a3)
+0044e2a2 e9              ???
+0044e2a3 33c0            xor     eax,eax
+0044e2a5 8a4607          mov     al,byte ptr [esi+7]
+0044e2a8 8d0440          lea     eax,[eax+eax*2]
+0044e2ab 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e2ae 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e2b2 8bc3            mov     eax,ebx
+0044e2b4 ffd2            call    edx
+0044e2b6 8bd8            mov     ebx,eax                                                ; imm = get_imm(emul_dt)
+0044e2b8 8a4deb          mov     cl,byte ptr [ebp-15h]
+0044e2bb 8b5510          mov     edx,dword ptr [ebp+10h]
+0044e2be 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e2c1 e8ce010000      call    image00000000_00400000+0x4e494 (0044e494)              ; gpr_val = read_gpr(env, ctx, gpr_id)
+0044e2c6 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e2c9 035a14          add     ebx,dword ptr [edx+14h]
+0044e2cc 8903            mov     dword ptr [ebx],eax                                    ; *(imm+env->mod_base) = gpr_val
+0044e2ce eb01            jmp     image00000000_00400000+0x4e2d1 (0044e2d1)
+0044e2d0 9a              ???
+0044e2d1 8b5df0          mov     ebx,dword ptr [ebp-10h]
+0044e2d4 035df4          add     ebx,dword ptr [ebp-0Ch]
+0044e2d7 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e2da 0398e0000000    add     ebx,dword ptr [eax+0E0h]                               ; new_eip = aip_eip + ptch_sz
+0044e2e0 e941010000      jmp     image00000000_00400000+0x4e426 (0044e426)
+
+; MOV [gpr_id+displ], gpr2_id   where displ:=imm
+0044e2e5 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e2e8 3a4252          cmp     al,byte ptr [edx+52h]
+0044e2eb 0f8580000000    jne     image00000000_00400000+0x4e371 (0044e371)              ; emul_opc != env->opc_mov_rdr
+0044e2f1 eb01            jmp     image00000000_00400000+0x4e2f4 (0044e2f4)
+0044e2f3 e8              ???
+0044e2f4 33c0            xor     eax,eax
+0044e2f6 8a4605          mov     al,byte ptr [esi+5]
+0044e2f9 8d0440          lea     eax,[eax+eax*2]
+0044e2fc 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e2ff 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e303 8bc3            mov     eax,ebx
+0044e305 ffd2            call    edx
+0044e307 8845eb          mov     byte ptr [ebp-15h],al                                  ; gpr_id = get_gpr_id(emul_dt)
+0044e30a 33c0            xor     eax,eax
+0044e30c 8a4606          mov     al,byte ptr [esi+6]
+0044e30f 8d0440          lea     eax,[eax+eax*2]
+0044e312 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e315 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e319 8bc3            mov     eax,ebx
+0044e31b ffd2            call    edx
+0044e31d 8845ea          mov     byte ptr [ebp-16h],al                                  ; gpr2_id = get_gpr2_id(emul_dt)
+0044e320 eb01            jmp     image00000000_00400000+0x4e323 (0044e323)
+0044e322 e9              ???
+0044e323 33c0            xor     eax,eax
+0044e325 8a4607          mov     al,byte ptr [esi+7]
+0044e328 8d0440          lea     eax,[eax+eax*2]
+0044e32b 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e32e 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e332 8bc3            mov     eax,ebx
+0044e334 ffd2            call    edx
+0044e336 8bd8            mov     ebx,eax                                                ; imm = get_imm(emul_dt)
+0044e338 8a4deb          mov     cl,byte ptr [ebp-15h]
+0044e33b 8b5510          mov     edx,dword ptr [ebp+10h]
+0044e33e 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e341 e84e010000      call    image00000000_00400000+0x4e494 (0044e494)              ; gpr_val = read_gpr(env, ctx, gpr_id)
+0044e346 8bf0            mov     esi,eax
+0044e348 8a4dea          mov     cl,byte ptr [ebp-16h]
+0044e34b 8b5510          mov     edx,dword ptr [ebp+10h]
+0044e34e 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e351 e83e010000      call    image00000000_00400000+0x4e494 (0044e494)              ; gpr2_val = read_gpr(env, ctx, gpr2_id)
+0044e356 03f3            add     esi,ebx
+0044e358 8906            mov     dword ptr [esi],eax                                    ; *(gpr_val+imm) = gpr2_val
+0044e35a eb01            jmp     image00000000_00400000+0x4e35d (0044e35d)
+0044e35c 9a              ???
+0044e35d 8b5df0          mov     ebx,dword ptr [ebp-10h]
+0044e360 035df4          add     ebx,dword ptr [ebp-0Ch]
+0044e363 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e366 0398e0000000    add     ebx,dword ptr [eax+0E0h]                               ; new_eip = aip_eip + ptch_sz
+0044e36c e9b5000000      jmp     image00000000_00400000+0x4e426 (0044e426)
+
+; CMP arg1, arg2    where arg1, arg2 described by gpr_id, gpr2_id, imm, imm2 and args_tpy
+; Jcc(cond) addr_rva_obf
+0044e371 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e374 3a424c          cmp     al,byte ptr [edx+4Ch]
+0044e377 7567            jne     image00000000_00400000+0x4e3e0 (0044e3e0)              ; emul_opc != env->opc_cmp_jcc
+0044e379 eb01            jmp     image00000000_00400000+0x4e37c (0044e37c)
+0044e37b 9a              ???
+0044e37c 8bcb            mov     ecx,ebx                                                ; arg: emul_dt
+0044e37e 8b5510          mov     edx,dword ptr [ebp+10h]                                ; arg: ctx
+0044e381 8b45f8          mov     eax,dword ptr [ebp-8]                                  ; arg: env
+0044e384 e86ff7ffff      call    image00000000_00400000+0x4daf8 (0044daf8)              ; flags = cmp()
+0044e389 894514          mov     dword ptr [ebp+14h],eax
+0044e38c eb01            jmp     image00000000_00400000+0x4e38f (0044e38f)
+0044e38e 9a              ???
+0044e38f 33c0            xor     eax,eax
+0044e391 8a4604          mov     al,byte ptr [esi+4]
+0044e394 8d0440          lea     eax,[eax+eax*2]
+0044e397 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e39a 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044e39e 8bc3            mov     eax,ebx
+0044e3a0 ffd2            call    edx
+0044e3a2 8bd8            mov     ebx,eax
+0044e3a4 8b4d14          mov     ecx,dword ptr [ebp+14h]                                ; arg: flags
+0044e3a7 8bd3            mov     edx,ebx                                                ; arg: cond = get_cond_code(emul_dt)
+0044e3a9 8b45f8          mov     eax,dword ptr [ebp-8]                                  ; arg: env
+0044e3ac e887f4ffff      call    image00000000_00400000+0x4d838 (0044d838)              ; check_cond()
+0044e3b1 84c0            test    al,al
+0044e3b3 741a            je      image00000000_00400000+0x4e3cf (0044e3cf)
+0044e3b5 eb01            jmp     image00000000_00400000+0x4e3b8 (0044e3b8)
+0044e3b7 9a              ???
+; condition == TRUE
+0044e3b8 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e3bb 8b98e0000000    mov     ebx,dword ptr [eax+0E0h]
+0044e3c1 035dec          add     ebx,dword ptr [ebp-14h]                                ; addr_rva = addr_rva_obf + env->obfus
+0044e3c4 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e3c7 035814          add     ebx,dword ptr [eax+14h]                                ; new_eip = addr_rva + env->mod_base
+0044e3ca eb5a            jmp     image00000000_00400000+0x4e426 (0044e426)
+0044e3cc eb01            jmp     image00000000_00400000+0x4e3cf (0044e3cf)
+0044e3ce 69              ???
+; condition == FALSE
+0044e3cf 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e3d2 8b98e0000000    mov     ebx,dword ptr [eax+0E0h]
+0044e3d8 035df0          add     ebx,dword ptr [ebp-10h]
+0044e3db 035df4          add     ebx,dword ptr [ebp-0Ch]                                ; new_eip = aip_eip + ptch_sz
+0044e3de eb46            jmp     image00000000_00400000+0x4e426 (0044e426)
+
+; CMP arg1, arg2
+0044e3e0 8b55f8          mov     edx,dword ptr [ebp-8]
+0044e3e3 3a424d          cmp     al,byte ptr [edx+4Dh]
+0044e3e6 7527            jne     image00000000_00400000+0x4e40f (0044e40f)              ; emul_opc != env->opc_cmp
+0044e3e8 eb01            jmp     image00000000_00400000+0x4e3eb (0044e3eb)
+0044e3ea e9              ???
+0044e3eb 8bcb            mov     ecx,ebx                                                ; arg: emul_dt
+0044e3ed 8b5510          mov     edx,dword ptr [ebp+10h]                                ; arg: ctx
+0044e3f0 8b45f8          mov     eax,dword ptr [ebp-8]                                  ; arg: env
+0044e3f3 e800f7ffff      call    image00000000_00400000+0x4daf8 (0044daf8)              ; flags = cmp()
+0044e3f8 894514          mov     dword ptr [ebp+14h],eax
+0044e3fb eb01            jmp     image00000000_00400000+0x4e3fe (0044e3fe)
+0044e3fd 9a              ???
+0044e3fe 8b5df0          mov     ebx,dword ptr [ebp-10h]
+0044e401 035df4          add     ebx,dword ptr [ebp-0Ch]
+0044e404 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e407 0398e0000000    add     ebx,dword ptr [eax+0E0h]                               ; new_eip = aip_eip + ptch_sz
+0044e40d eb17            jmp     image00000000_00400000+0x4e426 (0044e426)
+
+; error: set set new_eip (ebx) to some crash notification proc
+0044e40f bb70c44400      mov     ebx,offset image00000000_00400000+0x4c470 (0044c470)
+0044e414 eb01            jmp     image00000000_00400000+0x4e417 (0044e417)
+0044e416 9a              ???
+0044e417 a1bc284500      mov     eax,dword ptr [image00000000_00400000+0x528bc (004528bc)]
+0044e41c c600cb          mov     byte ptr [eax],0CBh
+0044e41f b001            mov     al,1
+0044e421 e8920f0000      call    image00000000_00400000+0x4f3b8 (0044f3b8)
+
+; at this point: new_eip (in ebx), and updated new_esp, flags
+0044e426 8bc7            mov     eax,edi
+0044e428 e82fb1fdff      call    image00000000_00400000+0x2955c (0042955c)              ; free(emul_dt)
+0044e42d eb01            jmp     image00000000_00400000+0x4e430 (0044e430)
+0044e42f 9a              ???
+0044e430 a1a4284500      mov     eax,dword ptr [image00000000_00400000+0x528a4 (004528a4)]
+0044e435 c600d5          mov     byte ptr [eax],0D5h
+0044e438 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e43b 83e804          sub     eax,4
+0044e43e 8918            mov     dword ptr [eax],ebx                                    ; *(new_esp-4) = new_eip
+0044e440 8b450c          mov     eax,dword ptr [ebp+0Ch]
+0044e443 e880f1ffff      call    image00000000_00400000+0x4d5c8 (0044d5c8)              ; restore call_seh
+0044e448 8b4508          mov     eax,dword ptr [ebp+8]
+0044e44b 50              push    eax
+0044e44c a184294500      mov     eax,dword ptr [image00000000_00400000+0x52984 (00452984)]
+0044e451 8b00            mov     eax,dword ptr [eax]
+0044e453 ffd0            call    eax                                                    ; set last_err in TIB
+0044e455 ff75fc          push    dword ptr [ebp-4]                                      ; arg: new_esp
+0044e458 ff7514          push    dword ptr [ebp+14h]                                    ; arg: flags
+0044e45b ff7510          push    dword ptr [ebp+10h]                                    ; arg: ctx
+0044e45e 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e461 ff6030          jmp     dword ptr [eax+30h]                                    ; jmp to aip_exit()
+0044e464 eb01            jmp     image00000000_00400000+0x4e467 (0044e467)
+0044e466 9a              ???
+0044e467 5f              pop     edi
+0044e468 5e              pop     esi
+0044e469 5b              pop     ebx
+0044e46a 8be5            mov     esp,ebp
+0044e46c 5d              pop     ebp
+0044e46d c21400          ret     14h
+
+
+-------- cmp()
+cmp(env_t *env (eax), proc_ctx_t *ctx(edx), conf_dt *emul_dt (ecx))
+
+0044daf8 55              push    ebp
+0044daf9 8bec            mov     ebp,esp
+0044dafb 83c4e4          add     esp,0FFFFFFE4h
+0044dafe 53              push    ebx
+0044daff 56              push    esi
+0044db00 57              push    edi
+0044db01 33db            xor     ebx,ebx
+0044db03 895de4          mov     dword ptr [ebp-1Ch],ebx
+0044db06 8bf9            mov     edi,ecx                                                ; emul_dt
+0044db08 8955fc          mov     dword ptr [ebp-4],edx                                  ; ctx
+0044db0b 8bd8            mov     ebx,eax                                                ; env
+0044db0d 33c0            xor     eax,eax
+0044db0f 55              push    ebp
+0044db10 687ddc4400      push    offset image00400000+0x4dc7d (0044dc7d)
+0044db15 64ff30          push    dword ptr fs:[eax]
+0044db18 648920          mov     dword ptr fs:[eax],esp
+0044db1b 8d7340          lea     esi,[ebx+40h]
+0044db1e 33c0            xor     eax,eax
+0044db20 8945ec          mov     dword ptr [ebp-14h],eax
+0044db23 33c0            xor     eax,eax
+0044db25 8945e8          mov     dword ptr [ebp-18h],eax
+0044db28 eb01            jmp     image00000000_00400000+0x4db2b (0044db2b)
+0044db2a 9a              ???
+0044db2b 33c0            xor     eax,eax
+0044db2d 8a4607          mov     al,byte ptr [esi+7]
+0044db30 8d0440          lea     eax,[eax+eax*2]
+0044db33 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044db37 8bc7            mov     eax,edi
+0044db39 ffd2            call    edx
+0044db3b 8945f8          mov     dword ptr [ebp-8],eax                                  ; imm = get_imm(emul_dt)
+0044db3e 33c0            xor     eax,eax
+0044db40 8a4605          mov     al,byte ptr [esi+5]
+0044db43 8d0440          lea     eax,[eax+eax*2]
+0044db46 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044db4a 8bc7            mov     eax,edi
+0044db4c ffd2            call    edx
+0044db4e 8bd0            mov     edx,eax                                                ; gpr_id = get_gpr_id(emul_dt)
+0044db50 80ea08          sub     dl,8
+0044db53 0f92c2          setb    dl
+0044db56 80fa01          cmp     dl,1
+0044db59 750f            jne     image00000000_00400000+0x4db6a (0044db6a)
+0044db5b 8bc8            mov     ecx,eax
+0044db5d 8b55fc          mov     edx,dword ptr [ebp-4]
+0044db60 8bc3            mov     eax,ebx
+0044db62 e82d090000      call    image00000000_00400000+0x4e494 (0044e494)
+0044db67 8945ec          mov     dword ptr [ebp-14h],eax                                ; gpr_val = (gpr_id<8 ? read_gpr(env, ctx, gpr_id) : 0)
+0044db6a 33c0            xor     eax,eax
+0044db6c 8a4609          mov     al,byte ptr [esi+9]
+0044db6f 8d0440          lea     eax,[eax+eax*2]
+0044db72 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044db76 8bc7            mov     eax,edi
+0044db78 ffd2            call    edx
+0044db7a 8845f3          mov     byte ptr [ebp-0Dh],al                                  ; atpy = get_args_tpy(emul_dt)
+0044db7d eb01            jmp     image00000000_00400000+0x4db80 (0044db80)
+0044db7f 69              ???
+0044db80 33c0            xor     eax,eax
+0044db82 8a4608          mov     al,byte ptr [esi+8]
+0044db85 8d0440          lea     eax,[eax+eax*2]
+0044db88 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044db8c 8bc7            mov     eax,edi
+0044db8e ffd2            call    edx
+0044db90 8945f4          mov     dword ptr [ebp-0Ch],eax                                ; imm2 = get_imm2(emul_dt)
+0044db93 33c0            xor     eax,eax
+0044db95 8a4606          mov     al,byte ptr [esi+6]
+0044db98 8d0440          lea     eax,[eax+eax*2]
+0044db9b 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044db9f 8bc7            mov     eax,edi
+0044dba1 ffd2            call    edx
+0044dba3 8bd0            mov     edx,eax                                                ; gpr2_id = get_gpr2_id(emul_dt)
+0044dba5 80ea08          sub     dl,8
+0044dba8 0f92c2          setb    dl
+0044dbab 80fa01          cmp     dl,1
+0044dbae 7512            jne     image00000000_00400000+0x4dbc2 (0044dbc2)
+0044dbb0 8bc8            mov     ecx,eax
+0044dbb2 8b55fc          mov     edx,dword ptr [ebp-4]
+0044dbb5 8bc3            mov     eax,ebx
+0044dbb7 e8d8080000      call    image00000000_00400000+0x4e494 (0044e494)
+0044dbbc 8945e8          mov     dword ptr [ebp-18h],eax                                ; gpr2_val = (gpr2_id<8 ? read_gpr(env, ctx, gpr2_id) : 0)
+0044dbbf eb01            jmp     image00000000_00400000+0x4dbc2 (0044dbc2)
+0044dbc1 c7              ???
+0044dbc2 837df800        cmp     dword ptr [ebp-8],0
+0044dbc6 740c            je      image00400000+0x4dbd4 (0044dbd4)
+0044dbc8 807df302        cmp     byte ptr [ebp-0Dh],2
+0044dbcc 7506            jne     image00400000+0x4dbd4 (0044dbd4)
+0044dbce 8b4314          mov     eax,dword ptr [ebx+14h]
+0044dbd1 0145f8          add     dword ptr [ebp-8],eax                                  ; if (imm!=0 && atpy==a1_mem_dw) imm=imm+env->mod_base
+
+0044dbd4 837df400        cmp     dword ptr [ebp-0Ch],0
+0044dbd8 740c            je      image00000000_00400000+0x4dbe6 (0044dbe6)
+0044dbda 807df303        cmp     byte ptr [ebp-0Dh],3
+0044dbde 7506            jne     image00000000_00400000+0x4dbe6 (0044dbe6)
+0044dbe0 8b4314          mov     eax,dword ptr [ebx+14h]
+0044dbe3 0145f4          add     dword ptr [ebp-0Ch],eax                                ;  if (imm2!=0 && atpy==a2_mem_dw) imm2=imm2+env->mod_base
+
+0044dbe6 8b5df8          mov     ebx,dword ptr [ebp-8]
+0044dbe9 035dec          add     ebx,dword ptr [ebp-14h]                                ; arg1 = imm+gpr_val
+0044dbec 8b75f4          mov     esi,dword ptr [ebp-0Ch]
+0044dbef 0375e8          add     esi,dword ptr [ebp-18h]                                ; arg2 = imm2+gpr2_val
+0044dbf2 eb01            jmp     image00000000_00400000+0x4dbf5 (0044dbf5)
+0044dbf4 e8              ???
+0044dbf5 33c0            xor     eax,eax
+0044dbf7 8a45f3          mov     al,byte ptr [ebp-0Dh]
+0044dbfa 83f806          cmp     eax,6
+0044dbfd 7747            ja      image00400000+0x4dc46 (0044dc46)                       ; if (atpy>6) jmp error
+0044dbff ff248506dc4400  jmp     dword ptr image00000000_00400000+0x4dc06 (0044dc06)[eax*4]
+0044dc06                 dd 0044dc46    (0, error)
+0044dc0a                 dd 0044dc46    (1: error)
+0044dc0e                 dd 0044dc25    (2: a1_mem_dw)
+0044dc12                 dd 0044dc2c    (3: a2_mem_dw)
+0044dc16                 dd 0044dc33    (4: a1_mem_b)
+0044dc1a                 dd 0044dc3e    (5: a2_mem_b)
+0044dc1e                 dd 0044dc5c    (6: a12_nomem)
+; a1_mem_dw
+0044dc25 8b1b            mov     ebx,dword ptr [ebx]                                    ; arg1 = *(dword*)arg1
+0044dc27 eb33            jmp     image00000000_00400000+0x4dc5c (0044dc5c)
+0044dc29 eb01            jmp     image00000000_00400000+0x4dc2c (0044dc2c)
+0044dc2b 9a              ???
+; a2_mem_dw
+0044dc2c 8b36            mov     esi,dword ptr [esi]                                    ; arg2 = *(dword*)arg2
+0044dc2e eb2c            jmp     image00000000_00400000+0x4dc5c (0044dc5c)
+0044dc30 eb01            jmp     image00000000_00400000+0x4dc33 (0044dc33)
+0044dc32 9a              ???
+; a1_mem_b
+0044dc33 33c0            xor     eax,eax
+0044dc35 8a03            mov     al,byte ptr [ebx]
+0044dc37 8bd8            mov     ebx,eax                                                ; arg1 = *(byte*)arg1
+0044dc39 eb21            jmp     image00000000_00400000+0x4dc5c (0044dc5c)
+0044dc3b eb01            jmp     image00000000_00400000+0x4dc3e (0044dc3e)
+0044dc3d 9a              ???
+; a2_mem_b
+0044dc3e 33c0            xor     eax,eax
+0044dc40 8a06            mov     al,byte ptr [esi]
+0044dc42 8bf0            mov     esi,eax                                                ; arg2 = *(byte*)arg2
+0044dc44 eb16            jmp     image00000000_00400000+0x4dc5c (0044dc5c)
+; error
+0044dc46 8d55e4          lea     edx,[ebp-1Ch]
+0044dc49 b871000000      mov     eax,71h
+0044dc4e e871e7ffff      call    image00000000_00400000+0x4c3c4 (0044c3c4)
+0044dc53 8b45e4          mov     eax,dword ptr [ebp-1Ch]
+0044dc56 50              push    eax
+0044dc57 e8cceafeff      call    image00000000_00400000+0x3c728 (0043c728)              ; error "113"
+; compare
+0044dc5c 8bd6            mov     edx,esi
+0044dc5e 8bc3            mov     eax,ebx
+0044dc60 e87ffeffff      call    image00000000_00400000+0x4dae4 (0044dae4)              ; compare arg1 and arg2 and return flags
+0044dc65 8bd8            mov     ebx,eax                                                ; flags will be returned
+0044dc67 33c0            xor     eax,eax
+0044dc69 5a              pop     edx
+0044dc6a 59              pop     ecx
+0044dc6b 59              pop     ecx
+(...)
+
+decode() --------
+decode(char *in, dword in_sz, char *key, dword key_sz)
+
+00438db4 55              push    ebp
+00438db5 8bec            mov     ebp,esp
+00438db7 51              push    ecx
+00438db8 53              push    ebx
+00438db9 56              push    esi
+00438dba 57              push    edi
+00438dbb 894dfc          mov     dword ptr [ebp-4],ecx                                  ; key
+00438dbe 8bfa            mov     edi,edx                                                ; in_sz
+00438dc0 8bf0            mov     esi,eax                                                ; in
+00438dc2 8b5d08          mov     ebx,dword ptr [ebp+8]                                  ; key_sz
+00438dc5 3bdf            cmp     ebx,edi
+00438dc7 7315            jae     image00000000_00400000+0x38dde (00438dde)              ; key_sz>=in_sz
+; loop
+00438dc9 2bfb            sub     edi,ebx                                                ; in_sz-=key_sz
+00438dcb 56              push    esi
+00438dcc 8bcb            mov     ecx,ebx
+00438dce 8b55fc          mov     edx,dword ptr [ebp-4]
+00438dd1 8bc6            mov     eax,esi
+00438dd3 e85cfeffff      call    image00000000_00400000+0x38c34 (00438c34)              ; decode_blck(in, key, key_sz, in)
+00438dd8 01de            add     esi,ebx                                                ; in+=key_sz
+00438dda 3bdf            cmp     ebx,edi
+00438ddc 72eb            jb      image00000000_00400000+0x38dc9 (00438dc9)              ; key_sz<in_sz
+; last loop step
+00438dde 56              push    esi
+00438ddf 8bcf            mov     ecx,edi
+00438de1 8b55fc          mov     edx,dword ptr [ebp-4]
+00438de4 8bc6            mov     eax,esi
+00438de6 e849feffff      call    image00000000_00400000+0x38c34 (00438c34)              ; xor_blck(in, key, in_sz, in)
+00438deb 5f              pop     edi
+00438dec 5e              pop     esi
+00438ded 5b              pop     ebx
+00438dee 59              pop     ecx
+00438def 5d              pop     ebp
+00438df0 c20400          ret     4
+
+
+xor_blck() --------
+xor_blck(char *in (eax), char *key (edx), dword sz (ecx), char *out)
+
+00438c34 55              push    ebp
+00438c35 8bec            mov     ebp,esp
+00438c37 21c9            and     ecx,ecx                                                ; i=sz
+00438c39 7446            je      image00000000_00400000+0x38c81 (00438c81)
+00438c3b 56              push    esi
+00438c3c 57              push    edi
+00438c3d 89c6            mov     esi,eax                                                ; in
+00438c3f 8b7d08          mov     edi,dword ptr [ebp+8]                                  ; out
+00438c42 f7c101000000    test    ecx,1
+00438c48 740e            je      image00000000_00400000+0x38c58 (00438c58)
+; process odd byte
+00438c4a 49              dec     ecx
+00438c4b 8a040e          mov     al,byte ptr [esi+ecx]
+00438c4e 32040a          xor     al,byte ptr [edx+ecx]
+00438c51 88040f          mov     byte ptr [edi+ecx],al                                  ; i--; *(byte*)(out+i) = *(byte*)(in+i) ^ *(byte*)(key+i)
+00438c54 21c9            and     ecx,ecx
+00438c56 7427            je      image00000000_00400000+0x38c7f (00438c7f)
+00438c58 d1e9            shr     ecx,1                                                  ; i=i/2
+00438c5a f7c101000000    test    ecx,1
+00438c60 740d            je      image00000000_00400000+0x38c6f (00438c6f)
+; process even word
+00438c62 49              dec     ecx
+00438c63 668b044e        mov     ax,word ptr [esi+ecx*2]
+00438c67 6633044a        xor     ax,word ptr [edx+ecx*2]
+00438c6b 6689044f        mov     word ptr [edi+ecx*2],ax                                ; i--; *(word*)(out+i) = *(word*)(in+i) ^ *(word*)(key+i)
+00438c6f d1e9            shr     ecx,1                                                  ; i=i/2
+; process dwords
+00438c71 49              dec     ecx
+00438c72 7c0b            jl      image00000000_00400000+0x38c7f (00438c7f)
+00438c74 8b048e          mov     eax,dword ptr [esi+ecx*4]
+00438c77 33048a          xor     eax,dword ptr [edx+ecx*4]
+00438c7a 89048f          mov     dword ptr [edi+ecx*4],eax                              ; i--; *(dword*)(out+i) = *(dword*)(in+i) ^ *(dword*)(key+i)
+00438c7d ebf2            jmp     image00000000_00400000+0x38c71 (00438c71)
+; finish
+00438c7f 5f              pop     edi
+00438c80 5e              pop     esi
+00438c81 5d              pop     ebp
+00438c82 c20400          ret     4

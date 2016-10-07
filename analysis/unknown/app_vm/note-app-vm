@@ -1,0 +1,226 @@
+g; bp GetModuleFileNameA 2; g; bc *; pt; t; r $t0=00c74c65-@eip; bp IsDebuggerPresent; g; bc *; g poi(esp); r eax=0; ba e1 00c969c0-@$t0; ba e1 00c96994-@$t0; g;
+
+; app vm run (similar to aspr vm call)
+00c969c0 60              pushad
+00c969c1 89e0            mov     eax,esp
+00c969c3 9c              pushfd
+00c969c4 5a              pop     edx
+00c969c5 55              push    ebp
+00c969c6 89e5            mov     ebp,esp
+00c969c8 83c524          add     ebp,24h
+00c969cb 31c9            xor     ecx,ecx
+00c969cd 648b09          mov     ecx,dword ptr fs:[ecx]
+00c969d0 81ecb80b0000    sub     esp,0BB8h
+00c969d6 ff7508          push    dword ptr [ebp+8]                              ; eip
+00c969d9 ff750c          push    dword ptr [ebp+0Ch]                            ; buf_to_free
+00c969dc 52              push    edx                                            ; flags
+00c969dd 51              push    ecx                                            ; seh
+00c969de 50              push    eax                                            ; &gprs
+00c969df ff7504          push    dword ptr [ebp+4]                              ; vm_in
+00c969e2 e83d1a0000      call    00c98424                                       ; app_vm_engine()
+00c969e7 81c4dc0b0000    add     esp,0BDCh
+00c969ed c20c00          ret     0Ch
+
+; inner call app vm run
+00c96994 60              pushad
+00c96995 89e0            mov     eax,esp
+00c96997 9c              pushfd
+00c96998 8b1424          mov     edx,dword ptr [esp]                            ; flags
+00c9699b 55              push    ebp
+00c9699c 89e5            mov     ebp,esp
+00c9699e 83c528          add     ebp,28h                                        ; skip pushed gprs, flags & ebp
+00c969a1 ff7508          push    dword ptr [ebp+8]                              ; eip
+00c969a4 ff750c          push    dword ptr [ebp+0Ch]                            ; buf_to_free
+00c969a7 52              push    edx                                            ; flags
+00c969a8 50              push    eax                                            ; &gprs
+00c969a9 ff7504          push    dword ptr [ebp+4]                              ; vm_in
+00c969ac e823faffff      call    00c963d4
+00c969b1 8b442414        mov     eax,dword ptr [esp+14h]                        ; eax = esp before pushad
+00c969b5 832814          sub     dword ptr [eax],14h                            ; call_ret -= 14  (place of app vm call)
+00c969b8 5d              pop     ebp
+00c969b9 9d              popfd
+00c969ba 61              popad                                                  ; ctx restored
+00c969bb c20c00          ret     0Ch
+
+;
+00c98424 55              push    ebp
+00c98425 8bec            mov     ebp,esp
+00c98427 81c438ffffff    add     esp,0FFFFFF38h
+00c9842d 53              push    ebx
+00c9842e 56              push    esi
+00c9842f 57              push    edi
+00c98430 8b5d0c          mov     ebx,dword ptr [ebp+0Ch]
+00c98433 837d1800        cmp     dword ptr [ebp+18h],0
+00c98437 7408            je      00c98441
+00c98439 8d4518          lea     eax,[ebp+18h]
+00c9843c e8033a0000      call    00c9be44                                       ; free(buf_to_free)
+00c98441 33c9            xor     ecx,ecx
+00c98443 55              push    ebp
+00c98444 68c484c900      push    0C984C4h
+00c98449 64ff31          push    dword ptr fs:[ecx]
+00c9844c 648921          mov     dword ptr fs:[ecx],esp
+00c9844f eb01            jmp     00c98452
+00c98451 9a              ???
+00c98452 8d853bffffff    lea     eax,[ebp-0C5h]                                 ; vm_ctx (length: 0xc5)
+00c98458 bac5000000      mov     edx,0C5h
+00c9845d e89addfdff      call    008661fc                                       ; zeromem()
+00c98462 8b4514          mov     eax,dword ptr [ebp+14h]
+00c98465 8945f0          mov     dword ptr [ebp-10h],eax                        ; vm_ctx.flags = flags (offset 0xb5)
+00c98468 8b4510          mov     eax,dword ptr [ebp+10h]
+00c9846b 8945fc          mov     dword ptr [ebp-4],eax                          ; vm_ctx.seh = seh (offset 0xc1)
+00c9846e 8b451c          mov     eax,dword ptr [ebp+1Ch]
+00c98471 355914e3d0      xor     eax,0D0E31459h
+00c98476 898559ffffff    mov     dword ptr [ebp-0A7h],eax                       ; vm_ctx.eip = eip ^ 0x0D0E31459 (offset 0x1e)
+00c9847c eb01            jmp     00c9847f
+00c9847e e9              ???
+00c9847f 33d2            xor     edx,edx
+00c98481 8d857affffff    lea     eax,[ebp-86h]
+00c98487 8d4b20          lea     ecx,[ebx+20h]
+00c9848a 8bf2            mov     esi,edx
+00c9848c c1e602          shl     esi,2
+00c9848f 2bce            sub     ecx,esi
+00c98491 83e904          sub     ecx,4
+00c98494 8b09            mov     ecx,dword ptr [ecx]
+00c98496 8908            mov     dword ptr [eax],ecx
+00c98498 42              inc     edx
+00c98499 83c004          add     eax,4
+00c9849c 83fa08          cmp     edx,8
+00c9849f 75e6            jne     00c98487                                       ; copy gpr'es (offset 0x3f)
+00c984a1 83458a10        add     dword ptr [ebp-76h],10h                        ; vm_ctx.esp += 0x10
+00c984a5 eb01            jmp     00c984a8
+00c984a7 9a              ???
+00c984a8 8d953bffffff    lea     edx,[ebp-0C5h]                                 ; vm_ctx
+00c984ae 8b4508          mov     eax,dword ptr [ebp+8]                          ; vm_in
+00c984b1 e8befbffff      call    00c98074                                       ; vm_opc_exec()
+00c984b6 84c0            test    al,al
+00c984b8 75ee            jne     008884a8
+00c984ba 33c0            xor     eax,eax
+00c984bc 5a              pop     edx
+00c984bd 59              pop     ecx
+00c984be 59              pop     ecx
+00c984bf 648910          mov     dword ptr fs:[eax],edx
+00c984c2 eb21            jmp     00c984e5
+00c984c4 e9f7a9fdff      jmp     00c72ec0
+00c984c9 6aff            push    0FFFFFFFFh
+00c984cb e8ace8feff      call    00c86d7c
+00c984d0 8b5508          mov     edx,dword ptr [ebp+8]
+00c984d3 014218          add     dword ptr [edx+18h],eax
+00c984d6 680485c900      push    0C98504h
+00c984db e898d8feff      call    00c85d78
+00c984e0 e837adfdff      call    00c7321c
+00c984e5 8d953bffffff    lea     edx,[ebp-0C5h]
+00c984eb 8b4508          mov     eax,dword ptr [ebp+8]
+00c984ee e8c5010000      call    00c986b8
+00c984f3 5f              pop     edi
+00c984f4 5e              pop     esi
+00c984f5 5b              pop     ebx
+00c984f6 8be5            mov     esp,ebp
+00c984f8 5d              pop     ebp
+00c984f9 c21800          ret     18h
+
+; vm_opc_exec()
+00c98074 53              push    ebx
+00c98075 56              push    esi
+00c98076 57              push    edi
+00c98077 8bda            mov     ebx,edx
+00c98079 8bf0            mov     esi,eax
+00c9807b 8bfb            mov     edi,ebx
+00c9807d eb01            jmp     00c98080
+00c9807f c7              ???
+00c98080 8b571e          mov     edx,dword ptr [edi+1Eh]
+00c98083 8b4b64          mov     ecx,dword ptr [ebx+64h]
+00c98086 8bc6            mov     eax,esi
+00c98088 e8831e0000      call    00c99f10
+00c9808d 84c0            test    al,al
+00c9808f 7408            je      00c98099
+00c98091 8b4364          mov     eax,dword ptr [ebx+64h]
+00c98094 894322          mov     dword ptr [ebx+22h],eax
+00c98097 eb10            jmp     00c980a9
+00c98099 8b571e          mov     edx,dword ptr [edi+1Eh]
+00c9809c 8bc6            mov     eax,esi
+00c9809e e8d9fcffff      call    00c97d7c
+00c980a3 894322          mov     dword ptr [ebx+22h],eax
+00c980a6 eb01            jmp     00c980a9
+00c980a8 69837b2200740c8b4322 imul eax,dword ptr [ebx+7400227Bh],22438B0Ch
+00c980b2 83c018          add     eax,18h
+00c980b5 894364          mov     dword ptr [ebx+64h],eax
+00c980b8 eb01            jmp     00c980bb
+00c980ba e8837b2200      call    00ebfc42
+00c980bf 740c            je      00c980cd
+00c980c1 8bd3            mov     edx,ebx
+00c980c3 8bc6            mov     eax,esi
+00c980c5 e84e000000      call    00c98118
+00c980ca 40              inc     eax
+00c980cb 7504            jne     00c980d1
+00c980cd 33c0            xor     eax,eax
+00c980cf eb05            jmp     00c980d6
+00c980d1 b001            mov     al,1
+00c980d3 eb01            jmp     00c980d6
+00c980d5 9a5f5e5bc38bc0  call    C08B:C35B5E5F
+00c980dc f6c204          test    dl,4
+00c980df 0f95c0          setne   al
+00c980e2 3401            xor     al,1
+00c980e4 83e07f          and     eax,7Fh
+00c980e7 c3              ret
+
+
+
+
+
+
+
+
+
+
+
+
+;
+00c963d4 55              push    ebp
+00c963d5 8bec            mov     ebp,esp
+00c963d7 53              push    ebx
+00c963d8 56              push    esi
+00c963d9 57              push    edi
+00c963da 68bcfdcb00      push    0CBFDBCh
+00c963df e8fcfafdff      call    00c75ee0
+00c963e4 8b5518          mov     edx,dword ptr [ebp+18h]
+00c963e7 81f25914e3d0    xor     edx,0D0E31459h
+00c963ed 8b4508          mov     eax,dword ptr [ebp+8]
+00c963f0 e893ffffff      call    00c96388
+00c963f5 8bd8            mov     ebx,eax
+00c963f7 85db            test    ebx,ebx
+00c963f9 7455            je      00c96450
+00c963fb 807b2d00        cmp     byte ptr [ebx+2Dh],0
+00c963ff 754f            jne     00c96450
+00c96401 8bf3            mov     esi,ebx
+00c96403 8d7b08          lea     edi,[ebx+8]
+00c96406 8d5613          lea     edx,[esi+13h]
+00c96409 8d4608          lea     eax,[esi+8]
+00c9640c e8dbf9ffff      call    00c95dec
+00c96411 84c0            test    al,al
+00c96413 7545            jne     00c9645a
+00c96415 8b4706          mov     eax,dword ptr [edi+6]
+00c96418 50              push    eax
+00c96419 8d5608          lea     edx,[esi+8]
+00c9641c 8d4613          lea     eax,[esi+13h]
+00c9641f 8b4e04          mov     ecx,dword ptr [esi+4]
+00c96422 e859f9ffff      call    00c95d80
+00c96427 53              push    ebx
+00c96428 8d4608          lea     eax,[esi+8]
+00c9642b 50              push    eax
+00c9642c e857feffff      call    00c96288
+00c96431 84c0            test    al,al
+00c96433 750a            jne     00c9643f
+00c96435 686c64c900      push    0C9646Ch
+00c9643a e839f9feff      call    00c85d78
+00c9643f 8b4604          mov     eax,dword ptr [esi+4]
+00c96442 e81dc1fdff      call    00c72564
+00c96447 33c0            xor     eax,eax
+00c96449 894604          mov     dword ptr [esi+4],eax
+00c9644c c6462d01        mov     byte ptr [esi+2Dh],1
+00c96450 68bcfdcb00      push    0CBFDBCh
+00c96455 e8befbfdff      call    00c76018
+00c9645a 5f              pop     edi
+00c9645b 5e              pop     esi
+00c9645c 5b              pop     ebx
+00c9645d 5d              pop     ebp
+00c9645e c21400          ret     14h

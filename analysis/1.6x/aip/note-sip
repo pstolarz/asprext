@@ -1,0 +1,14 @@
+; standard import protection (example of call)
+;
+00b90004 ff0424          inc     dword ptr [esp]                                    ; jmp over 1 extra byte on exit
+00b90007 e9f4fffeff      jmp     00b80000
+
+; kernel32!GetModuleHandleA (7c80b741)
+; BEGIN of import func prefix
+00b80000 8bff            mov     edi,edi
+00b80002 55              push    ebp
+00b80003 8bec            mov     ebp,esp
+00b80005 837d0800        cmp     dword ptr [ebp+8],0
+; END
+00b80009 684ab7807c      push    offset kernel32!GetModuleHandleA+0x9 (7c80b74a)    ; jmp to remaining part of kernel32!GetModuleHandleA
+00b8000e c3              ret

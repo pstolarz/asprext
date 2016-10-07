@@ -1,0 +1,578 @@
+imports_t:
+    04[dword]   imp_dsc         pointer to imp_dsc_t
+    08[10 bts]  key1            key1 for decoding types: imp_key1_noiat, imp_key1_iat, imp_stl_gpa2
+    12[10 bts]  key2            key2 for decoding types: imp_key2_noiat, imp_key2_iat
+    28[dword]   crc             Some crc udes for checking integrity of code for imp_stl_re, imp_stl_gpa
+    34[byte]    imp_endmrk      imp type id: marker of the end of imported procs
+    35[byte]    imp_key1_noiat  imp type id: proc name encoded with key1; don't written to the IAT table
+    36[byte]    imp_key1_iat    imp type id: proc name encoded with key1; written to the IAT table
+    37[byte]    imp_plain       imp type id: proc name in plain text; written to the IAT table
+    38[byte]    imp_stl_re      imp type id: stolen import;
+                                written to the IAT table as kernel32!RaiseException or its internal impl.
+    39[byte]    imp_stl_gpa     imp type id: stolen import;
+                                written to the IAT table as intern. implementation of GetProcAddress() with CAPI calls
+    3a[byte]    imp_stl_gpa2    imp type id: resolving proc name encoded with key1;
+                                written to the IAT table as stolen import calling the resolving proc or CAPI calls
+    3b[byte]    imp_key2_iat    imp type id: proc name encoded with key2; written to the IAT table
+    3c[byte]    imp_key2_noiat  imp type id: proc name encoded with key2; don't written to the IAT table
+                                Unrecognised types as handled as imp_key2_noiat
+    40[dword]   kernel32!LoadLibrary
+    44[dword]   1st 4 bytes crc of kernel32!LoadLibrary
+    48[dword]   kernel32!GetProcAddress
+    4c[dword]   1st 4 bytes crc of kernel32!GetProcAddress
+    50[dword]   mod_base
+
+imp_desc_t:
+Imports descriptor struct
+    ids_tab     9 bytes     Used for init imports_t starting from imp_endmrk
+
+  entry per imported lib:
+    last        dword       if 0 - last entry (originally this field contains RVA of lib's IAT
+                            but is destroyed by the write_iat() after its use)
+    end_off     dword       offset to the next entry ('last' field of the next entry)
+    lib_id      word        imported lib id
+    lib_name    var length  zero finished string with lib name
+
+    entry per imported proc:
+      imp_tpy     byte      imported proc type
+      proc_id     word      imported proc id
+
+      - imp_key1_noiat, imp_key1_iat, imp_stl_gpa2, imp_key2_noiat, imp_key2_iat
+        proc_dec_len  word        length of decoded proc name
+        proc_dec      var length  decoded proc name
+
+      - imp_stl_re, imp_stl_gpa
+        unused    word      unused
+
+      - imp_plain:
+        procn_addr    dword an address to proc name in the plain text. Usually an ordinal number of import.
+
+
+get_imp_addr_obf() --------
+
+0044e4a0 55              push    ebp
+0044e4a1 8bec            mov     ebp,esp
+0044e4a3 81c4ccfeffff    add     esp,0FFFFFECCh
+0044e4a9 53              push    ebx
+0044e4aa 56              push    esi
+0044e4ab 57              push    edi
+0044e4ac 33db            xor     ebx,ebx
+0044e4ae 899dccfeffff    mov     dword ptr [ebp-134h],ebx
+0044e4b4 899dd4feffff    mov     dword ptr [ebp-12Ch],ebx
+0044e4ba 899dd0feffff    mov     dword ptr [ebp-130h],ebx
+0044e4c0 899ddcfeffff    mov     dword ptr [ebp-124h],ebx
+0044e4c6 899dd8feffff    mov     dword ptr [ebp-128h],ebx
+0044e4cc 899de4feffff    mov     dword ptr [ebp-11Ch],ebx
+0044e4d2 899de0feffff    mov     dword ptr [ebp-120h],ebx
+0044e4d8 66894dfa        mov     word ptr [ebp-6],cx                                    ; lib_id
+0044e4dc 8bfa            mov     edi,edx                                                ; proc_id
+0044e4de 8945fc          mov     dword ptr [ebp-4],eax                                  ; env
+0044e4e1 33c0            xor     eax,eax
+0044e4e3 55              push    ebp
+0044e4e4 685fe94400      push    offset image00000000_00400000+0x4e95f (0044e95f)
+0044e4e9 64ff30          push    dword ptr fs:[eax]
+0044e4ec 648920          mov     dword ptr fs:[eax],esp
+0044e4ef c645f900        mov     byte ptr [ebp-7],0
+0044e4f3 8d85e8feffff    lea     eax,[ebp-118h]
+0044e4f9 8945e8          mov     dword ptr [ebp-18h],eax
+0044e4fc 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e4ff 8b703c          mov     esi,dword ptr [eax+3Ch]                                ; imports
+0044e502 eb01            jmp     image00000000_00400000+0x4e505 (0044e505)
+0044e504 9a              ???
+0044e505 a1e4274500      mov     eax,dword ptr [image00400000+0x527e4 (004527e4)]
+0044e50a c600ce          mov     byte ptr [eax],0CEh
+0044e50d 837e0400        cmp     dword ptr [esi+4],0
+0044e511 7517            jne     image00400000+0x4e52a (0044e52a)                       ; must be !=0
+; error
+0044e513 eb01            jmp     image00400000+0x4e516 (0044e516)
+0044e515 9a              ???
+0044e516 a1bc284500      mov     eax,dword ptr [image00400000+0x528bc (004528bc)]
+0044e51b c600cc          mov     byte ptr [eax],0CCh
+0044e51e b001            mov     al,1
+0044e520 e8930e0000      call    image00400000+0x4f3b8 (0044f3b8)
+0044e525 e917040000      jmp     image00400000+0x4e941 (0044e941)                       ; finish
+0044e52a 8b5e04          mov     ebx,dword ptr [esi+4]                                  ; imp_dsc = imports->imp_dsc
+0044e52d 83c309          add     ebx,9                                                  ; &imp_dsc->last
+0044e530 e9e7030000      jmp     image00000000_00400000+0x4e91c (0044e91c)
+
+; libs_loop
+0044e535 83c304          add     ebx,4
+0044e538 8b13            mov     edx,dword ptr [ebx]                                    ; imp_dsc->end_off
+0044e53a 83c304          add     ebx,4
+0044e53d 668b03          mov     ax,word ptr [ebx]                                      ; imp_dsc->lib_id
+0044e540 83c302          add     ebx,2
+0044e543 663b45fa        cmp     ax,word ptr [ebp-6]
+0044e547 740d            je      image00000000_00400000+0x4e556 (0044e556)              ; lib_id == imp_dsc->lib_id
+0044e549 83ea02          sub     edx,2
+0044e54c 83ea04          sub     edx,4
+0044e54f 03da            add     ebx,edx                                                ; &imp_dsc->end_off+imp_dsc->end_off     (set ebx to the next entry: 'last' field)
+0044e551 e9c6030000      jmp     image00000000_00400000+0x4e91c (0044e91c)              ; goto next libs_loop iter
+0044e556 895df4          mov     dword ptr [ebp-0Ch],ebx                                ; lib_name = imp_dsc->lib_name
+0044e559 8bc3            mov     eax,ebx
+0044e55b e8182afeff      call    image00000000_00400000+0x30f78 (00430f78)
+0044e560 40              inc     eax
+0044e561 668945f2        mov     word ptr [ebp-0Eh],ax                                  ; strlen(imp_dsc->lib_name)+1
+0044e565 0fb745f2        movzx   eax,word ptr [ebp-0Eh]
+0044e569 03d8            add     ebx,eax
+0044e56b 8a03            mov     al,byte ptr [ebx]                                      ; imp_tpy = imp_dsc->imp_tpy
+0044e56d 43              inc     ebx
+0044e56e e9a0030000      jmp     image00000000_00400000+0x4e913 (0044e913)
+
+; procs_loop
+0044e573 3a4635          cmp     al,byte ptr [esi+35h]
+0044e576 740e            je      image00000000_00400000+0x4e586 (0044e586)
+0044e578 3a4636          cmp     al,byte ptr [esi+36h]
+0044e57b 7409            je      image00000000_00400000+0x4e586 (0044e586)
+0044e57d 3a463a          cmp     al,byte ptr [esi+3Ah]
+0044e580 0f853a010000    jne     image00000000_00400000+0x4e6c0 (0044e6c0)
+
+; imp_stl_gpa2, for imp_key1_noiat, imp_key1_iat
+0044e586 668b13          mov     dx,word ptr [ebx]                                      ; imp_dsc->proc_id
+0044e589 83c302          add     ebx,2
+0044e58c 668b0b          mov     cx,word ptr [ebx]
+0044e58f 66894df2        mov     word ptr [ebp-0Eh],cx                                  ; proc_dec_len = imp_dsc->enc.proc_dec_len
+0044e593 83c302          add     ebx,2
+0044e596 663bfa          cmp     di,dx
+0044e599 0f850d010000    jne     image00000000_00400000+0x4e6ac (0044e6ac)              ; if (proc_id != imp_dsc->proc_id) goto skip_proc_dec_len_and_next
+0044e59f 3a463a          cmp     al,byte ptr [esi+3Ah]
+0044e5a2 7541            jne     image00000000_00400000+0x4e5e5 (0044e5e5)
+0044e5a4 eb01            jmp     image00000000_00400000+0x4e5a7 (0044e5a7)
+0044e5a6 c7              ???
+
+; imp_stl_gpa2
+0044e5a7 a1e4274500      mov     eax,dword ptr [image00000000_00400000+0x527e4 (004527e4)]
+0044e5ac c600d8          mov     byte ptr [eax],0D8h
+0044e5af 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e5b2 50              push    eax
+0044e5b3 e8640b0000      call    image00000000_00400000+0x4f11c (0044f11c)              ; check_crc(): 0 - ok
+0044e5b8 8b55fc          mov     edx,dword ptr [ebp-4]
+0044e5bb 0182ec000000    add     dword ptr [edx+0ECh],eax
+0044e5c1 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e5c4 e8cfedffff      call    image00000000_00400000+0x4d398 (0044d398)              ; returns &imp_stl_gpa2_proc()
+0044e5c9 8b5508          mov     edx,dword ptr [ebp+8]
+0044e5cc 8902            mov     dword ptr [edx],eax
+0044e5ce 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e5d1 8b80e0000000    mov     eax,dword ptr [eax+0E0h]
+0044e5d7 8b5508          mov     edx,dword ptr [ebp+8]
+0044e5da 2902            sub     dword ptr [edx],eax                                    ; obfus the result addr
+0044e5dc c645f901        mov     byte ptr [ebp-7],1
+0044e5e0 e95c030000      jmp     image00000000_00400000+0x4e941 (0044e941)              ; finish
+
+; imp_key1_noiat, imp_key1_iat
+0044e5e5 8bfb            mov     edi,ebx                                                ; proc_dec = imp_dsc->enc.proc_dec
+0044e5e7 66817df2ff00    cmp     word ptr [ebp-0Eh],0FFh
+0044e5ed 760f            jbe     image00000000_00400000+0x4e5fe (0044e5fe)
+0044e5ef 0fb745f2        movzx   eax,word ptr [ebp-0Eh]
+0044e5f3 e84caffdff      call    image00000000_00400000+0x29544 (00429544)              ; if (proc_dec_len>0xff) proc_name_buf = malloc(proc_dec_len)
+0044e5f8 8945e8          mov     dword ptr [ebp-18h],eax
+0044e5fb eb01            jmp     image00000000_00400000+0x4e5fe (0044e5fe)
+0044e5fd 9a              ???
+0044e5fe a1e4274500      mov     eax,dword ptr [image00400000+0x527e4 (004527e4)]
+0044e603 c600d9          mov     byte ptr [eax],0D9h
+0044e606 0fb75df2        movzx   ebx,word ptr [ebp-0Eh]
+0044e60a 8bcb            mov     ecx,ebx
+0044e60c 8bd7            mov     edx,edi
+0044e60e 8b45e8          mov     eax,dword ptr [ebp-18h]
+0044e611 e882e4fdff      call    image00000000_00400000+0x2ca98 (0042ca98)              ; memcpy(proc_name_buf, proc_dec, proc_dec_len)
+0044e616 6a0a            push    0Ah
+0044e618 8d4e08          lea     ecx,[esi+8]
+0044e61b 8bd3            mov     edx,ebx
+0044e61d 8b45e8          mov     eax,dword ptr [ebp-18h]
+0044e620 e88fa7feff      call    image00000000_00400000+0x38db4 (00438db4)              ; decode(proc_name_buf, proc_dec_len, imports->key1, 0x0a)
+0044e625 8b7de8          mov     edi,dword ptr [ebp-18h]
+0044e628 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044e62b 50              push    eax
+0044e62c ff5640          call    dword ptr [esi+40h]                                    ; kernel32!LoadLibrary(lib_name)
+0044e62f 8bd8            mov     ebx,eax
+0044e631 85db            test    ebx,ebx
+0044e633 753d            jne     image00000000_00400000+0x4e672 (0044e672)
+0044e635 e852deffff      call    image00000000_00400000+0x4c48c (0044c48c)
+0044e63a 8d95e4feffff    lea     edx,[ebp-11Ch]
+0044e640 e823f8fdff      call    image00000000_00400000+0x2de68 (0042de68)
+0044e645 8d85e4feffff    lea     eax,[ebp-11Ch]
+0044e64b 50              push    eax
+0044e64c 8d95e0feffff    lea     edx,[ebp-120h]
+0044e652 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044e655 e80ef8fdff      call    image00000000_00400000+0x2de68 (0042de68)
+0044e65a 8b95e0feffff    mov     edx,dword ptr [ebp-120h]
+0044e660 58              pop     eax
+0044e661 e8d2c2fdff      call    image00000000_00400000+0x2a938 (0042a938)
+0044e666 8b85e4feffff    mov     eax,dword ptr [ebp-11Ch]
+0044e66c 50              push    eax
+0044e66d e8b6e0feff      call    image00000000_00400000+0x3c728 (0043c728)              ; error: Can't load library
+0044e672 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e675 05e0000000      add     eax,0E0h
+0044e67a 50              push    eax
+0044e67b 8bcf            mov     ecx,edi
+0044e67d 8bd3            mov     edx,ebx
+0044e67f 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e682 e895efffff      call    image00000000_00400000+0x4d61c (0044d61c)              ; get_proc_addr_obf()    (aspr implementation return obfuscated addr)
+0044e687 8b5508          mov     edx,dword ptr [ebp+8]
+0044e68a 8902            mov     dword ptr [edx],eax
+0044e68c c645f901        mov     byte ptr [ebp-7],1                                     ; ret=1
+0044e690 8d85e8feffff    lea     eax,[ebp-118h]
+0044e696 3b45e8          cmp     eax,dword ptr [ebp-18h]
+0044e699 0f84a2020000    je      image00000000_00400000+0x4e941 (0044e941)              ; finish
+0044e69f 8b45e8          mov     eax,dword ptr [ebp-18h]
+0044e6a2 e8b5aefdff      call    image00000000_00400000+0x2955c (0042955c)              ; free malloc'ed buf
+0044e6a7 e995020000      jmp     image00000000_00400000+0x4e941 (0044e941)              ; finish
+
+skip_proc_dec_len_and_next:
+0044e6ac 0fb745f2        movzx   eax,word ptr [ebp-0Eh]
+0044e6b0 8b55fc          mov     edx,dword ptr [ebp-4]
+0044e6b3 0382ec000000    add     eax,dword ptr [edx+0ECh]                               ; must be always 0 (if crc is ok)
+0044e6b9 03d8            add     ebx,eax                                                ; imp_dsc->enc.proc_dec + proc_dec_len
+0044e6bb e950020000      jmp     image00000000_00400000+0x4e910 (0044e910)              ; next_proc_iter
+
+
+0044e6c0 3a4637          cmp     al,byte ptr [esi+37h]
+0044e6c3 0f85ad000000    jne     image00000000_00400000+0x4e776 (0044e776)
+
+; imp_plain
+0044e6c9 668b13          mov     dx,word ptr [ebx]                                      ; imp_dsc->proc_id
+0044e6cc 83c302          add     ebx,2
+0044e6cf 8b03            mov     eax,dword ptr [ebx]
+0044e6d1 8945ec          mov     dword ptr [ebp-14h],eax                                ; procn_addr = imp_dsc->plain.procn_addr
+0044e6d4 83c304          add     ebx,4
+0044e6d7 663bfa          cmp     di,dx
+0044e6da 0f8530020000    jne     image00000000_00400000+0x4e910 (0044e910)              ; if (proc_id != imp_dsc->proc_id) goto next_proc_iter
+0044e6e0 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e6e3 83b80c0100000a  cmp     dword ptr [eax+10Ch],0Ah
+0044e6ea 7315            jae     image00000000_00400000+0x4e701 (0044e701)
+0044e6ec 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e6ef 50              push    eax
+0044e6f0 e8270a0000      call    image00000000_00400000+0x4f11c (0044f11c)              ; check_crc(): 0 - ok
+0044e6f5 8b55fc          mov     edx,dword ptr [ebp-4]
+0044e6f8 0182ec000000    add     dword ptr [edx+0ECh],eax
+0044e6fe eb01            jmp     image00000000_00400000+0x4e701 (0044e701)
+0044e700 c7              ???
+0044e701 a1e4274500      mov     eax,dword ptr [image00000000_00400000+0x527e4 (004527e4)]
+0044e706 c600da          mov     byte ptr [eax],0DAh
+0044e709 8b7df4          mov     edi,dword ptr [ebp-0Ch]
+0044e70c 57              push    edi
+0044e70d ff5640          call    dword ptr [esi+40h]                                    ; kernel32!LoadLibrary(lib_name)
+0044e710 8bd8            mov     ebx,eax
+0044e712 85db            test    ebx,ebx
+0044e714 753c            jne     image00000000_00400000+0x4e752 (0044e752)
+0044e716 e871ddffff      call    image00000000_00400000+0x4c48c (0044c48c)
+0044e71b 8d95dcfeffff    lea     edx,[ebp-124h]
+0044e721 e842f7fdff      call    image00000000_00400000+0x2de68 (0042de68)
+0044e726 8d85dcfeffff    lea     eax,[ebp-124h]
+0044e72c 50              push    eax
+0044e72d 8d95d8feffff    lea     edx,[ebp-128h]
+0044e733 8bc7            mov     eax,edi
+0044e735 e82ef7fdff      call    image00000000_00400000+0x2de68 (0042de68)
+0044e73a 8b95d8feffff    mov     edx,dword ptr [ebp-128h]
+0044e740 58              pop     eax
+0044e741 e8f2c1fdff      call    image00000000_00400000+0x2a938 (0042a938)
+0044e746 8b85dcfeffff    mov     eax,dword ptr [ebp-124h]
+0044e74c 50              push    eax
+0044e74d e8d6dffeff      call    image00000000_00400000+0x3c728 (0043c728)
+0044e752 8b45ec          mov     eax,dword ptr [ebp-14h]
+0044e755 50              push    eax
+0044e756 53              push    ebx
+0044e757 ff5648          call    dword ptr [esi+48h]                                    ; kernel32!GetProcAddress(procn_addr)
+0044e75a 8b5508          mov     edx,dword ptr [ebp+8]
+0044e75d 8902            mov     dword ptr [edx],eax
+0044e75f 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e762 8b80e0000000    mov     eax,dword ptr [eax+0E0h]
+0044e768 8b5508          mov     edx,dword ptr [ebp+8]
+0044e76b 2902            sub     dword ptr [edx],eax                                    ; obfus the result addr
+0044e76d c645f901        mov     byte ptr [ebp-7],1
+0044e771 e9cb010000      jmp     image00000000_00400000+0x4e941 (0044e941)              ; finish
+
+0044e776 3a4639          cmp     al,byte ptr [esi+39h]
+0044e779 7555            jne     image00000000_00400000+0x4e7d0 (0044e7d0)
+
+; imp_stl_gpa
+0044e77b 668b13          mov     dx,word ptr [ebx]                                      ; imp_dsc->proc_id
+0044e77e 83c302          add     ebx,2
+0044e781 663bfa          cmp     di,dx
+0044e784 7542            jne     image00000000_00400000+0x4e7c8 (0044e7c8)              ; if (proc_id != imp_dsc->proc_id) goto skip_unused_and_next
+0044e786 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e789 83b80c0100000a  cmp     dword ptr [eax+10Ch],0Ah
+0044e790 7312            jae     image00000000_00400000+0x4e7a4 (0044e7a4)
+0044e792 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e795 50              push    eax
+0044e796 e881090000      call    image00000000_00400000+0x4f11c (0044f11c)              ; check_crc(): 0 - ok
+0044e79b 8b55fc          mov     edx,dword ptr [ebp-4]
+0044e79e 0182ec000000    add     dword ptr [edx+0ECh],eax
+0044e7a4 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e7a7 e8e4ebffff      call    image00000000_00400000+0x4d390 (0044d390)              ; &imp_stl_gpa()
+0044e7ac 8b5508          mov     edx,dword ptr [ebp+8]
+0044e7af 8902            mov     dword ptr [edx],eax
+0044e7b1 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e7b4 8b80e0000000    mov     eax,dword ptr [eax+0E0h]
+0044e7ba 8b5508          mov     edx,dword ptr [ebp+8]
+0044e7bd 2902            sub     dword ptr [edx],eax                                    ; obfus the result addr
+0044e7bf c645f901        mov     byte ptr [ebp-7],1
+0044e7c3 e979010000      jmp     image00000000_00400000+0x4e941 (0044e941)              ; finish
+skip_unused_and_next:
+0044e7c8 83c302          add     ebx,2
+0044e7cb e940010000      jmp     image00000000_00400000+0x4e910 (0044e910)              ; next_proc_iter
+
+0044e7d0 3a4638          cmp     al,byte ptr [esi+38h]
+0044e7d3 7553            jne     image00000000_00400000+0x4e828 (0044e828)
+
+; imp_stl_re
+; resolves to kernel32!RaiseException
+0044e7d5 668b13          mov     dx,word ptr [ebx]                                      ; imp_dsc->proc_id
+0044e7d8 83c302          add     ebx,2
+0044e7db 663bfa          cmp     di,dx
+0044e7de 7540            jne     image00000000_00400000+0x4e820 (0044e820)              ; if (proc_id != imp_dsc->proc_id) goto skip_unused_and_next2
+0044e7e0 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e7e3 50              push    eax
+0044e7e4 e833090000      call    image00000000_00400000+0x4f11c (0044f11c)              ; check_crc(): 0 - ok
+0044e7e9 8b55fc          mov     edx,dword ptr [ebp-4]
+0044e7ec 0182ec000000    add     dword ptr [edx+0ECh],eax
+0044e7f2 eb01            jmp     image00000000_00400000+0x4e7f5 (0044e7f5)
+0044e7f4 e8              ???
+0044e7f5 a1e4274500      mov     eax,dword ptr [image00400000+0x527e4 (004527e4)]
+0044e7fa c600db          mov     byte ptr [eax],0DBh
+0044e7fd a148284500      mov     eax,dword ptr [image00400000+0x52848 (00452848)]       ; returns 004539d8
+0044e802 8b00            mov     eax,dword ptr [eax]                                    ; resolve to kernel32!RaiseException
+0044e804 8b5508          mov     edx,dword ptr [ebp+8]
+0044e807 8902            mov     dword ptr [edx],eax
+0044e809 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e80c 8b80e0000000    mov     eax,dword ptr [eax+0E0h]
+0044e812 8b5508          mov     edx,dword ptr [ebp+8]
+0044e815 2902            sub     dword ptr [edx],eax                                    ; obfus the result addr
+0044e817 c645f901        mov     byte ptr [ebp-7],1
+0044e81b e921010000      jmp     image00000000_00400000+0x4e941 (0044e941)              ; finish
+skip_unused_and_next2:
+0044e820 83c302          add     ebx,2
+0044e823 e9e8000000      jmp     image00000000_00400000+0x4e910 (0044e910)              ; next_proc_iter
+
+; unrecognized type: proc encoded by key2
+0044e828 668b13          mov     dx,word ptr [ebx]                                      ; imp_dsc->enc.proc_id
+0044e82b 83c302          add     ebx,2
+0044e82e 668b03          mov     ax,word ptr [ebx]
+0044e831 668945f2        mov     word ptr [ebp-0Eh],ax                                  ; proc_dec_len = imp_dsc->enc.proc_dec_len
+0044e835 83c302          add     ebx,2
+0044e838 663bfa          cmp     di,dx
+0044e83b 0f85c0000000    jne     image00000000_00400000+0x4e901 (0044e901)              ; if (proc_id != imp_dsc->enc.proc_id) goto skip_proc_dec_len_and_next2
+0044e841 8bfb            mov     edi,ebx                                                ; proc_dec = imp_dsc->enc.proc_dec
+0044e843 66817df2ff00    cmp     word ptr [ebp-0Eh],0FFh
+0044e849 760f            jbe     image00000000_00400000+0x4e85a (0044e85a)
+0044e84b 0fb745f2        movzx   eax,word ptr [ebp-0Eh]
+0044e84f e8f0acfdff      call    image00000000_00400000+0x29544 (00429544)              ; if (proc_dec_len>0xff) proc_name_buf = malloc(proc_dec_len)
+0044e854 8945e8          mov     dword ptr [ebp-18h],eax
+0044e857 eb01            jmp     image00000000_00400000+0x4e85a (0044e85a)
+0044e859 9a              ???
+0044e85a a1e4274500      mov     eax,dword ptr [image00400000+0x527e4 (004527e4)]
+0044e85f c600dc          mov     byte ptr [eax],0DCh
+0044e862 0fb75df2        movzx   ebx,word ptr [ebp-0Eh]
+0044e866 8bcb            mov     ecx,ebx
+0044e868 8bd7            mov     edx,edi
+0044e86a 8b45e8          mov     eax,dword ptr [ebp-18h]
+0044e86d e826e2fdff      call    image00000000_00400000+0x2ca98 (0042ca98)              ; memcpy(proc_name_buf, proc_dec, proc_dec_len)
+0044e872 6a0a            push    0Ah
+0044e874 8d4e12          lea     ecx,[esi+12h]
+0044e877 8bd3            mov     edx,ebx
+0044e879 8b45e8          mov     eax,dword ptr [ebp-18h]
+0044e87c e833a5feff      call    image00000000_00400000+0x38db4 (00438db4)              ; decode(proc_name_buf, proc_dec_len, imports->key2, 0x0a)
+0044e881 8b7de8          mov     edi,dword ptr [ebp-18h]
+0044e884 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044e887 50              push    eax
+0044e888 ff5640          call    dword ptr [esi+40h]                                    ; kernel32!LoadLibrary(lib_name)
+0044e88b 8bd8            mov     ebx,eax
+0044e88d 85db            test    ebx,ebx
+0044e88f 753d            jne     image00000000_00400000+0x4e8ce (0044e8ce)
+0044e891 e8f6dbffff      call    image00000000_00400000+0x4c48c (0044c48c)
+0044e896 8d95d4feffff    lea     edx,[ebp-12Ch]
+0044e89c e8c7f5fdff      call    image00000000_00400000+0x2de68 (0042de68)
+0044e8a1 8d85d4feffff    lea     eax,[ebp-12Ch]
+0044e8a7 50              push    eax
+0044e8a8 8d95d0feffff    lea     edx,[ebp-130h]
+0044e8ae 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044e8b1 e8b2f5fdff      call    image00000000_00400000+0x2de68 (0042de68)
+0044e8b6 8b95d0feffff    mov     edx,dword ptr [ebp-130h]
+0044e8bc 58              pop     eax
+0044e8bd e876c0fdff      call    image00000000_00400000+0x2a938 (0042a938)
+0044e8c2 8b85d4feffff    mov     eax,dword ptr [ebp-12Ch]
+0044e8c8 50              push    eax
+0044e8c9 e85adefeff      call    image00000000_00400000+0x3c728 (0043c728)              ; error: Can't load library
+0044e8ce 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e8d1 05e0000000      add     eax,0E0h
+0044e8d6 50              push    eax
+0044e8d7 8bcf            mov     ecx,edi
+0044e8d9 8bd3            mov     edx,ebx
+0044e8db 8b45fc          mov     eax,dword ptr [ebp-4]
+0044e8de e839edffff      call    image00000000_00400000+0x4d61c (0044d61c)              ; get_proc_addr_obf()    (aspr implementation return obfuscated addr)
+0044e8e3 8b5508          mov     edx,dword ptr [ebp+8]
+0044e8e6 8902            mov     dword ptr [edx],eax
+0044e8e8 8d85e8feffff    lea     eax,[ebp-118h]
+0044e8ee 3b45e8          cmp     eax,dword ptr [ebp-18h]
+0044e8f1 7408            je      image00000000_00400000+0x4e8fb (0044e8fb)
+0044e8f3 8b45e8          mov     eax,dword ptr [ebp-18h]
+0044e8f6 e861acfdff      call    image00000000_00400000+0x2955c (0042955c)              ; free malloc'ed buf
+0044e8fb c645f901        mov     byte ptr [ebp-7],1                                     ; ret=1
+0044e8ff eb40            jmp     image00000000_00400000+0x4e941 (0044e941)              ; finish
+
+skip_proc_dec_len_and_next2:
+0044e901 0fb745f2        movzx   eax,word ptr [ebp-0Eh]
+0044e905 8b55fc          mov     edx,dword ptr [ebp-4]
+0044e908 0382ec000000    add     eax,dword ptr [edx+0ECh]                               ; must be always 0 (if crc is ok)
+0044e90e 03d8            add     ebx,eax                                                ; imp_dsc->enc.proc_dec + proc_dec_len
+
+next_proc_iter:
+0044e910 8a03            mov     al,byte ptr [ebx]                                      ; imp_tpy = imp_dsc->imp_tpy
+0044e912 43              inc     ebx
+0044e913 3a4634          cmp     al,byte ptr [esi+34h]
+0044e916 0f8557fcffff    jne     image00000000_00400000+0x4e573 (0044e573)              ; imp_tpy != imp_endmrk
+; procs_loop (end)
+
+0044e91c 833b00          cmp     dword ptr [ebx],0
+0044e91f 0f8510fcffff    jne     image00000000_00400000+0x4e535 (0044e535)
+; libs_loop (end)
+
+0044e925 8d95ccfeffff    lea     edx,[ebp-134h]
+0044e92b b873000000      mov     eax,73h
+0044e930 e88fdaffff      call    image00000000_00400000+0x4c3c4 (0044c3c4)
+0044e935 8b85ccfeffff    mov     eax,dword ptr [ebp-134h]
+0044e93b 50              push    eax
+0044e93c e8e7ddfeff      call    image00000000_00400000+0x3c728 (0043c728)
+
+; finish
+0044e941 33c0            xor     eax,eax
+0044e943 5a              pop     edx
+0044e944 59              pop     ecx
+0044e945 59              pop     ecx
+0044e946 648910          mov     dword ptr fs:[eax],edx
+0044e949 6866e94400      push    offset image00000000_00400000+0x4e966 (0044e966)
+0044e94e 8d85ccfeffff    lea     eax,[ebp-134h]
+0044e954 ba07000000      mov     edx,7
+0044e959 e89abdfdff      call    image00000000_00400000+0x2a6f8 (0042a6f8)
+0044e95e c3              ret
+0044e95f e994b7fdff      jmp     image00000000_00400000+0x2a0f8 (0042a0f8)
+0044e964 ebe8            jmp     image00000000_00400000+0x4e94e (0044e94e)
+0044e966 8a45f9          mov     al,byte ptr [ebp-7]
+0044e969 5f              pop     edi
+0044e96a 5e              pop     esi
+0044e96b 5b              pop     ebx
+0044e96c 8be5            mov     esp,ebp
+0044e96e 5d              pop     ebp
+0044e96f c20400          ret     4
+
+
+gen_imp_seed() --------
+gen_imp_seed(env_t *env (eax), dword indxs (edx), dword chk_mem (ecx), dword len, dword beg_off)
+
+0044d7a8 55              push    ebp
+0044d7a9 8bec            mov     ebp,esp
+0044d7ab 83c4f4          add     esp,0FFFFFFF4h
+0044d7ae 53              push    ebx
+0044d7af 56              push    esi
+0044d7b0 57              push    edi
+0044d7b1 894df4          mov     dword ptr [ebp-0Ch],ecx                                ; chk_mem
+0044d7b4 8955f8          mov     dword ptr [ebp-8],edx                                  ; indxs
+0044d7b7 8945fc          mov     dword ptr [ebp-4],eax                                  ; env
+0044d7ba 33d2            xor     edx,edx                                                ; ret=0
+0044d7bc 8b7df4          mov     edi,dword ptr [ebp-0Ch]
+0044d7bf 037d0c          add     edi,dword ptr [ebp+0Ch]                                ; beg_addr = beg_off+chk_mem
+0044d7c2 8b75f8          mov     esi,dword ptr [ebp-8]                                  ; indxs
+0044d7c5 8bc7            mov     eax,edi                                                ; prcss_addr = beg_addr
+0044d7c7 eb4a            jmp     image00000000_00400000+0x4d813 (0044d813)
+
+; loop (begin); i=0
+0044d7c9 8b5df4          mov     ebx,dword ptr [ebp-0Ch]
+0044d7cc 03d9            add     ebx,ecx                                                ; ind_addr = indxs[i]+chk_mem
+0044d7ce 3bc3            cmp     eax,ebx
+0044d7d0 7720            ja      image00000000_00400000+0x4d7f2 (0044d7f2)              ; !(prcss_addr <= ind_addr)
+0044d7d2 8b4d08          mov     ecx,dword ptr [ebp+8]
+0044d7d5 03cf            add     ecx,edi
+0044d7d7 3bd9            cmp     ebx,ecx
+0044d7d9 7317            jae     image00000000_00400000+0x4d7f2 (0044d7f2)              ; !(ind_addr < beg_addr+len)
+0044d7db 52              push    edx
+0044d7dc 8bd3            mov     edx,ebx
+0044d7de 2bd0            sub     edx,eax
+0044d7e0 52              push    edx
+0044d7e1 50              push    eax
+0044d7e2 8b45fc          mov     eax,dword ptr [ebp-4]
+0044d7e5 50              push    eax
+0044d7e6 e831ffffff      call    image00000000_00400000+0x4d71c (0044d71c)              ; ret = csum(env, prcss_addr, ind_addr-prcss_addr, ret)
+0044d7eb 8bd0            mov     edx,eax
+0044d7ed 8d4304          lea     eax,[ebx+4]                                            ; prcss_addr = ind_addr+4
+0044d7f0 eb1e            jmp     image00000000_00400000+0x4d810 (0044d810)
+
+0044d7f2 8b4d08          mov     ecx,dword ptr [ebp+8]
+0044d7f5 03cf            add     ecx,edi
+0044d7f7 3bd9            cmp     ebx,ecx
+0044d7f9 7215            jb      image00000000_00400000+0x4d810 (0044d810)              ; !(ind_addr >= beg_addr+len)
+; last step
+0044d7fb 52              push    edx
+0044d7fc 037d08          add     edi,dword ptr [ebp+8]
+0044d7ff 2bf8            sub     edi,eax
+0044d801 57              push    edi
+0044d802 50              push    eax
+0044d803 8b45fc          mov     eax,dword ptr [ebp-4]
+0044d806 50              push    eax
+0044d807 e810ffffff      call    image00000000_00400000+0x4d71c (0044d71c)              ; ret = csum(env, prcss_addr, beg_addr+len-prcss_addr, ret)
+0044d80c 8bd0            mov     edx,eax
+0044d80e eb1c            jmp     image00000000_00400000+0x4d82c (0044d82c)
+
+0044d810 83c604          add     esi,4                                                  ; i+=4
+0044d813 8b0e            mov     ecx,dword ptr [esi]
+0044d815 85c9            test    ecx,ecx
+0044d817 75b0            jne     image00000000_00400000+0x4d7c9 (0044d7c9)              ; if (indxs[i]) next loop inter
+; loop (end)
+
+; last step
+0044d819 52              push    edx
+0044d81a 037d08          add     edi,dword ptr [ebp+8]
+0044d81d 2bf8            sub     edi,eax
+0044d81f 57              push    edi
+0044d820 50              push    eax
+0044d821 8b45fc          mov     eax,dword ptr [ebp-4]
+0044d824 50              push    eax
+0044d825 e8f2feffff      call    image00000000_00400000+0x4d71c (0044d71c)              ; ret = csum(env, prcss_addr, beg_addr+len-prcss_addr, ret)
+0044d82a 8bd0            mov     edx,eax
+; finish
+0044d82c 8bc2            mov     eax,edx
+0044d82e 5f              pop     edi
+0044d82f 5e              pop     esi
+0044d830 5b              pop     ebx
+0044d831 8be5            mov     esp,ebp
+0044d833 5d              pop     ebp
+0044d834 c20800          ret     8
+
+csum() --------
+csum(env_t *env, byte *in, dword len, dword ivt)
+
+0044d71c 55              push    ebp
+0044d71d 8bec            mov     ebp,esp
+0044d71f 51              push    ecx
+0044d720 51              push    ecx
+0044d721 52              push    edx
+0044d722 53              push    ebx
+0044d723 56              push    esi
+0044d724 57              push    edi
+0044d725 8b4514          mov     eax,dword ptr [ebp+14h]                                ; csum = ivt
+0044d728 8b550c          mov     edx,dword ptr [ebp+0Ch]                                ; in
+0044d72b 8b4d10          mov     ecx,dword ptr [ebp+10h]                                ; i = len
+0044d72e 31db            xor     ebx,ebx
+0044d730 e31e            jecxz   image00000000_00400000+0x4d750 (0044d750)
+0044d732 f7d0            not     eax                                                    ; csum = ~csum
+; loop1
+0044d734 8a5c0aff        mov     bl,byte ptr [edx+ecx-1]
+0044d738 c1e318          shl     ebx,18h
+0044d73b 31d8            xor     eax,ebx                                                ; csum ^= in[i-1]<<24
+0044d73d b308            mov     bl,8                                                   ; j=8
+; loop2
+0044d73f d1e0            shl     eax,1                                                  ; csum_shl
+0044d741 7305            jae     image00000000_00400000+0x4d748 (0044d748)
+0044d743 35410671db      xor     eax,0DB710641h                                         ; csum = ((INT32)csum<0 ? csum_shl^0xDB710641 : csum_shl)
+0044d748 fecb            dec     bl
+0044d74a 75f3            jne     image00000000_00400000+0x4d73f (0044d73f)              ; if (--j) next loop2 iter
+0044d74c e2e6            loop    image00000000_00400000+0x4d734 (0044d734)              ; if (--i) next loop1 iter
+0044d74e f7d0            not     eax                                                    ; csum = ~csum
+0044d750 8945fc          mov     dword ptr [ebp-4],eax
+0044d753 5f              pop     edi
+0044d754 5e              pop     esi
+0044d755 5b              pop     ebx
+0044d756 5a              pop     edx
+0044d757 59              pop     ecx
+0044d758 8b45fc          mov     eax,dword ptr [ebp-4]                                  ; return csum
+0044d75b 59              pop     ecx
+0044d75c 5d              pop     ebp
+0044d75d c21000          ret     10h

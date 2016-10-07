@@ -1,0 +1,18 @@
+1. ASPR patch on "MS VC CRT library section access patch"
+
+original:
+00548fed f7d0            not     eax
+00548fef 83e001          and     eax,1
+00548ff2 c745fcfeffffff  mov     dword ptr [ebp-4],0FFFFFFFEh
+00548ff9 8b4df0          mov     ecx,dword ptr [ebp-10h]
+00548ffc 64890d00000000  mov     dword ptr fs:[0],ecx
+
+f7 d0 83 e0 01 c7 45 fc fe ff ff ff 8b 4d f0 64 89 0d 00 00 00 00
+
+aspr:
+00548fed b801000000      mov     eax,1
+00548ff2 c745fcfeffffff  mov     dword ptr [ebp-4],0FFFFFFFEh
+00548ff9 8b4df0          mov     ecx,dword ptr [ebp-10h]
+00548ffc 64890d00000000  mov     dword ptr fs:[0],ecx
+
+b8 01 00 00 00 c7 45 fc fe ff ff ff 8b 4d f0 64 89 0d 00 00 00 00

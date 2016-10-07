@@ -1,0 +1,221 @@
+-------- prep_env_and_write_patches()
+
+0044ee44 55              push    ebp
+0044ee45 8bec            mov     ebp,esp
+0044ee47 53              push    ebx
+0044ee48 8b5d08          mov     ebx,dword ptr [ebp+8]
+0044ee4b eb01            jmp     image00400000+0x4ee4e (0044ee4e)
+0044ee4d c7              ???
+0044ee4e 85db            test    ebx,ebx
+0044ee50 742a            je      image00000000_00400000+0x4ee7c (0044ee7c)
+0044ee52 8bc3            mov     eax,ebx
+; prepare env
+0044ee54 e84fe5ffff      call    image00000000_00400000+0x4d3a8 (0044d3a8)
+0044ee59 84c0            test    al,al
+0044ee5b 750a            jne     image00000000_00400000+0x4ee67 (0044ee67)
+0044ee5d 688cee4400      push    offset image00000000_00400000+0x4ee8c (0044ee8c)
+0044ee62 e8c1d8feff      call    image00000000_00400000+0x3c728 (0043c728)
+0044ee67 8bc3            mov     eax,ebx
+0044ee69 e836000000      call    image00000000_00400000+0x4eea4 (0044eea4)          ; write_patches()
+0044ee6e 84c0            test    al,al
+0044ee70 750a            jne     image00000000_00400000+0x4ee7c (0044ee7c)
+0044ee72 689cee4400      push    offset image00000000_00400000+0x4ee9c (0044ee9c)
+0044ee77 e8acd8feff      call    image00000000_00400000+0x3c728 (0043c728)
+0044ee7c 5b              pop     ebx
+0044ee7d 5d              pop     ebp
+0044ee7e c20400          ret     4
+
+
+-------- write_patches()
+write_patches(env_r *env (eax))
+
+0044eea4 53              push    ebx
+0044eea5 56              push    esi
+0044eea6 57              push    edi
+0044eea7 55              push    ebp
+0044eea8 83c4dc          add     esp,0FFFFFFDCh
+0044eeab 8bd8            mov     ebx,eax
+0044eead 33c0            xor     eax,eax
+; check integrity of env
+0044eeaf 8b5354          mov     edx,dword ptr [ebx+54h]
+0044eeb2 85d2            test    edx,edx
+0044eeb4 0f840d020000    je      image00400000+0x4f0c7 (0044f0c7)                   ; env->ptchs==0
+0044eeba 83bbe400000000  cmp     dword ptr [ebx+0E4h],0
+0044eec1 0f8400020000    je      image00400000+0x4f0c7 (0044f0c7)                   ; env->ptch_dt_sz==0
+0044eec7 837b1800        cmp     dword ptr [ebx+18h],0
+0044eecb 0f84f6010000    je      image00400000+0x4f0c7 (0044f0c7)                   ; env->n_ptchs==0
+0044eed1 837b2400        cmp     dword ptr [ebx+24h],0
+0044eed5 0f84ec010000    je      image00400000+0x4f0c7 (0044f0c7)                   ; env->exe_base==0
+0044eedb 837b2c00        cmp     dword ptr [ebx+2Ch],0
+0044eedf 0f84e2010000    je      image00400000+0x4f0c7 (0044f0c7)                   ; env->aip_stol_code==0
+0044eee5 837b3000        cmp     dword ptr [ebx+30h],0
+0044eee9 0f84d8010000    je      image00400000+0x4f0c7 (0044f0c7)                   ; env->vm_run_exit==0
+0044eeef 8bf2            mov     esi,edx                                            ; patch_dt (loop var)   @@@ "!aspr_ipatch load ebx 0044d3a0" @@@
+0044eef1 8b4318          mov     eax,dword ptr [ebx+18h]
+0044eef4 890424          mov     dword ptr [esp],eax                                ; n_ptchs
+0044eef7 8b83e0000000    mov     eax,dword ptr [ebx+0E0h]
+0044eefd 89442414        mov     dword ptr [esp+14h],eax                            ; obfus = env->obfus
+0044ef01 8d7b40          lea     edi,[ebx+40h]                                      ; permtab
+0044ef04 833c2400        cmp     dword ptr [esp],0
+0044ef08 0f86ab010000    jbe     image00400000+0x4f0b9 (0044f0b9)
+; loop (per patch)
+0044ef0e 33c0            xor     eax,eax
+0044ef10 8a07            mov     al,byte ptr [edi]
+0044ef12 8d0440          lea     eax,[eax+eax*2]
+0044ef15 8b6c8368        mov     ebp,dword ptr [ebx+eax*4+68h]
+0044ef19 8bc6            mov     eax,esi
+0044ef1b ffd5            call    ebp
+0044ef1d 8be8            mov     ebp,eax                                            ; eip_obf=get_eip_obf(patch_dt)  (via hndl_0 of conf data)
+0044ef1f 036b24          add     ebp,dword ptr [ebx+24h]
+0044ef22 03abe0000000    add     ebp,dword ptr [ebx+0E0h]                           ; deobfus eip: patch_eip = env->exe_base + eip_obf + env->obfus
+0044ef28 eb01            jmp     image00400000+0x4ef2b (0044ef2b)
+0044ef2a e8              ???
+0044ef2b 33c0            xor     eax,eax
+0044ef2d 8a4709          mov     al,byte ptr [edi+9]
+0044ef30 8d0440          lea     eax,[eax+eax*2]
+0044ef33 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044ef37 8bc6            mov     eax,esi
+0044ef39 ffd2            call    edx
+0044ef3b 807b2000        cmp     byte ptr [ebx+20h],0
+0044ef3f 0f853d010000    jne     image00400000+0x4f082 (0044f082)                   ; env->prot_tpy!=0 (eSIP/AIP)
+0044ef45 3c01            cmp     al,1
+0044ef47 0f8535010000    jne     image00400000+0x4f082 (0044f082)                   ; is_sip_ptch(patch_dt)!=1
+
+; SIP (standard import protection)
+0044ef4d eb01            jmp     image00400000+0x4ef50 (0044ef50)
+0044ef4f 69              ???
+0044ef50 33c0            xor     eax,eax
+0044ef52 8a4707          mov     al,byte ptr [edi+7]
+0044ef55 8d0440          lea     eax,[eax+eax*2]
+0044ef58 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044ef5c 8bc6            mov     eax,esi
+0044ef5e ffd2            call    edx
+0044ef60 89442404        mov     dword ptr [esp+4],eax                              ; lib_id_obf = get_lib_id_obf(ptch_dt)
+0044ef64 33c0            xor     eax,eax
+0044ef66 8a4708          mov     al,byte ptr [edi+8]
+0044ef69 8d0440          lea     eax,[eax+eax*2]
+0044ef6c 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044ef70 8bc6            mov     eax,esi
+0044ef72 ffd2            call    edx
+0044ef74 89442408        mov     dword ptr [esp+8],eax                              ; proc_id_obf = get_proc_id_obf(ptch_dt)
+0044ef78 eb01            jmp     image00400000+0x4ef7b (0044ef7b)
+0044ef7a e8              ???
+0044ef7b 33c0            xor     eax,eax
+0044ef7d 8a4702          mov     al,byte ptr [edi+2]
+0044ef80 8d0440          lea     eax,[eax+eax*2]
+0044ef83 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044ef87 8bc6            mov     eax,esi
+0044ef89 ffd2            call    edx
+0044ef8b 8944241c        mov     dword ptr [esp+1Ch],eax                            ; imp_spec2b_obf = get_imp_spec2b_obf(ptch_dt)
+0044ef8f 33c0            xor     eax,eax
+0044ef91 8a4706          mov     al,byte ptr [edi+6]
+0044ef94 8d0440          lea     eax,[eax+eax*2]
+0044ef97 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044ef9b 8bc6            mov     eax,esi
+0044ef9d ffd2            call    edx
+0044ef9f 88442420        mov     byte ptr [esp+20h],al                              ; imp_spec1b_obf = get_imp_spec1b_obf(ptch_dt)
+0044efa3 8b83e0000000    mov     eax,dword ptr [ebx+0E0h]
+0044efa9 0144241c        add     dword ptr [esp+1Ch],eax
+0044efad eb01            jmp     image00400000+0x4efb0 (0044efb0)
+0044efaf e8              ???
+0044efb0 8b44241c        mov     eax,dword ptr [esp+1Ch]
+0044efb4 50              push    eax
+0044efb5 33c0            xor     eax,eax
+0044efb7 8a442424        mov     al,byte ptr [esp+24h]
+0044efbb 05ff000000      add     eax,0FFh
+0044efc0 50              push    eax
+0044efc1 8bc3            mov     eax,ebx
+0044efc3 e8acf9ffff      call    image00400000+0x4e974 (0044e974)                   ; chk_mem = get_chk_mem(): 0044d3a0   @@@ ChkMemAddrCall @@@
+0044efc8 8bc8            mov     ecx,eax
+0044efca 8b5310          mov     edx,dword ptr [ebx+10h]
+0044efcd 8bc3            mov     eax,ebx
+0044efcf e8d4e7ffff      call    image00400000+0x4d7a8 (0044d7a8)                   ; imp_seed = gen_imp_seed(env, env->mem_indxs, chk_mem, imp_spec1b_obf+0xff, imp_spec2b_obf+env->obfus)
+0044efd4 eb01            jmp     image00400000+0x4efd7 (0044efd7)
+0044efd6 c7              ???
+0044efd7 8b542404        mov     edx,dword ptr [esp+4]
+0044efdb 03542414        add     edx,dword ptr [esp+14h]
+0044efdf 03d0            add     edx,eax
+0044efe1 89542404        mov     dword ptr [esp+4],edx                              ; lib_id = lib_id_obf+obfus+imp_seed
+0044efe5 8b542408        mov     edx,dword ptr [esp+8]
+0044efe9 2b542414        sub     edx,dword ptr [esp+14h]
+0044efed 2bd0            sub     edx,eax
+0044efef 89542408        mov     dword ptr [esp+8],edx                              ; proc_id = proc_id_obf-obfus-imp_seed
+0044eff3 33c0            xor     eax,eax
+0044eff5 8a4703          mov     al,byte ptr [edi+3]
+0044eff8 8d0440          lea     eax,[eax+eax*2]
+0044effb 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044efff 8bc6            mov     eax,esi
+0044f001 ffd2            call    edx
+0044f003 89442414        mov     dword ptr [esp+14h],eax                            ; imp_spec2_obf = get_imp_spec2_obf()
+0044f007 8b83e0000000    mov     eax,dword ptr [ebx+0E0h]
+0044f00d 01442414        add     dword ptr [esp+14h],eax                            ; obfus = imp_spec2_obf+env->obfus
+0044f011 33c0            xor     eax,eax
+0044f013 8a4701          mov     al,byte ptr [edi+1]
+0044f016 8d0440          lea     eax,[eax+eax*2]
+0044f019 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044f01d 8bc6            mov     eax,esi
+0044f01f ffd2            call    edx
+0044f021 88442418        mov     byte ptr [esp+18h],al                              ; ref_tpy = get_ref_tpy()
+0044f025 eb01            jmp     image00400000+0x4f028 (0044f028)
+0044f027 e8              ???
+0044f028 8d44240c        lea     eax,[esp+0Ch]
+0044f02c 50              push    eax                                                ; &imp_addr_obf
+0044f02d 668b4c2408      mov     cx,word ptr [esp+8]                                ; arg: (word)lib_id
+0044f032 668b54240c      mov     dx,word ptr [esp+0Ch]                              ; arg: (word)proc_id
+0044f037 8bc3            mov     eax,ebx                                            ; arg: env
+0044f039 e862f4ffff      call    image00400000+0x4e4a0 (0044e4a0)                   ; get_imp_addr_obf()
+0044f03e 8b44240c        mov     eax,dword ptr [esp+0Ch]
+0044f042 0383e0000000    add     eax,dword ptr [ebx+0E0h]                           ; imp_addr = imp_addr_obf+env->obfus
+0044f048 eb01            jmp     image00400000+0x4f04b (0044f04b)
+0044f04a e9              ???
+; BEG prepare SIP patch
+0044f04b 8b542414        mov     edx,dword ptr [esp+14h]
+0044f04f 52              push    edx                                                ; arg: obfus
+0044f050 6a00            push    0                                                  ; arg: 0
+0044f052 8d4c2418        lea     ecx,[esp+18h]                                      ; arg: &new_obfus   - crc will influence the new_obfus
+0044f056 8bd0            mov     edx,eax                                            ; arg: imp_addr
+0044f058 8b433c          mov     eax,dword ptr [ebx+3Ch]                            ; arg: env->imports
+0044f05b e8e4100000      call    image00400000+0x50144 (00450144)                   ; returns pointer to a stolen beginnig of the import
+0044f060 8bc8            mov     ecx,eax                                            ; arg: stolen beginnig
+0044f062 8a542418        mov     dl,byte ptr [esp+18h]                              ; arg: ref_tpy (call/jmp)
+0044f066 8bc3            mov     eax,ebx                                            ; arg: env
+0044f068 e8ef010000      call    image00400000+0x4f25c (0044f25c)                   ; returns sip_stol_code
+; END
+0044f06d 2bc5            sub     eax,ebp
+0044f06f 83e805          sub     eax,5                                              ; call_rel_addr = sip_stol_code - (patch_eip+5) (5: 'call' opcode size)
+0044f072 45              inc     ebp
+0044f073 894500          mov     dword ptr [ebp],eax                                ; write patch: *(patch_eip+1) = call_rel_addr
+0044f076 8b442410        mov     eax,dword ptr [esp+10h]
+0044f07a 8b00            mov     eax,dword ptr [eax]
+0044f07c 89442414        mov     dword ptr [esp+14h],eax                            ; obfus=new_obfus   - will not change if crc is ok
+0044f080 eb0c            jmp     image00400000+0x4f08e (0044f08e)
+
+; AIP (advanced import protection) or other protection
+0044f082 8b432c          mov     eax,dword ptr [ebx+2Ch]
+0044f085 2bc5            sub     eax,ebp
+0044f087 83e805          sub     eax,5                                              ; call_rel_addr = env->aip_stol_code - (patch_eip+5)
+0044f08a 45              inc     ebp
+0044f08b 894500          mov     dword ptr [ebp],eax                                ; write patch: *(patch_eip+1) = call_rel_addr
+0044f08e 6a0a            push    0Ah
+0044f090 e853b4feff      call    image00400000+0x3a4e8 (0043a4e8)                   ; rand()%0x0a
+0044f095 8bc8            mov     ecx,eax
+0044f097 038be4000000    add     ecx,dword ptr [ebx+0E4h]                           ; arg: env->conf_dt_sz + (rand()%0x0a)
+0044f09d 8bd6            mov     edx,esi                                            ; arg: patch_dt
+0044f09f 8bc3            mov     eax,ebx                                            ; arg: env
+0044f0a1 e8bae6ffff      call    image00400000+0x4d760 (0044d760)                   ; ???
+0044f0a6 ff0c24          dec     dword ptr [esp]
+0044f0a9 03b3e4000000    add     esi,dword ptr [ebx+0E4h]                           ; patch_dt += env->ptch_dt_sz (next patch from table)
+0044f0af 833c2400        cmp     dword ptr [esp],0
+0044f0b3 0f8755feffff    ja      image00400000+0x4ef0e (0044ef0e)                   ; --n_ptchs > 0 (go with next patch)
+
+; finish
+0044f0b9 53              push    ebx
+0044f0ba e85d000000      call    image00400000+0x4f11c (0044f11c)                   ; check_crc(): 0 - ok
+0044f0bf 0183ec000000    add     dword ptr [ebx+0ECh],eax
+0044f0c5 b001            mov     al,1
+0044f0c7 83c424          add     esp,24h
+0044f0ca 5d              pop     ebp
+0044f0cb 5f              pop     edi
+0044f0cc 5e              pop     esi
+0044f0cd 5b              pop     ebx
+0044f0ce c3              ret

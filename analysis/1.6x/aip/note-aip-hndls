@@ -1,0 +1,235 @@
+input: eax = ptch_dt
+
+Indexes varies from protection to protection:
+hndl_0: *(dword*)&ptch_dt[0x2f]
+hndl_1: *(dword*)&ptch_dt[0x00] & 0xff
+hndl_2: *(dword*)&ptch_dt[0x0e]
+hndl_3: *(dword*)&ptch_dt[0x17]
+hndl_5: *(dword*)&ptch_dt[0x0a] & 0xff
+hndl_6: *(dword*)&ptch_dt[0x20] & 0xff
+hndl_7: *(dword*)&ptch_dt[0x29]
+hndl_8: *(dword*)&ptch_dt[0x03]
+hndl_9: *(dword*)&ptch_dt[0x27] & 0xff
+
+
+-------- Deobfuscated & simplified versions:
+
+hndl_0:
+00b308bf 51              push    ecx
+00b308dd 8d4c2834        lea     ecx,[eax+ebp+34h]
+00b308e1 2bcd            sub     ecx,ebp
+00b308e3 8d49cc          lea     ecx,[ecx-34h]                          ; ecx = ptch_dt
+00b3090d 8d4c0120        lea     ecx,[ecx+eax+20h]
+00b30911 2bc8            sub     ecx,eax
+00b30932 8d4c010f        lea     ecx,[ecx+eax+0Fh]
+00b3093a 2bc8            sub     ecx,eax
+00b3093c 8b09            mov     ecx,dword ptr [ecx]                    ; ecx = *(ptch_dt+2f)
+00b30944 51              push    ecx
+00b3094f 58              pop     eax                                    ; eax = ecx
+00b30956 59              pop     ecx
+00b30957 c3              ret
+
+hndl_1:
+00b30009 53              push    ebx
+00b30023 8d5c2042        lea     ebx,[eax+42h]
+00b3002c 8d5bbe          lea     ebx,[ebx-42h]                          ; ebx = ptch_dt
+00b3008d 8b1b            mov     ebx,dword ptr [ebx]
+00b3008f 81e3ff000000    and     ebx,0FFh                               ; ebx = *ptch_dt & ff
+00b300a3 8d442319        lea     eax,[ebx+19h]
+00b300ab 8d40e7          lea     eax,[eax-19h]                          ; eax = ebx
+00b300b5 5b              pop     ebx
+00b300b6 c3              ret
+
+hndl_2:
+00b30228 56              push    esi
+00b30244 8d7013          lea     esi,[eax+13h]
+00b30247 83ee13          sub     esi,13h                                ; esi = ptch_dt
+00b30276 8d7607          lea     esi,[esi+7]
+00b3029b 8d740607        lea     esi,[esi+eax+7]
+00b3029f 2bf0            sub     esi,eax
+00b302a1 ff36            push    dword ptr [esi]
+00b302aa 5e              pop     esi                                    ; esi = *(ptch_dt+0e)
+00b302bd 8d442e4f        lea     eax,[esi+ebp+4Fh]
+00b302c1 2bc5            sub     eax,ebp
+00b302c3 83e84f          sub     eax,4Fh                                ; eax = esi
+00b302cf 5e              pop     esi
+00b302d0 c3              ret
+
+hndl_3:
+003902da 55              push    ebp
+00390335 8d6c200f        lea     ebp,[eax+0Fh]
+00390339 83ed0f          sub     ebp,0Fh
+00390363 8d6d50          lea     ebp,[ebp+50h]                          ; ebp = ptch_dt+50
+00390366 56              push    esi
+00390367 57              push    edi
+0039036c 51              push    ecx
+00390389 8db40ab2cb25f8  lea     esi,[edx+ecx-7DA344Eh]
+00390390 2bf1            sub     esi,ecx
+00390397 2bf2            sub     esi,edx
+00390399 56              push    esi
+003903a5 59              pop     ecx
+003903a6 81f1b3cbe5f2    xor     ecx,0F2E5CBB3h
+003903ac f7d9            neg     ecx
+003903c3 8d793d          lea     edi,[ecx+3Dh]
+003903c6 8d7c2ffe        lea     edi,[edi+ebp-2]                        ; edi = ebp+F540003A
+003903ca 52              push    edx
+003903cb 51              push    ecx
+003903cc 53              push    ebx
+003903d4 68d284afa0      push    0A0AF84D2h
+003903dd 5a              pop     edx
+003903de 87da            xchg    ebx,edx
+003903e0 83f3bf          xor     ebx,0FFFFFFBFh
+003903e3 53              push    ebx
+003903ed 59              pop     ecx
+003903ee 83c1d9          add     ecx,0FFFFFFD9h
+003903f1 87d1            xchg    edx,ecx
+003903f3 81f28384afa0    xor     edx,0A0AF8483h
+003903f9 f7da            neg     edx
+003903fb 2bfa            sub     edi,edx                                ; edi = edi-3B = ebp+F53FFFFF
+0039040d 5b              pop     ebx
+00390419 59              pop     ecx
+0039041c 5a              pop     edx
+0039041d 2bfd            sub     edi,ebp
+0039041f c1c70a          rol     edi,0Ah                                ; edi = FFFFFFD4
+00390422 57              push    edi
+00390429 5e              pop     esi
+0039042a 83c67b          add     esi,7Bh
+0039042d 2bee            sub     ebp,esi                                ; ebp = ebp-4F = ptch_dt+1
+00390431 59              pop     ecx
+0039043d 5f              pop     edi
+00390444 5e              pop     esi
+0039045f 8d6c1d78        lea     ebp,[ebp+ebx+78h]                      ; ebp = ebx+ptch_dt+79
+00390468 50              push    eax
+00390469 51              push    ecx
+00390473 6869865617      push    17568669h
+00390485 58              pop     eax
+00390486 50              push    eax
+0039048d 59              pop     ecx
+0039048e 83e93f          sub     ecx,3Fh
+00390491 81c19b7aa9e8    add     ecx,0E8A97A9Bh
+00390497 49              dec     ecx
+00390498 87c1            xchg    eax,ecx
+0039049a c1c8c1          ror     eax,0C1h                               ; eax = 62
+0039049d 2be8            sub     ebp,eax                                ; ebp = ebp-62 = ebx+ptch_dt+17
+003904ad 59              pop     ecx
+003904b5 58              pop     eax
+003904b6 2beb            sub     ebp,ebx
+003904b8 8b6d00          mov     ebp,dword ptr [ebp]                    ; ebp = *(ptch_dt+17)
+003904ce 8d454a          lea     eax,[ebp+4Ah]                          ; eax = *(ptch_dt+17)+4A
+003904d1 52              push    edx
+003904d2 51              push    ecx
+003904d9 683ad4c59f      push    9FC5D43Ah
+003904e4 5a              pop     edx
+003904e5 87ca            xchg    ecx,edx
+003904e7 81e92331ef9d    sub     ecx,9DEF3123h
+003904ed f7d9            neg     ecx
+003904ef 81f12b214490    xor     ecx,9044212Bh
+003904f5 f7d9            neg     ecx
+00390503 8d54217b        lea     edx,[ecx+7Bh]
+00390507 83ea7b          sub     edx,7Bh
+0039050a 81f233829291    xor     edx,91928233h
+00390510 4a              dec     edx                                    ; edx = 0C
+00390511 2bc2            sub     eax,edx                                ; eax = *(ptch_dt+17)+3E
+0039051a 59              pop     ecx
+00390521 5a              pop     edx
+00390522 8d4428e0        lea     eax,[eax+ebp-20h]                      ; eax = ebp+*(ptch_dt+17)+1E
+0039052b 52              push    edx
+00390530 51              push    ecx
+00390531 53              push    ebx
+00390547 6859484209      push    9424859h
+00390554 5a              pop     edx
+00390555 87da            xchg    ebx,edx
+00390557 81f36d20c8b6    xor     ebx,0B6C8206Dh
+0039055d f7db            neg     ebx
+0039055f 53              push    ebx
+00390562 59              pop     ecx
+00390563 83c100          add     ecx,0
+00390566 51              push    ecx                                    ; ecx = 407597cc
+003905da 5a              pop     edx
+003905db 81f2d3977540    xor     edx,407597D3h
+003905e1 4a              dec     edx                                    ; edx = 1E
+003905e2 2bc2            sub     eax,edx                                ; eax = ebp+*(ptch_dt+17)
+003905eb 5b              pop     ebx
+003905f8 59              pop     ecx
+003905fb 5a              pop     edx
+00390600 2bc5            sub     eax,ebp                                ; eax = *(ptch_dt+17)
+0039060c 5d              pop     ebp
+0039060d c3              ret
+
+hndl_5:
+003c0176 52              push    edx
+003c0192 8d501d          lea     edx,[eax+1Dh]
+003c019a 8d542ae3        lea     edx,[edx+ebp-1Dh]
+003c01a2 2bd5            sub     edx,ebp
+003c01bf 8d5203          lea     edx,[edx+3]
+003c01d8 8d5207          lea     edx,[edx+7]
+003c01db ff32            push    dword ptr [edx]
+003c01e5 5a              pop     edx
+003c01e6 81e2ff000000    and     edx,0FFh                               ; edx = *(ptch_dt+0A) & FF
+003c0208 8d442a55        lea     eax,[edx+ebp+55h]
+003c020c 2bc5            sub     eax,ebp
+003c020e 83e855          sub     eax,55h                                ; eax = edx
+003c021d 5a              pop     edx
+003c021e c3              ret
+
+hndl_6:
+00b30617 53              push    ebx
+00b30643 8d587a          lea     ebx,[eax+7Ah]
+00b30646 83eb7a          sub     ebx,7Ah                                ; ebx = ptch_dt
+00b3066e 8d5c0314        lea     ebx,[ebx+eax+14h]
+00b30672 2bd8            sub     ebx,eax
+00b30686 8d5c0b0c        lea     ebx,[ebx+ecx+0Ch]
+00b3068a 2bd9            sub     ebx,ecx
+00b3068c 8b1b            mov     ebx,dword ptr [ebx]
+00b3068e 81e3ff000000    and     ebx,0FFh                               ; ebx = *(ptch_dt+20) & ff
+00b306a8 8d440b26        lea     eax,[ebx+ecx+26h]
+00b306ac 2bc1            sub     eax,ecx
+00b306ae 83e826          sub     eax,26h                                ; eax = ecx
+00b306ba 5b              pop     ebx
+00b306bb c3              ret
+
+hndl_7:
+00b30825 52              push    edx
+00b30838 50              push    eax
+00b3083f 5a              pop     edx                                    ; edx = ptch_dt
+00b30860 8d5216          lea     edx,[edx+16h]
+00b3088c 8d543a13        lea     edx,[edx+edi+13h]
+00b30890 2bd7            sub     edx,edi
+00b30892 8b12            mov     edx,dword ptr [edx]                    ; edx = *(ptch_dt+29)
+00b308a0 8d440a5f        lea     eax,[edx+ecx+5Fh]
+00b308a8 2bc1            sub     eax,ecx
+00b308aa 8d4408a1        lea     eax,[eax+ecx-5Fh]
+00b308ae 2bc1            sub     eax,ecx                                ; eax = edx
+00b308b4 5a              pop     edx
+00b308b5 c3              ret
+
+hndl_8:
+00b300c0 55              push    ebp
+00b300e2 8d6c2076        lea     ebp,[eax+76h]
+00b300eb 83ed76          sub     ebp,76h                                ; ebp = ptch_dt
+00b30112 8d6d03          lea     ebp,[ebp+3]
+00b30146 8d6c1d04        lea     ebp,[ebp+ebx+4]
+00b3014a 83ed04          sub     ebp,4
+00b3014d 2beb            sub     ebp,ebx
+00b3014f 8b6d00          mov     ebp,dword ptr [ebp]                    ; ebp = *(ptch_dt+3)
+00b3015a 8d442536        lea     eax,[ebp+36h]
+00b30163 8d4428ca        lea     eax,[eax+ebp-36h]
+00b30167 2bc5            sub     eax,ebp                                ; eax = ebp
+00b3016b 5d              pop     ebp
+00b3016c c3              ret
+
+hndl_9:
+00b3077d 56              push    esi
+00b30796 8d742048        lea     esi,[eax+48h]
+00b3079a 83ee48          sub     esi,48h                                ; esi = ptch_dt
+00b307b2 8d741e22        lea     esi,[esi+ebx+22h]
+00b307b6 2bf3            sub     esi,ebx
+00b307e0 8d740e05        lea     esi,[esi+ecx+5]
+00b307e4 2bf1            sub     esi,ecx
+00b307e6 8b36            mov     esi,dword ptr [esi]
+00b307e8 81e6ff000000    and     esi,0FFh                               ; esi = *(ptch_dt+27) & ff
+00b30805 8d440e73        lea     eax,[esi+ecx+73h]
+00b30809 2bc1            sub     eax,ecx
+00b3080b 83e873          sub     eax,73h                                ; eax = esi
+00b3081a 5e              pop     esi
+00b3081b c3              ret

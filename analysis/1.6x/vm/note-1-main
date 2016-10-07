@@ -1,0 +1,966 @@
+esp:
+    00000000    call ret???
+    00405517    prm: *prm==0x400000 (mod base addr)
+
+    00fff6ee 00fff724 0012fff0 0012ffc4 7ffdf000 7c90e514 0012ffb0 00000000
+
+
+MAIN PROC ENTRANCE -------------------------------------------------------------
+
+00445744 55              push    ebp
+00445745 8bec            mov     ebp,esp
+00445747 53              push    ebx
+00445748 56              push    esi
+00445749 57              push    edi
+0044574a a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+0044574f 8b5508          mov     edx,dword ptr [ebp+8]
+00445752 8910            mov     dword ptr [eax],edx                                ; **0045294c=prm
+00445754 a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+00445759 8b00            mov     eax,dword ptr [eax]
+0044575b 8b00            mov     eax,dword ptr [eax]                                ; *prm
+0044575d 8b1564294500    mov     edx,dword ptr [image00400000+0x52964 (00452964)]
+00445763 8902            mov     dword ptr [edx],eax                                ; **00452964=*prm
+00445765 e89e6b0000      call    image00400000+0x4c308 (0044c308)
+0044576a 33c0            xor     eax,eax
+0044576c 55              push    ebp                                                ; stack frame
+0044576d 68a6574400      push    offset image00400000+0x457a6 (004457a6)            ; except hndlr
+00445772 64ff30          push    dword ptr fs:[eax]                                 ; prev SEH
+00445775 648920          mov     dword ptr fs:[eax],esp                             ; set proc SEH
+
+; address of proces which will be followed after VM_CALL
+; NOTE: code under these destination is decrypted decoded as PART1 finishes:
+00445778 68dc384300      push    offset image00400000+0x338dc (004338dc)            ; PART7A
+0044577d 68c85c4400      push    offset image00400000+0x45cc8 (00445cc8)            ; PART6
+00445782 6864474400      push    offset image00400000+0x44764 (00444764)            ; PART5
+00445787 68884b4400      push    offset image00400000+0x44b88 (00444b88)            ; PART4
+0044578c 68d4454400      push    offset image00400000+0x445d4 (004445d4)            ; PART3
+00445791 689c404400      push    offset image00400000+0x4409c (0044409c)            ; PART2
+
+00445796 6874534400      push    offset image00400000+0x45374 (00445374)            ; PART1
+0044579b c3              ret
+
+PART1 --------
+Initilization stuff
+
+00445374 53              push    ebx
+00445375 56              push    esi
+00445376 57              push    edi
+00445377 a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+0044537c c600c9          mov     byte ptr [eax],0C9h
+0044537f b201            mov     dl,1
+00445381 a1b4d84300      mov     eax,dword ptr [image00400000+0x3d8b4 (0043d8b4)]
+00445386 e88585ffff      call    image00400000+0x3d910 (0043d910)
+0044538b 8bf0            mov     esi,eax
+0044538d a1e0284500      mov     eax,dword ptr [image00400000+0x528e0 (004528e0)]
+00445392 baa4000000      mov     edx,0A4h
+00445397 e81077feff      call    image00400000+0x2caac (0042caac)
+0044539c b201            mov     dl,1
+0044539e a170f74400      mov     eax,dword ptr [image00400000+0x4f770 (0044f770)]
+004453a3 e898a40000      call    image00400000+0x4f840 (0044f840)
+004453a8 8b1560284500    mov     edx,dword ptr [image00400000+0x52860 (00452860)]
+004453ae 8902            mov     dword ptr [edx],eax
+004453b0 b201            mov     dl,1
+004453b2 a140d44300      mov     eax,dword ptr [image00400000+0x3d440 (0043d440)]
+004453b7 e8dc80ffff      call    image00400000+0x3d498 (0043d498)
+004453bc a398444500      mov     dword ptr [image00400000+0x54498 (00454498)],eax
+004453c1 b201            mov     dl,1
+004453c3 a198094500      mov     eax,dword ptr [image00400000+0x50998 (00450998)]
+004453c8 e843b60000      call    image00400000+0x50a10 (00450a10)
+004453cd 8b1580284500    mov     edx,dword ptr [image00400000+0x52880 (00452880)]
+004453d3 8902            mov     dword ptr [edx],eax
+004453d5 b201            mov     dl,1
+004453d7 a16cc34400      mov     eax,dword ptr [image00400000+0x4c36c (0044c36c)]
+004453dc e8ff700000      call    image00400000+0x4c4e0 (0044c4e0)
+004453e1 8b15c4274500    mov     edx,dword ptr [image00400000+0x527c4 (004527c4)]
+004453e7 8902            mov     dword ptr [edx],eax
+004453e9 a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+004453ee 8b00            mov     eax,dword ptr [eax]
+004453f0 8a00            mov     al,byte ptr [eax]
+004453f2 8b15a4284500    mov     edx,dword ptr [image00400000+0x528a4 (004528a4)]
+004453f8 8802            mov     byte ptr [edx],al
+004453fa a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+004453ff 8b00            mov     eax,dword ptr [eax]
+00445401 83e811          sub     eax,11h
+00445404 8b154c294500    mov     edx,dword ptr [image00400000+0x5294c (0045294c)]
+0044540a 8b12            mov     edx,dword ptr [edx]
+0044540c 8b12            mov     edx,dword ptr [edx]
+0044540e 035004          add     edx,dword ptr [eax+4]
+00445411 035008          add     edx,dword ptr [eax+8]
+00445414 83c204          add     edx,4
+00445417 a138294500      mov     eax,dword ptr [image00400000+0x52938 (00452938)]
+0044541c 8910            mov     dword ptr [eax],edx
+0044541e a138294500      mov     eax,dword ptr [image00400000+0x52938 (00452938)]
+00445423 8b00            mov     eax,dword ptr [eax]
+00445425 894604          mov     dword ptr [esi+4],eax
+00445428 a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+0044542d c600e5          mov     byte ptr [eax],0E5h
+00445430 a178284500      mov     eax,dword ptr [image00400000+0x52878 (00452878)]
+00445435 8b00            mov     eax,dword ptr [eax]
+00445437 50              push    eax
+00445438 56              push    esi
+00445439 e85a85ffff      call    image00400000+0x3d998 (0043d998)
+0044543e 8bd8            mov     ebx,eax
+00445440 85db            test    ebx,ebx
+00445442 740a            je      image00400000+0x4544e (0044544e)
+00445444 8d4308          lea     eax,[ebx+8]
+00445447 8b00            mov     eax,dword ptr [eax]
+00445449 e8de85ffff      call    image00400000+0x3da2c (0043da2c)
+0044544e a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+00445453 8b401c          mov     eax,dword ptr [eax+1Ch]
+00445456 50              push    eax
+00445457 56              push    esi
+00445458 e83b85ffff      call    image00400000+0x3d998 (0043d998)
+0044545d 8bd8            mov     ebx,eax
+0044545f 85db            test    ebx,ebx
+00445461 7412            je      image00400000+0x45475 (00445475)
+00445463 8d5308          lea     edx,[ebx+8]
+00445466 a1c0274500      mov     eax,dword ptr [image00400000+0x527c0 (004527c0)]
+0044546b 8b4b04          mov     ecx,dword ptr [ebx+4]
+0044546e e82576feff      call    image00400000+0x2ca98 (0042ca98)
+00445473 eb0a            jmp     image00400000+0x4547f (0044547f)
+00445475 687c554400      push    offset image00400000+0x4557c (0044557c)
+0044547a e8a972ffff      call    image00400000+0x3c728 (0043c728)                   ; error
+0044547f a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+00445484 c600e4          mov     byte ptr [eax],0E4h
+00445487 a160284500      mov     eax,dword ptr [image00400000+0x52860 (00452860)]
+0044548c 8b00            mov     eax,dword ptr [eax]
+0044548e e8b9a90000      call    image00400000+0x4fe4c (0044fe4c)
+00445493 a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+00445498 8b4064          mov     eax,dword ptr [eax+64h]
+0044549b 50              push    eax
+0044549c 56              push    esi
+0044549d e8f684ffff      call    image00400000+0x3d998 (0043d998)
+004454a2 8bd8            mov     ebx,eax
+004454a4 85db            test    ebx,ebx
+004454a6 740f            je      image00400000+0x454b7 (004454b7)
+004454a8 8d7b08          lea     edi,[ebx+8]
+004454ab 8b4304          mov     eax,dword ptr [ebx+4]
+004454ae 8bd0            mov     edx,eax
+004454b0 8bc7            mov     eax,edi
+004454b2 e845daffff      call    image00400000+0x42efc (00442efc)
+004454b7 a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+004454bc 8b808c000000    mov     eax,dword ptr [eax+8Ch]
+004454c2 50              push    eax
+004454c3 56              push    esi
+004454c4 e8cf84ffff      call    image00400000+0x3d998 (0043d998)
+004454c9 8bd8            mov     ebx,eax
+004454cb 85db            test    ebx,ebx
+004454cd 7420            je      image00400000+0x454ef (004454ef)
+004454cf 8d4308          lea     eax,[ebx+8]
+004454d2 e8c5c0feff      call    image00400000+0x3159c (0043159c)
+004454d7 40              inc     eax
+004454d8 e89f89feff      call    image00400000+0x2de7c (0042de7c)
+004454dd a3d0254500      mov     dword ptr [image00400000+0x525d0 (004525d0)],eax
+004454e2 8d5308          lea     edx,[ebx+8]
+004454e5 a1d0254500      mov     eax,dword ptr [image00400000+0x525d0 (004525d0)]
+004454ea e85188feff      call    image00400000+0x2dd40 (0042dd40)
+004454ef a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+004454f4 c600ca          mov     byte ptr [eax],0CAh
+004454f7 33c0            xor     eax,eax
+004454f9 a38c444500      mov     dword ptr [image00400000+0x5448c (0045448c)],eax
+004454fe a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+00445503 8b809c000000    mov     eax,dword ptr [eax+9Ch]
+00445509 50              push    eax
+0044550a 56              push    esi
+0044550b e88884ffff      call    image00400000+0x3d998 (0043d998)
+00445510 8bd8            mov     ebx,eax
+00445512 85db            test    ebx,ebx
+00445514 7440            je      image00400000+0x45556 (00445556)
+00445516 b810270000      mov     eax,2710h
+0044551b e88043feff      call    image00400000+0x298a0 (004298a0)
+00445520 e81f40feff      call    image00400000+0x29544 (00429544)
+00445525 8bf8            mov     edi,eax
+00445527 b888444500      mov     eax,offset image00400000+0x54488 (00454488)
+0044552c 8b5304          mov     edx,dword ptr [ebx+4]
+0044552f e860180000      call    image00400000+0x46d94 (00446d94)                   ; malloc()
+00445534 8b1588444500    mov     edx,dword ptr [image00400000+0x54488 (00454488)]
+0044553a 8d4308          lea     eax,[ebx+8]
+0044553d 8b4b04          mov     ecx,dword ptr [ebx+4]
+00445540 e80b41feff      call    image00400000+0x29650 (00429650)                   ; prepare protected_jmp's decrypt_sect
+00445545 8b4304          mov     eax,dword ptr [ebx+4]
+00445548 a38c444500      mov     dword ptr [image00400000+0x5448c (0045448c)],eax
+0044554d 8bc7            mov     eax,edi
+0044554f e80840feff      call    image00400000+0x2955c (0042955c)
+00445554 eb07            jmp     image00400000+0x4555d (0044555d)
+00445556 33c0            xor     eax,eax
+00445558 a388444500      mov     dword ptr [image00400000+0x54488 (00454488)],eax
+0044555d e886fcffff      call    image00400000+0x451e8 (004451e8)                   ; call VM (debug check)
+00445562 8bc6            mov     eax,esi
+00445564 e88746feff      call    image00400000+0x29bf0 (00429bf0)
+00445569 e8f2eaffff      call    image00400000+0x44060 (00444060)
+0044556e 5f              pop     edi
+0044556f 5e              pop     esi
+00445570 5b              pop     ebx
+00445571 c3              ret                                                        ; jmp to PART2
+
+; ---- VM call referneced from the above
+This part containig VM call with VM opcodes is created on the fly by the PART1
+
+Although referenced by the dynamically created code, the vm_run() exists in a plain
+format prior the vm opcodes generation.
+
+esp -> prior to VM_CALL (00445562)
+
+004451e8 6800000000      push    0                                                  ; first call of vm run's chain
+004451ed 68e8514400      push    offset image00400000+0x451e8 (004451e8)            ; vm's eip
+004451f2 68a0e99800      push    98E9A0h                                            ; vm_in    - "aspr_vmin_disasm 0x0098E9A0"
+004451f7 e8e4daffff      call    image00400000+0x42ce0 (00442ce0)                   ; vm_run() - at return return to the place prior the VM_CALL (00445562)
+; ----
+
+PART2 (call VM) --------
+Decrypts sections
+
+esp -> PART3
+
+0044409c 6800000000      push    0
+004440a1 689c404400      push    offset image00400000+0x4409c (0044409c)
+004440a6 68b4f29800      push    98F2B4h
+004440ab e830ecffff      call    image00400000+0x42ce0 (00442ce0)                   ; vm_run()  - at return jmp to PART3
+
+PART3 --------
+
+esp -> PART4
+
+004445d4 55              push    ebp
+004445d5 8bec            mov     ebp,esp
+004445d7 83c4ec          add     esp,0FFFFFFECh
+004445da 53              push    ebx
+004445db 56              push    esi
+004445dc 57              push    edi
+004445dd a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+004445e2 c600e2          mov     byte ptr [eax],0E2h
+004445e5 a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+004445ea 8b00            mov     eax,dword ptr [eax]
+004445ec 8b4008          mov     eax,dword ptr [eax+8]
+004445ef 8945f4          mov     dword ptr [ebp-0Ch],eax
+004445f2 a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+004445f7 8b00            mov     eax,dword ptr [eax]
+004445f9 8b400c          mov     eax,dword ptr [eax+0Ch]
+004445fc 8945f0          mov     dword ptr [ebp-10h],eax
+004445ff a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+00444604 8b00            mov     eax,dword ptr [eax]
+00444606 8d582a          lea     ebx,[eax+2Ah]
+00444609 a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+0044460e 8b00            mov     eax,dword ptr [eax]
+00444610 8b00            mov     eax,dword ptr [eax]
+00444612 8945ec          mov     dword ptr [ebp-14h],eax
+00444615 c645fb00        mov     byte ptr [ebp-5],0
+00444619 e80affffff      call    image00400000+0x44528 (00444528)                   ; call VM
+0044461e a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+00444623 c600cf          mov     byte ptr [eax],0CFh
+00444626 eb71            jmp     image00400000+0x44699 (00444699)
+00444628 e8174ffeff      call    image00400000+0x29544 (00429544)
+0044462d 8bf0            mov     esi,eax
+0044462f 8b03            mov     eax,dword ptr [ebx]
+00444631 0345ec          add     eax,dword ptr [ebp-14h]
+00444634 8945fc          mov     dword ptr [ebp-4],eax
+00444637 8b4b04          mov     ecx,dword ptr [ebx+4]
+0044463a 8bd6            mov     edx,esi
+0044463c 8b45fc          mov     eax,dword ptr [ebp-4]
+0044463f e844fbffff      call    image00400000+0x44188 (00444188)
+00444644 8b7b04          mov     edi,dword ptr [ebx+4]
+00444647 8a45fc          mov     al,byte ptr [ebp-4]
+0044464a 8b15a4284500    mov     edx,dword ptr [image00400000+0x528a4 (004528a4)]
+00444650 8802            mov     byte ptr [edx],al
+00444652 8bc7            mov     eax,edi
+00444654 8b15bc284500    mov     edx,dword ptr [image00400000+0x528bc (004528bc)]
+0044465a 8802            mov     byte ptr [edx],al
+0044465c 807dfb00        cmp     byte ptr [ebp-5],0
+00444660 751e            jne     image00400000+0x44680 (00444680)
+00444662 c645fb01        mov     byte ptr [ebp-5],1
+00444666 56              push    esi
+00444667 8b75fc          mov     esi,dword ptr [ebp-4]
+0044466a 83c614          add     esi,14h
+0044466d ff36            push    dword ptr [esi]
+0044466f c606c3          mov     byte ptr [esi],0C3h
+00444672 ffd6            call    esi
+00444674 8f06            pop     dword ptr [esi]
+00444676 5e              pop     esi
+00444677 8bd7            mov     edx,edi
+00444679 8bc6            mov     eax,esi
+0044467b e8bcfbffff      call    image00400000+0x4423c (0044423c)
+00444680 8bcf            mov     ecx,edi
+00444682 8bd6            mov     edx,esi
+00444684 8b45fc          mov     eax,dword ptr [ebp-4]
+00444687 e80c84feff      call    image00400000+0x2ca98 (0042ca98)
+0044468c 8b5304          mov     edx,dword ptr [ebx+4]
+0044468f 8bc6            mov     eax,esi
+00444691 e8c64efeff      call    image00400000+0x2955c (0042955c)
+00444696 83c30c          add     ebx,0Ch
+00444699 8b4304          mov     eax,dword ptr [ebx+4]
+0044469c 85c0            test    eax,eax
+0044469e 7788            ja      image00400000+0x44628 (00444628)
+004446a0 837df400        cmp     dword ptr [ebp-0Ch],0
+004446a4 7408            je      image00400000+0x446ae (004446ae)
+004446a6 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+004446a9 8b55f0          mov     edx,dword ptr [ebp-10h]
+004446ac 8910            mov     dword ptr [eax],edx
+004446ae 5f              pop     edi
+004446af 5e              pop     esi
+004446b0 5b              pop     ebx
+004446b1 8be5            mov     esp,ebp
+004446b3 5d              pop     ebp
+004446b4 c3              ret                                                        ; jmp to PART4
+
+PART4 --------
+
+esp -> PART5
+
+00444b88 53              push    ebx
+00444b89 56              push    esi
+00444b8a 57              push    edi
+00444b8b 55              push    ebp
+00444b8c 83c4ec          add     esp,0FFFFFFECh
+00444b8f 8b354c294500    mov     esi,dword ptr [image00400000+0x5294c (0045294c)]
+00444b95 a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+00444b9a c600d0          mov     byte ptr [eax],0D0h
+00444b9d b201            mov     dl,1
+00444b9f a1b4d84300      mov     eax,dword ptr [image00400000+0x3d8b4 (0043d8b4)]
+00444ba4 e8678dffff      call    image00400000+0x3d910 (0043d910)
+00444ba9 8bd8            mov     ebx,eax
+00444bab a138294500      mov     eax,dword ptr [image00400000+0x52938 (00452938)]
+00444bb0 8b00            mov     eax,dword ptr [eax]
+00444bb2 894304          mov     dword ptr [ebx+4],eax
+00444bb5 a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+00444bba 8b80a0000000    mov     eax,dword ptr [eax+0A0h]
+00444bc0 50              push    eax
+00444bc1 53              push    ebx
+00444bc2 e8d18dffff      call    image00400000+0x3d998 (0043d998)
+00444bc7 85c0            test    eax,eax
+00444bc9 7411            je      image00400000+0x44bdc (00444bdc)
+00444bcb 8b4804          mov     ecx,dword ptr [eax+4]
+00444bce 8d542408        lea     edx,[esp+8]
+00444bd2 83c008          add     eax,8
+00444bd5 e8764afeff      call    image00400000+0x29650 (00429650)
+00444bda eb06            jmp     image00400000+0x44be2 (00444be2)
+00444bdc 33c0            xor     eax,eax
+00444bde 89442408        mov     dword ptr [esp+8],eax
+00444be2 8bc3            mov     eax,ebx
+00444be4 e80750feff      call    image00400000+0x29bf0 (00429bf0)
+00444be9 8b06            mov     eax,dword ptr [esi]
+00444beb 8b00            mov     eax,dword ptr [eax]
+00444bed 8b153c294500    mov     edx,dword ptr [image00400000+0x5293c (0045293c)]
+00444bf3 8902            mov     dword ptr [edx],eax
+00444bf5 8b06            mov     eax,dword ptr [esi]
+00444bf7 8b4010          mov     eax,dword ptr [eax+10h]
+00444bfa 8b15a8274500    mov     edx,dword ptr [image00400000+0x527a8 (004527a8)]
+00444c00 8902            mov     dword ptr [edx],eax
+00444c02 8b06            mov     eax,dword ptr [esi]
+00444c04 8b00            mov     eax,dword ptr [eax]
+00444c06 8b16            mov     edx,dword ptr [esi]
+00444c08 2b4204          sub     eax,dword ptr [edx+4]
+00444c0b 8b1594294500    mov     edx,dword ptr [image00400000+0x52994 (00452994)]
+00444c11 8902            mov     dword ptr [edx],eax
+00444c13 8b06            mov     eax,dword ptr [esi]
+00444c15 8b00            mov     eax,dword ptr [eax]
+00444c17 89442404        mov     dword ptr [esp+4],eax
+00444c1b 8b06            mov     eax,dword ptr [esi]
+00444c1d 8b4004          mov     eax,dword ptr [eax+4]
+00444c20 8b16            mov     edx,dword ptr [esi]
+00444c22 8b5a10          mov     ebx,dword ptr [edx+10h]
+00444c25 8b542404        mov     edx,dword ptr [esp+4]
+00444c29 2bd0            sub     edx,eax
+00444c2b 891424          mov     dword ptr [esp],edx
+00444c2e a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+00444c33 c600d1          mov     byte ptr [eax],0D1h
+00444c36 8b7c2408        mov     edi,dword ptr [esp+8]
+00444c3a 85ff            test    edi,edi
+00444c3c 7509            jne     image00400000+0x44c47 (00444c47)
+00444c3e 33c0            xor     eax,eax
+00444c40 a3a4444500      mov     dword ptr [image00400000+0x544a4 (004544a4)],eax
+00444c45 eb3b            jmp     image00400000+0x44c82 (00444c82)
+00444c47 8b06            mov     eax,dword ptr [esi]
+00444c49 8b00            mov     eax,dword ptr [eax]
+00444c4b 03c7            add     eax,edi
+00444c4d 8b54240c        mov     edx,dword ptr [esp+0Ch]
+00444c51 e81a41ffff      call    image00400000+0x38d70 (00438d70)
+00444c56 8be8            mov     ebp,eax
+00444c58 892dac444500    mov     dword ptr [image00400000+0x544ac (004544ac)],ebp
+00444c5e 3b6c2410        cmp     ebp,dword ptr [esp+10h]
+00444c62 740c            je      image00400000+0x44c70 (00444c70)
+00444c64 68f84c4400      push    offset image00400000+0x44cf8 (00444cf8)
+00444c69 e8ba7affff      call    image00400000+0x3c728 (0043c728)                   ; error
+00444c6e eb12            jmp     image00400000+0x44c82 (00444c82)
+00444c70 8b44240c        mov     eax,dword ptr [esp+0Ch]
+00444c74 a3a8444500      mov     dword ptr [image00400000+0x544a8 (004544a8)],eax
+00444c79 8b442408        mov     eax,dword ptr [esp+8]
+00444c7d a3a4444500      mov     dword ptr [image00400000+0x544a4 (004544a4)],eax
+00444c82 833c2400        cmp     dword ptr [esp],0
+00444c86 745d            je      image00400000+0x44ce5 (00444ce5)
+00444c88 035c2404        add     ebx,dword ptr [esp+4]
+00444c8c eb51            jmp     image00400000+0x44cdf (00444cdf)
+00444c8e 8d4304          lea     eax,[ebx+4]
+00444c91 8b00            mov     eax,dword ptr [eax]
+00444c93 83e808          sub     eax,8
+00444c96 d1e8            shr     eax,1
+00444c98 8bfa            mov     edi,edx
+00444c9a 037c2404        add     edi,dword ptr [esp+4]
+00444c9e 83c308          add     ebx,8
+00444ca1 8bf0            mov     esi,eax
+00444ca3 85f6            test    esi,esi
+00444ca5 7638            jbe     image00400000+0x44cdf (00444cdf)
+00444ca7 668b13          mov     dx,word ptr [ebx]
+00444caa 0fb7c2          movzx   eax,dx
+00444cad c1e80c          shr     eax,0Ch
+00444cb0 6683e801        sub     ax,1
+00444cb4 7223            jb      image00400000+0x44cd9 (00444cd9)
+00444cb6 6683e802        sub     ax,2
+00444cba 7402            je      image00400000+0x44cbe (00444cbe)
+00444cbc eb11            jmp     image00400000+0x44ccf (00444ccf)
+00444cbe 6681e2ff0f      and     dx,0FFFh
+00444cc3 0fb7c2          movzx   eax,dx
+00444cc6 03c7            add     eax,edi
+00444cc8 8b1424          mov     edx,dword ptr [esp]
+00444ccb 0110            add     dword ptr [eax],edx
+00444ccd eb0a            jmp     image00400000+0x44cd9 (00444cd9)
+00444ccf 68084d4400      push    offset image00400000+0x44d08 (00444d08)
+00444cd4 e84f7affff      call    image00400000+0x3c728 (0043c728)                   ; error
+00444cd9 83c302          add     ebx,2
+00444cdc 4e              dec     esi
+00444cdd 75c8            jne     image00400000+0x44ca7 (00444ca7)
+00444cdf 8b13            mov     edx,dword ptr [ebx]
+00444ce1 85d2            test    edx,edx
+00444ce3 75a9            jne     image00400000+0x44c8e (00444c8e)
+00444ce5 83c414          add     esp,14h
+00444ce8 5d              pop     ebp
+00444ce9 5f              pop     edi
+00444cea 5e              pop     esi
+00444ceb 5b              pop     ebx
+00444cec c3              ret                                                        ; jmp to PART5
+
+PART5 --------
+Resolve imports + AIP/SIP protection
+
+esp -> PART6
+
+00444764 53              push    ebx
+00444765 56              push    esi
+00444766 57              push    edi
+00444767 55              push    ebp
+00444768 83c4d8          add     esp,0FFFFFFD8h
+0044476b a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+00444770 c600d2          mov     byte ptr [eax],0D2h
+00444773 b201            mov     dl,1
+00444775 a1b4d84300      mov     eax,dword ptr [image00400000+0x3d8b4 (0043d8b4)]
+0044477a e89191ffff      call    image00400000+0x3d910 (0043d910)
+0044477f 8bf0            mov     esi,eax
+00444781 a138294500      mov     eax,dword ptr [image00400000+0x52938 (00452938)]
+00444786 8b00            mov     eax,dword ptr [eax]
+00444788 894604          mov     dword ptr [esi+4],eax
+; start to prepare imports_t struct
+0044478b a160284500      mov     eax,dword ptr [image00400000+0x52860 (00452860)]
+00444790 8b00            mov     eax,dword ptr [eax]                                ; imports_t *imports
+00444792 33d2            xor     edx,edx
+00444794 895004          mov     dword ptr [eax+4],edx                              ; imports->imp_dsc = 0
+00444797 a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+0044479c 8b00            mov     eax,dword ptr [eax]
+0044479e 8b00            mov     eax,dword ptr [eax]
+004447a0 8b1560284500    mov     edx,dword ptr [image00400000+0x52860 (00452860)]
+004447a6 8b12            mov     edx,dword ptr [edx]
+004447a8 894250          mov     dword ptr [edx+50h],eax                            ; imports->mod_base
+004447ab a160284500      mov     eax,dword ptr [image00400000+0x52860 (00452860)]
+004447b0 8b00            mov     eax,dword ptr [eax]
+004447b2 e8fdb50000      call    image00400000+0x4fdb4 (0044fdb4)
+004447b7 88442408        mov     byte ptr [esp+8],al
+004447bb a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+004447c0 8b8080000000    mov     eax,dword ptr [eax+80h]
+004447c6 50              push    eax
+004447c7 56              push    esi
+004447c8 e8cb91ffff      call    image00400000+0x3d998 (0043d998)
+004447cd 8bd8            mov     ebx,eax
+004447cf 85db            test    ebx,ebx
+004447d1 0f849b000000    je      image00400000+0x44872 (00444872)
+004447d7 807c240800      cmp     byte ptr [esp+8],0
+004447dc 7509            jne     image00400000+0x447e7 (004447e7)
+004447de 8bd3            mov     edx,ebx
+004447e0 8bc6            mov     eax,esi
+004447e2 e82d92ffff      call    image00400000+0x3da14 (0043da14)
+004447e7 8b4304          mov     eax,dword ptr [ebx+4]
+004447ea e8554dfeff      call    image00400000+0x29544 (00429544)
+004447ef 8bf8            mov     edi,eax
+004447f1 8d5308          lea     edx,[ebx+8]
+004447f4 8b4b04          mov     ecx,dword ptr [ebx+4]
+004447f7 8bc7            mov     eax,edi
+004447f9 e89a82feff      call    image00400000+0x2ca98 (0042ca98)
+004447fe a160284500      mov     eax,dword ptr [image00400000+0x52860 (00452860)]
+00444803 8b00            mov     eax,dword ptr [eax]
+00444805 897804          mov     dword ptr [eax+4],edi                              ; imports->imp_dsc
+00444808 a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+0044480d 8b407c          mov     eax,dword ptr [eax+7Ch]
+00444810 50              push    eax
+00444811 56              push    esi
+00444812 e88191ffff      call    image00400000+0x3d998 (0043d998)
+00444817 8bd8            mov     ebx,eax
+00444819 85db            test    ebx,ebx
+0044481b 7431            je      image00400000+0x4484e (0044484e)
+0044481d 807c240800      cmp     byte ptr [esp+8],0
+00444822 752a            jne     image00400000+0x4484e (0044484e)
+00444824 8d542409        lea     edx,[esp+9]
+00444828 8d4308          lea     eax,[ebx+8]
+0044482b 8b4b04          mov     ecx,dword ptr [ebx+4]
+0044482e e81d4efeff      call    image00400000+0x29650 (00429650)
+00444833 a160284500      mov     eax,dword ptr [image00400000+0x52860 (00452860)]
+00444838 8b00            mov     eax,dword ptr [eax]
+0044483a 56              push    esi
+0044483b 8d7808          lea     edi,[eax+8]                                        ; imports->key1
+0044483e 8d74240d        lea     esi,[esp+0Dh]
+00444842 b907000000      mov     ecx,7
+00444847 f3a5            rep movs dword ptr es:[edi],dword ptr [esi]
+00444849 66a5            movs    word ptr es:[edi],word ptr [esi]
+0044484b 5e              pop     esi
+0044484c eb0a            jmp     image00400000+0x44858 (00444858)
+0044484e 68184b4400      push    offset image00400000+0x44b18 (00444b18)
+00444853 e8d07effff      call    image00400000+0x3c728 (0043c728)                   ; error
+00444858 a160284500      mov     eax,dword ptr [image00400000+0x52860 (00452860)]
+0044485d 8b00            mov     eax,dword ptr [eax]
+0044485f e864bf0000      call    image00400000+0x507c8 (004507c8)                   ; write_iat(imports)   @@@ !aspr_imports load eax @@@
+00444864 84c0            test    al,al
+00444866 750a            jne     image00400000+0x44872 (00444872)
+00444868 68184b4400      push    offset image00400000+0x44b18 (00444b18)
+0044486d e8b67effff      call    image00400000+0x3c728 (0043c728)                   ; error
+00444872 a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+00444877 8b4004          mov     eax,dword ptr [eax+4]
+0044487a 50              push    eax
+0044487b 56              push    esi
+0044487c e81791ffff      call    image00400000+0x3d998 (0043d998)
+00444881 8bd8            mov     ebx,eax
+00444883 85db            test    ebx,ebx
+00444885 7446            je      image00400000+0x448cd (004448cd)
+00444887 8bc6            mov     eax,esi
+00444889 e8fa90ffff      call    image00400000+0x3d988 (0043d988)
+0044488e 8b157c444500    mov     edx,dword ptr [image00400000+0x5447c (0045447c)]
+00444894 031578444500    add     edx,dword ptr [image00400000+0x54478 (00454478)]
+0044489a 03c2            add     eax,edx
+0044489c 83c004          add     eax,4
+0044489f 83c004          add     eax,4
+004448a2 8b18            mov     ebx,dword ptr [eax]
+004448a4 8bc6            mov     eax,esi
+004448a6 e8dd90ffff      call    image00400000+0x3d988 (0043d988)
+004448ab 030578444500    add     eax,dword ptr [image00400000+0x54478 (00454478)]
+004448b1 e802feffff      call    image00400000+0x446b8 (004446b8)                   ; call VM
+004448b6 a370444500      mov     dword ptr [image00400000+0x54470 (00454470)],eax
+004448bb 331d74444500    xor     ebx,dword ptr [image00400000+0x54474 (00454474)]
+004448c1 3b1d70444500    cmp     ebx,dword ptr [image00400000+0x54470 (00454470)]
+004448c7 7404            je      image00400000+0x448cd (004448cd)
+004448c9 59              pop     ecx
+004448ca 83c524          add     ebp,24h
+004448cd 8b15b0294500    mov     edx,dword ptr [image00400000+0x529b0 (004529b0)]
+004448d3 8b12            mov     edx,dword ptr [edx]
+004448d5 a160284500      mov     eax,dword ptr [image00400000+0x52860 (00452860)]
+004448da 8b00            mov     eax,dword ptr [eax]
+004448dc e88bb00000      call    image00400000+0x4f96c (0044f96c)
+004448e1 84c0            test    al,al
+004448e3 7415            je      image00400000+0x448fa (004448fa)
+004448e5 b864000000      mov     eax,64h
+004448ea e8b14ffeff      call    image00400000+0x298a0 (004298a0)
+004448ef 8b1538294500    mov     edx,dword ptr [image00400000+0x52938 (00452938)]
+004448f5 0302            add     eax,dword ptr [edx]
+004448f7 894604          mov     dword ptr [esi+4],eax
+004448fa a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+004448ff 8b8088000000    mov     eax,dword ptr [eax+88h]
+00444905 50              push    eax
+00444906 56              push    esi
+00444907 e88c90ffff      call    image00400000+0x3d998 (0043d998)
+0044490c 8bd8            mov     ebx,eax
+0044490e 85db            test    ebx,ebx
+00444910 0f84f5000000    je      image00400000+0x44a0b (00444a0b)
+00444916 807c240800      cmp     byte ptr [esp+8],0
+0044491b 7509            jne     image00400000+0x44926 (00444926)
+0044491d 8bd3            mov     edx,ebx
+0044491f 8bc6            mov     eax,esi
+00444921 e8ee90ffff      call    image00400000+0x3da14 (0043da14)
+00444926 8d6b08          lea     ebp,[ebx+8]
+00444929 8b7d00          mov     edi,dword ptr [ebp]
+0044492c 8bc7            mov     eax,edi
+0044492e e8114cfeff      call    image00400000+0x29544 (00429544)
+00444933 890424          mov     dword ptr [esp],eax
+00444936 83c504          add     ebp,4
+00444939 8bcf            mov     ecx,edi
+0044493b 8bd5            mov     edx,ebp
+0044493d 8b0424          mov     eax,dword ptr [esp]
+00444940 e85381feff      call    image00400000+0x2ca98 (0042ca98)
+00444945 03ef            add     ebp,edi
+00444947 8b4304          mov     eax,dword ptr [ebx+4]
+0044494a 2bc7            sub     eax,edi
+0044494c 8bf8            mov     edi,eax
+0044494e 8d442404        lea     eax,[esp+4]
+00444952 8bd7            mov     edx,edi
+00444954 e83b240000      call    image00400000+0x46d94 (00446d94)
+00444959 8bcf            mov     ecx,edi
+0044495b 8bd5            mov     edx,ebp
+0044495d 8b442404        mov     eax,dword ptr [esp+4]
+00444961 e83281feff      call    image00400000+0x2ca98 (0042ca98)
+; start to prep env_t struct
+00444966 a1c4274500      mov     eax,dword ptr [image00400000+0x527c4 (004527c4)]
+0044496b 8b00            mov     eax,dword ptr [eax]
+0044496d 8b542404        mov     edx,dword ptr [esp+4]
+00444971 895008          mov     dword ptr [eax+8],edx                              ; ???
+00444974 a1c4274500      mov     eax,dword ptr [image00400000+0x527c4 (004527c4)]
+00444979 8b00            mov     eax,dword ptr [eax]
+0044497b 8b1424          mov     edx,dword ptr [esp]
+0044497e 895010          mov     dword ptr [eax+10h],edx                            ; env->mem_indxs
+00444981 a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+00444986 8b00            mov     eax,dword ptr [eax]
+00444988 8b00            mov     eax,dword ptr [eax]
+0044498a 8b15c4274500    mov     edx,dword ptr [image00400000+0x527c4 (004527c4)]
+00444990 8b12            mov     edx,dword ptr [edx]
+00444992 894214          mov     dword ptr [edx+14h],eax                            ; env->mod_base
+00444995 a1c0274500      mov     eax,dword ptr [image00400000+0x527c0 (004527c0)]
+0044499a 8b400e          mov     eax,dword ptr [eax+0Eh]
+0044499d 8b15c0274500    mov     edx,dword ptr [image00400000+0x527c0 (004527c0)]
+004449a3 03420a          add     eax,dword ptr [edx+0Ah]
+004449a6 8b15c4274500    mov     edx,dword ptr [image00400000+0x527c4 (004527c4)]
+004449ac 8b12            mov     edx,dword ptr [edx]
+004449ae 894228          mov     dword ptr [edx+28h],eax                            ; env->exe_end_rva
+004449b1 a1c0274500      mov     eax,dword ptr [image00400000+0x527c0 (004527c0)]
+004449b6 8b400a          mov     eax,dword ptr [eax+0Ah]
+004449b9 8b15c4274500    mov     edx,dword ptr [image00400000+0x527c4 (004527c4)]
+004449bf 8b12            mov     edx,dword ptr [edx]
+004449c1 034214          add     eax,dword ptr [edx+14h]
+004449c4 8b15c4274500    mov     edx,dword ptr [image00400000+0x527c4 (004527c4)]
+004449ca 8b12            mov     edx,dword ptr [edx]
+004449cc 894224          mov     dword ptr [edx+24h],eax                            ; env->exe_base
+004449cf a12c294500      mov     eax,dword ptr [image00400000+0x5292c (0045292c)]
+004449d4 8b4034          mov     eax,dword ptr [eax+34h]
+004449d7 ffd0            call    eax
+004449d9 8b15c4274500    mov     edx,dword ptr [image00400000+0x527c4 (004527c4)]
+004449df 8b12            mov     edx,dword ptr [edx]
+004449e1 8982e8000000    mov     dword ptr [edx+0E8h],eax                           ; ???
+004449e7 a160284500      mov     eax,dword ptr [image00400000+0x52860 (00452860)]
+004449ec 8b00            mov     eax,dword ptr [eax]
+004449ee 8b15c4274500    mov     edx,dword ptr [image00400000+0x527c4 (004527c4)]
+004449f4 8b12            mov     edx,dword ptr [edx]
+004449f6 89423c          mov     dword ptr [edx+3Ch],eax                            ; env->imports = imports
+004449f9 83ff04          cmp     edi,4
+004449fc 760d            jbe     image00400000+0x44a0b (00444a0b)
+004449fe a1c4274500      mov     eax,dword ptr [image00400000+0x527c4 (004527c4)]
+00444a03 8b00            mov     eax,dword ptr [eax]
+00444a05 50              push    eax
+00444a06 e839a40000      call    image00400000+0x4ee44 (0044ee44)                   ; prep_env_and_write_patches(env)
+00444a0b a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+00444a10 c600d3          mov     byte ptr [eax],0D3h
+00444a13 a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+00444a18 8b80e4000000    mov     eax,dword ptr [eax+0E4h]
+00444a1e 50              push    eax
+00444a1f 56              push    esi
+00444a20 e8738fffff      call    image00400000+0x3d998 (0043d998)
+00444a25 8bd8            mov     ebx,eax
+00444a27 a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+00444a2c c600d4          mov     byte ptr [eax],0D4h
+00444a2f 85db            test    ebx,ebx
+00444a31 7416            je      image00400000+0x44a49 (00444a49)
+00444a33 8d4308          lea     eax,[ebx+8]
+00444a36 e839edffff      call    image00400000+0x43774 (00443774)
+00444a3b 84c0            test    al,al
+00444a3d 750a            jne     image00400000+0x44a49 (00444a49)
+00444a3f 68284b4400      push    offset image00400000+0x44b28 (00444b28)
+00444a44 e8df7cffff      call    image00400000+0x3c728 (0043c728)                   ; error
+00444a49 a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+00444a4e 8b4078          mov     eax,dword ptr [eax+78h]
+00444a51 50              push    eax
+00444a52 56              push    esi
+00444a53 e8408fffff      call    image00400000+0x3d998 (0043d998)
+00444a58 8bd8            mov     ebx,eax
+00444a5a a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+00444a5f c600d5          mov     byte ptr [eax],0D5h
+00444a62 85db            test    ebx,ebx
+00444a64 7435            je      image00400000+0x44a9b (00444a9b)
+00444a66 a160284500      mov     eax,dword ptr [image00400000+0x52860 (00452860)]
+00444a6b 8b00            mov     eax,dword ptr [eax]
+00444a6d e842b30000      call    image00400000+0x4fdb4 (0044fdb4)
+00444a72 84c0            test    al,al
+00444a74 7525            jne     image00400000+0x44a9b (00444a9b)
+00444a76 8b7b04          mov     edi,dword ptr [ebx+4]
+00444a79 8bc7            mov     eax,edi
+00444a7b 8b15a4284500    mov     edx,dword ptr [image00400000+0x528a4 (004528a4)]
+00444a81 8802            mov     byte ptr [edx],al
+00444a83 8d4308          lea     eax,[ebx+8]
+00444a86 8bd7            mov     edx,edi
+00444a88 e813ebffff      call    image00400000+0x435a0 (004435a0)
+00444a8d 84c0            test    al,al
+00444a8f 750a            jne     image00400000+0x44a9b (00444a9b)
+00444a91 68384b4400      push    offset image00400000+0x44b38 (00444b38)
+00444a96 e88d7cffff      call    image00400000+0x3c728 (0043c728)                   ; error
+00444a9b a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+00444aa0 8b80e0000000    mov     eax,dword ptr [eax+0E0h]
+00444aa6 50              push    eax
+00444aa7 56              push    esi
+00444aa8 e8eb8effff      call    image00400000+0x3d998 (0043d998)
+00444aad 8bd8            mov     ebx,eax
+00444aaf a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+00444ab4 c600d6          mov     byte ptr [eax],0D6h
+00444ab7 85db            test    ebx,ebx
+00444ab9 7416            je      image00400000+0x44ad1 (00444ad1)
+00444abb 8d4308          lea     eax,[ebx+8]
+00444abe e849f0ffff      call    image00400000+0x43b0c (00443b0c)                   ; set Borland Init table handlers
+00444ac3 84c0            test    al,al
+00444ac5 750a            jne     image00400000+0x44ad1 (00444ad1)
+00444ac7 68484b4400      push    offset image00400000+0x44b48 (00444b48)
+00444acc e8577cffff      call    image00400000+0x3c728 (0043c728)                   ; error
+00444ad1 a1c0274500      mov     eax,dword ptr [image00400000+0x527c0 (004527c0)]
+00444ad6 8b401f          mov     eax,dword ptr [eax+1Fh]
+00444ad9 85c0            test    eax,eax
+00444adb 741d            je      image00400000+0x44afa (00444afa)
+00444add 8b0dc0274500    mov     ecx,dword ptr [image00400000+0x527c0 (004527c0)]
+00444ae3 8b4923          mov     ecx,dword ptr [ecx+23h]
+00444ae6 8b15c0274500    mov     edx,dword ptr [image00400000+0x527c0 (004527c0)]
+00444aec 8bd0            mov     edx,eax
+00444aee a160284500      mov     eax,dword ptr [image00400000+0x52860 (00452860)]
+00444af3 8b00            mov     eax,dword ptr [eax]
+00444af5 e81abe0000      call    image00400000+0x50914 (00450914)
+00444afa 8bc6            mov     eax,esi
+00444afc e8ef50feff      call    image00400000+0x29bf0 (00429bf0)
+00444b01 e8e2f4ffff      call    image00400000+0x43fe8 (00443fe8)
+00444b06 83c428          add     esp,28h
+00444b09 5d              pop     ebp
+00444b0a 5f              pop     edi
+00444b0b 5e              pop     esi
+00444b0c 5b              pop     ebx
+00444b0d c3              ret                                                        ; jmp to PART6
+
+PART6 (call VM) --------
+
+esp -> PART7A
+
+00445cc8 6800000000      push    0
+00445ccd 68c85c4400      push    offset image00400000+0x45cc8 (00445cc8)
+00445cd2 683cbf9800      push    98BF3Ch
+00445cd7 e804d0ffff      call    image00400000+0x42ce0 (00442ce0)                   ; vm_run()  - at return jmp to PART7A
+
+PART7 --------
+Final part - Jump to the OEP
+
+esp:
+    0018ffc4 004457a6 0018ff60 00427000 00250000 00445744 004050ff
+
+    00000000 00405517   MAIN params
+
+PART7A:
+004338dc 68e2562b1d      push    1D2B56E2h                                          ; ciphered addr to the PART7B
+004338e1 68e41e0000      push    1EE4h
+004338e6 68f4a90000      push    0A9F4h
+004338eb 6800000300      push    30000h
+004338f0 ff35d4344500    push    dword ptr [image00000000_00400000+0x534d4 (004534d4)]
+004338f6 e8a1d2ffff      call    image00000000_00400000+0x30b9c (00430b9c)
+004338fb 310424          xor     dword ptr [esp],eax
+004338fe 8b05d4344500    mov     eax,dword ptr [image00400000+0x534d4 (004534d4)]
+00433904 010424          add     dword ptr [esp],eax
+00433907 c3              ret                                                        ; decipher PART7B addr and jump
+
+PART7B:
+00446434 686f6b1aac      push    0AC1A6B6Fh                                         ; ciphered addr to PART7C
+00446439 6898230000      push    2398h
+0044643e 6898d00100      push    1D098h
+00446443 6800000300      push    30000h
+00446448 ff35d4344500    push    dword ptr [image00000000_00400000+0x534d4 (004534d4)]
+0044644e e801000000      call    image00000000_00400000+0x46454 (00446454)          ; decipher PART7C addr and jump
+
+PART7C:
+004451e0 e883fdffff      call    image00000000_00400000+0x44f68 (00444f68)
+004451e5 c3              ret                                                        ; jmp PART7
+
+PART7:
+00444f68 55              push    ebp
+00444f69 8bec            mov     ebp,esp
+00444f6b 83c4c4          add     esp,0FFFFFFC4h
+00444f6e 53              push    ebx
+00444f6f 56              push    esi
+00444f70 57              push    edi
+00444f71 a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+00444f76 c600df          mov     byte ptr [eax],0DFh
+00444f79 b201            mov     dl,1
+00444f7b a1b4d84300      mov     eax,dword ptr [image00400000+0x3d8b4 (0043d8b4)]
+00444f80 e88b89ffff      call    image00400000+0x3d910 (0043d910)
+00444f85 8945f8          mov     dword ptr [ebp-8],eax
+00444f88 a138294500      mov     eax,dword ptr [image00400000+0x52938 (00452938)]
+00444f8d 8b00            mov     eax,dword ptr [eax]
+00444f8f 8b55f8          mov     edx,dword ptr [ebp-8]
+00444f92 894204          mov     dword ptr [edx+4],eax
+00444f95 a188444500      mov     eax,dword ptr [image00400000+0x54488 (00454488)]
+00444f9a 8945d8          mov     dword ptr [ebp-28h],eax                            ; protected_jmp's decrypt_sect
+00444f9d b8e83f4400      mov     eax,offset image00400000+0x43fe8 (00443fe8)
+00444fa2 8945dc          mov     dword ptr [ebp-24h],eax
+00444fa5 ba684f4400      mov     edx,offset image00400000+0x44f68 (00444f68)
+00444faa 2bd0            sub     edx,eax
+00444fac 8955e0          mov     dword ptr [ebp-20h],edx
+00444faf b8bc3d4400      mov     eax,offset image00400000+0x43dbc (00443dbc)
+00444fb4 8b154c294500    mov     edx,dword ptr [image00400000+0x5294c (0045294c)]
+00444fba 8b12            mov     edx,dword ptr [edx]
+00444fbc 2b02            sub     eax,dword ptr [edx]
+00444fbe 8945e4          mov     dword ptr [ebp-1Ch],eax
+00444fc1 eb06            jmp     image00400000+0x44fc9 (00444fc9)
+; BEGIN obfus
+00444fc3 ff25            ???
+00444fc5 c3              ret                                                        ; jmp 0044407c -> jmp 00444fd8
+00444fc6 eb01            jmp     image00400000+0x44fc9 (00444fc9)
+00444fc8 e8              ???
+00444fc9 687b404400      push    offset image00400000+0x4407b (0044407b)
+00444fce 58              pop     eax
+00444fcf 40              inc     eax
+00444fd0 68d84f4400      push    offset image00400000+0x44fd8 (00444fd8)            ; push 00444fd8
+00444fd5 50              push    eax                                                ; push 0044407c
+00444fd6 ebed            jmp     image00400000+0x44fc5 (00444fc5)
+; END obfus
+00444fd8 a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+00444fdd 8b8094000000    mov     eax,dword ptr [eax+94h]
+00444fe3 50              push    eax
+00444fe4 8b45f8          mov     eax,dword ptr [ebp-8]
+00444fe7 50              push    eax
+00444fe8 e8ab89ffff      call    image00400000+0x3d998 (0043d998)
+00444fed 85c0            test    eax,eax
+00444fef 7432            je      image00400000+0x45023 (00445023)
+00444ff1 83c008          add     eax,8
+00444ff4 8b00            mov     eax,dword ptr [eax]
+00444ff6 8945f4          mov     dword ptr [ebp-0Ch],eax
+00444ff9 a128294500      mov     eax,dword ptr [image00400000+0x52928 (00452928)]
+00444ffe 8b4004          mov     eax,dword ptr [eax+4]
+00445001 50              push    eax
+00445002 8b45f8          mov     eax,dword ptr [ebp-8]
+00445005 50              push    eax
+00445006 e88d89ffff      call    image00400000+0x3d998 (0043d998)
+0044500b 85c0            test    eax,eax
+0044500d 7414            je      image00400000+0x45023 (00445023)
+0044500f 6a04            push    4
+00445011 b984444500      mov     ecx,offset image00400000+0x54484 (00454484)
+00445016 8d45f4          lea     eax,[ebp-0Ch]
+00445019 ba04000000      mov     edx,4
+0044501e e8593effff      call    image00400000+0x38e7c (00438e7c)
+00445023 e854f4ffff      call    image00400000+0x4447c (0044447c)
+00445028 a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+0044502d 8b00            mov     eax,dword ptr [eax]
+0044502f 8b401c          mov     eax,dword ptr [eax+1Ch]
+00445032 8945f0          mov     dword ptr [ebp-10h],eax
+00445035 a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+0044503a 8b00            mov     eax,dword ptr [eax]
+0044503c 8b00            mov     eax,dword ptr [eax]
+0044503e 8945ec          mov     dword ptr [ebp-14h],eax
+00445041 a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+00445046 8b00            mov     eax,dword ptr [eax]
+00445048 83c018          add     eax,18h
+0044504b 8945e8          mov     dword ptr [ebp-18h],eax
+0044504e 8b45e8          mov     eax,dword ptr [ebp-18h]
+00445051 833800          cmp     dword ptr [eax],0
+00445054 751f            jne     image00400000+0x45075 (00445075)
+00445056 8345f020        add     dword ptr [ebp-10h],20h
+0044505a a1c0274500      mov     eax,dword ptr [image00400000+0x527c0 (004527c0)]
+0044505f 80780900        cmp     byte ptr [eax+9],0
+00445063 7510            jne     image00400000+0x45075 (00445075)
+00445065 b81f000000      mov     eax,1Fh
+0044506a e83148feff      call    image00400000+0x298a0 (004298a0)
+0044506f c1e002          shl     eax,2
+00445072 2945f0          sub     dword ptr [ebp-10h],eax
+00445075 33c0            xor     eax,eax
+00445077 a3d0254500      mov     dword ptr [image00400000+0x525d0 (004525d0)],eax
+0044507c 33c0            xor     eax,eax
+0044507e 55              push    ebp
+0044507f 6809514400      push    offset image00400000+0x45109 (00445109)
+00445084 64ff30          push    dword ptr fs:[eax]
+00445087 648920          mov     dword ptr fs:[eax],esp
+0044508a 33c0            xor     eax,eax
+0044508c 55              push    ebp
+0044508d 68d5504400      push    offset image00400000+0x450d5 (004450d5)
+00445092 64ff30          push    dword ptr fs:[eax]
+00445095 648920          mov     dword ptr fs:[eax],esp
+00445098 b805000000      mov     eax,5
+0044509d eb02            jmp     image00400000+0x450a1 (004450a1)
+0044509f ff25            ???
+004450a1 69153c30450005840808 imul edx,dword ptr [image00400000+0x5303c (0045303c)],8088405h
+004450ab 42              inc     edx
+004450ac 89153c304500    mov     dword ptr [image00400000+0x5303c (0045303c)],edx
+004450b2 f7e2            mul     eax,edx
+004450b4 89d0            mov     eax,edx
+004450b6 48              dec     eax
+004450b7 09c0            or      eax,eax
+004450b9 7510            jne     image00400000+0x450cb (004450cb)
+004450bb eb02            jmp     image00400000+0x450bf (004450bf)
+004450bd e825            ???
+004450bf 8b05d0254500    mov     eax,dword ptr [image00400000+0x525d0 (004525d0)]
+004450c5 eb02            jmp     image00400000+0x450c9 (004450c9)
+004450c7 ff25            ???
+004450c9 8900            mov     dword ptr [eax],eax
+004450cb 33c0            xor     eax,eax
+004450cd 5a              pop     edx
+004450ce 59              pop     ecx
+004450cf 59              pop     ecx
+004450d0 648910          mov     dword ptr fs:[eax],edx
+004450d3 eb2a            jmp     image00400000+0x450ff (004450ff)
+; BEGIN SEH proc
+004450d5 e96a4dfeff      jmp     image00400000+0x29e44 (00429e44)
+004450da 6830200000      push    2030h
+004450df eb02            jmp     image00400000+0x450e3 (004450e3)
+004450e1 e825            ???
+004450e3 ff35e0254500    push    dword ptr [image00400000+0x525e0 (004525e0)]
+004450e9 eb02            jmp     image00400000+0x450ed (004450ed)
+004450eb ff25            ???
+004450ed ff35dc254500    push    dword ptr [image00400000+0x525dc (004525dc)]
+004450f3 6a00            push    0
+004450f5 e85e79feff      call    image00400000+0x2ca58 (0042ca58)
+004450fa e8a150feff      call    image00400000+0x2a1a0 (0042a1a0)
+; END SEH proc
+004450ff 33c0            xor     eax,eax
+00445101 5a              pop     edx
+00445102 59              pop     ecx
+00445103 59              pop     ecx
+00445104 648910          mov     dword ptr fs:[eax],edx
+00445107 eb0a            jmp     image00400000+0x45113 (00445113)
+00445109 e9364dfeff      jmp     image00400000+0x29e44 (00429e44)
+0044510e e88d50feff      call    image00400000+0x2a1a0 (0042a1a0)
+00445113 833d7444450000  cmp     dword ptr [image00400000+0x54474 (00454474)],0
+0044511a 7414            je      image00400000+0x45130 (00445130)
+0044511c 6a04            push    4
+0044511e b974444500      mov     ecx,offset image00400000+0x54474 (00454474)
+00445123 8d45f4          lea     eax,[ebp-0Ch]
+00445126 ba04000000      mov     edx,4
+0044512b e84c3dffff      call    image00400000+0x38e7c (00438e7c)
+00445130 833da444450000  cmp     dword ptr [image00400000+0x544a4 (004544a4)],0
+00445137 7414            je      image00400000+0x4514d (0044514d)
+00445139 6a0c            push    0Ch
+0044513b b9a4444500      mov     ecx,offset image00400000+0x544a4 (004544a4)
+00445140 8d45f4          lea     eax,[ebp-0Ch]
+00445143 ba04000000      mov     edx,4
+00445148 e82f3dffff      call    image00400000+0x38e7c (00438e7c)
+0044514d 8b45e8          mov     eax,dword ptr [ebp-18h]
+00445150 833800          cmp     dword ptr [eax],0
+00445153 7408            je      image00400000+0x4515d (0044515d)
+00445155 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+00445158 a3b4444500      mov     dword ptr [image00400000+0x544b4 (004544b4)],eax
+0044515d 8b45e8          mov     eax,dword ptr [ebp-18h]
+00445160 8b00            mov     eax,dword ptr [eax]
+00445162 8945c4          mov     dword ptr [ebp-3Ch],eax
+00445165 8b45f0          mov     eax,dword ptr [ebp-10h]
+00445168 8945cc          mov     dword ptr [ebp-34h],eax                            ; oep_env->esp
+0044516b 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044516e 8945d0          mov     dword ptr [ebp-30h],eax                            ; oep_env->eip_rva_obf
+00445171 a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+00445176 c600e1          mov     byte ptr [eax],0E1h
+00445179 a14c294500      mov     eax,dword ptr [image00400000+0x5294c (0045294c)]
+0044517e 8b00            mov     eax,dword ptr [eax]
+00445180 668b4028        mov     ax,word ptr [eax+28h]
+00445184 668945fe        mov     word ptr [ebp-2],ax
+00445188 d96dfe          fldcw   word ptr [ebp-2]
+0044518b a198444500      mov     eax,dword ptr [image00400000+0x54498 (00454498)]
+00445190 e86b85ffff      call    image00400000+0x3d700 (0043d700)
+00445195 a1b0444500      mov     eax,dword ptr [image00400000+0x544b0 (004544b0)]
+0044519a 8945c8          mov     dword ptr [ebp-38h],eax
+0044519d 8b45ec          mov     eax,dword ptr [ebp-14h]
+004451a0 8945d4          mov     dword ptr [ebp-2Ch],eax                            ; oep_env->mod_base
+004451a3 a198444500      mov     eax,dword ptr [image00400000+0x54498 (00454498)]
+004451a8 e8434afeff      call    image00400000+0x29bf0 (00429bf0)
+004451ad a1f8284500      mov     eax,dword ptr [image00400000+0x528f8 (004528f8)]
+004451b2 c600e3          mov     byte ptr [eax],0E3h
+004451b5 a1c4274500      mov     eax,dword ptr [image00400000+0x527c4 (004527c4)]
+004451ba 8b00            mov     eax,dword ptr [eax]
+004451bc 8d55c4          lea     edx,[ebp-3Ch]
+004451bf e874760000      call    image00400000+0x4c838 (0044c838)                   ; @@@ !aspr_oep edx @@@
+                                                                                    ; prepare protected_jmp() entry which passes
+                                                                                    ; protected_jmp args to the heart of the proc
+004451c4 e81f710000      call    image00400000+0x4c2e8 (0044c2e8)
+004451c9 8b45f8          mov     eax,dword ptr [ebp-8]
+004451cc e81f4afeff      call    image00400000+0x29bf0 (00429bf0)
+004451d1 e812eeffff      call    image00400000+0x43fe8 (00443fe8)                   ; protected_jmp()
+004451d6 5f              pop     edi
+004451d7 5e              pop     esi
+004451d8 5b              pop     ebx
+004451d9 8be5            mov     esp,ebp
+004451db 5d              pop     ebp
+004451dc c3              ret

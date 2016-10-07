@@ -1,0 +1,24 @@
+# jump to INIT stage
+bp /1 GetModuleFileNameA; g;
+
+# hide debugger
+bp IsDebuggerPresent "g poi(esp)";
+
+# MAIN.PART7 (problems with regular bp)
+ba e1 00444f68; g;
+
+# OEP call
+ba e1 004451d1; g;
+
+# trace vm
+ba e1 004428fe ".printf \"vm call opc: vm_in: %08x {base_addr: %08x, obfus: %08x}, vm_ctx: %08x {eip: %08x, eax: %08x, ebx: %08x, ecx: %08x, edx: %08x, esi: %08x, edi: %08x, ebp: %08x, esp: %08x, *esp: %08x}, opc: %02x {%02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x, %02x}, cntr: %x\\n\",esi,dwo(esi+0xc),dwo(esi+0x10),ebx,poi(ebx+0x44),dwo(ebx+0x20),dwo(ebx+0x2c),dwo(ebx+0x24),dwo(ebx+0x28),dwo(ebx+0x38),dwo(ebx+0x3c),dwo(ebx+0x34),poi(ebx+0x30),poi(poi(ebx+0x30)),al,by(poi(ebx+0xb5)),by(poi(ebx+0xb5)+1),by(poi(ebx+0xb5)+2),by(poi(ebx+0xb5)+3),by(poi(ebx+0xb5)+4),by(poi(ebx+0xb5)+5),by(poi(ebx+0xb5)+6),by(poi(ebx+0xb5)+7),by(poi(ebx+0xb5)+8),by(poi(ebx+0xb5)+9),by(poi(ebx+0xb5)+0xa),by(poi(ebx+0xb5)+0xb),by(poi(ebx+0xb5)+0xc),by(poi(ebx+0xb5)+0xd),by(poi(ebx+0xb5)+0xe),dwo(ebx+0x90); g;"
+ba e1 00442a70 ".printf \"vm restore: vm_in: %08x, vm_ctx: %08x {eip: %08x, esp: %08x, *esp: %08x}\\n\",eax,edx,poi(edx+0x44),poi(edx+0x30),poi(poi(edx+0x30)); g;"
+
+ba e1 00442be5 "!aspr_vmctx_dump -l edx eax; g;"
+
+# bp at a specific vm eip
+ba e1 00442be5 ".if (poi(edx+0x44)==00444103) {} .else {gc}"
+
+# stolen imports
+ba e1 0044f058 ".printf \"stolen code %p, import: %p\\n\",ebp, edx; g;"
+ba e1 0044f058 "!aspr_ipatch add -a ebp edx 402000; g;"

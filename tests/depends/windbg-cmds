@@ -1,0 +1,15 @@
+!aspr_imports load eax
+; iat
+bp GetModuleFileNameA 2; g; bc *; ba e1 0051485f; g;
+
+!aspr_ipatch load ebx 0051d3a0
+; write patches
+bp GetModuleFileNameA 2; g; bc *; ba e1 0051eeef; g;
+
+!aspr_oep edx
+; eop
+ba e1 00457703; g;
+bp GetModuleFileNameA 2; g; bc *; ba e1 005151bf; g;
+
+idt: 00404178
+delta: 000d0000

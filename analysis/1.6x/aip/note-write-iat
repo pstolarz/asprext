@@ -1,0 +1,537 @@
+-------- write_iat()
+write_iat(imports_t *imps(eax))
+
+004507c8 53              push    ebx
+004507c9 56              push    esi
+004507ca 57              push    edi
+004507cb 55              push    ebp
+004507cc 83c4f4          add     esp,0FFFFFFF4h
+004507cf 8bf0            mov     esi,eax
+004507d1 c6042401        mov     byte ptr [esp],1                                       ; ret=1
+004507d5 eb01            jmp     image00000000_00400000+0x507d8 (004507d8)
+004507d7 9a              ???
+004507d8 837e0400        cmp     dword ptr [esi+4],0
+004507dc 0f8424010000    je      image00400000+0x50906 (00450906)                       ; imps->imp_dsc!=0
+004507e2 8b7e04          mov     edi,dword ptr [esi+4]                                  ; &imps->imp_dsc.ids_tab
+004507e5 8b4650          mov     eax,dword ptr [esi+50h]
+004507e8 89442404        mov     dword ptr [esp+4],eax                                  ; imps->mod_base
+004507ec eb01            jmp     image00000000_00400000+0x507ef (004507ef)
+004507ee 69              ???
+004507ef 8d4634          lea     eax,[esi+34h]
+004507f2 b909000000      mov     ecx,9
+004507f7 8bd7            mov     edx,edi
+004507f9 e89ac2fdff      call    image00400000+0x2ca98 (0042ca98)                       ; init ids: memcpy(imps->imp_endmrk, imp_dsc->ids_tab, 9)
+004507fe 83c709          add     edi,9                                                  ; &imp_dsc->last
+00450801 8b15ec274500    mov     edx,dword ptr [image00000000_00400000+0x527ec (004527ec)]
+00450807 8b12            mov     edx,dword ptr [edx]
+00450809 8bc6            mov     eax,esi
+0045080b e85cf1ffff      call    image00000000_00400000+0x4f96c (0044f96c)              ; some check - shall return 0
+00450810 84c0            test    al,al
+00450812 0f84e2000000    je      image00000000_00400000+0x508fa (004508fa)              ; next iter (lib)
+00450818 6a14            push    14h
+0045081a e8c99cfeff      call    image00000000_00400000+0x3a4e8 (0043a4e8)              ; rand()%0x14
+0045081f 01c7            add     edi,eax
+00450821 e9d4000000      jmp     image00000000_00400000+0x508fa (004508fa)              ; next iter (lib)
+
+; loop (lib)
+00450826 89442408        mov     dword ptr [esp+8],eax                                  ; iat_addr_rva = imp_dsc->last
+0045082a 6aff            push    0FFFFFFFFh
+0045082c e8b79cfeff      call    image00000000_00400000+0x3a4e8 (0043a4e8)              ; rand()%0xffffffff
+00450831 40              inc     eax
+00450832 8903            mov     dword ptr [ebx],eax                                    ; destroy iat address after its use: imp_dsc->last = rand()%0xffffffff
+00450834 83c704          add     edi,4
+00450837 83c706          add     edi,6
+0045083a 8bef            mov     ebp,edi                                                ; &imp_dsc->lib_name
+0045083c 8bc7            mov     eax,edi
+0045083e e83507feff      call    image00000000_00400000+0x30f78 (00430f78)              ; lib_name_len = strlen(&lib->lib_name)
+00450843 40              inc     eax
+00450844 0fb7c0          movzx   eax,ax
+00450847 03f8            add     edi,eax                                                ; &imp_dsc->imp_tpy
+00450849 8b4648          mov     eax,dword ptr [esi+48h]
+0045084c 8b00            mov     eax,dword ptr [eax]
+0045084e 334648          xor     eax,dword ptr [esi+48h]
+00450851 2b464c          sub     eax,dword ptr [esi+4Ch]
+00450854 e85fffffff      call    image00000000_00400000+0x507b8 (004507b8)              ; check againts bp on 1st 4 bytes of 'kernel32!GetProcAddress'
+00450859 25ff000000      and     eax,0FFh                                               ; return 0 - no bps
+0045085e 03f8            add     edi,eax
+00450860 8a1f            mov     bl,byte ptr [edi]                                      ; imp_dsc->imp_tpy
+00450862 47              inc     edi                                                    ; &(imp_dsc->proc_id)
+00450863 8b4640          mov     eax,dword ptr [esi+40h]
+00450866 8b00            mov     eax,dword ptr [eax]
+00450868 334640          xor     eax,dword ptr [esi+40h]
+0045086b 2b4644          sub     eax,dword ptr [esi+44h]
+0045086e e845ffffff      call    image00000000_00400000+0x507b8 (004507b8)              ; check againts bp on 1st 4 bytes of 'kernel32!LoadLibrary'
+00450873 25ff000000      and     eax,0FFh                                               ; return 0 - no bps
+00450878 03f8            add     edi,eax
+0045087a 8b442404        mov     eax,dword ptr [esp+4]
+0045087e 01442408        add     dword ptr [esp+8],eax                                  ; iat_ent = iat_addr_rva + imps->mod_base
+00450882 eb71            jmp     image00000000_00400000+0x508f5 (004508f5)
+
+; loop (proc)
+00450884 3a5e37          cmp     bl,byte ptr [esi+37h]
+00450887 7517            jne     image00000000_00400000+0x508a0 (004508a0)
+
+; imp_plain
+00450889 83c702          add     edi,2
+0045088c 8bc7            mov     eax,edi                                                ; skip imp_dsc->proc_id
+0045088e 50              push    eax
+0045088f 55              push    ebp
+00450890 8d442410        lea     eax,[esp+10h]
+00450894 50              push    eax
+00450895 56              push    esi
+00450896 e8edfcffff      call    image00000000_00400000+0x50588 (00450588)
+0045089b 83c704          add     edi,4                                                  ; skip imp_dsc->procn_addr
+0045089e eb52            jmp     image00000000_00400000+0x508f2 (004508f2)
+004508a0 3a5e39          cmp     bl,byte ptr [esi+39h]
+004508a3 7517            jne     image00000000_00400000+0x508bc (004508bc)
+
+; imp_stl_gpa
+004508a5 83c702          add     edi,2
+004508a8 8bc7            mov     eax,edi                                                ; skip imp_dsc->proc_id
+004508aa 50              push    eax
+004508ab 55              push    ebp
+004508ac 8d442410        lea     eax,[esp+10h]
+004508b0 50              push    eax
+004508b1 56              push    esi
+004508b2 e8d1fcffff      call    image00000000_00400000+0x50588 (00450588)
+004508b7 83c702          add     edi,2                                                  ; skip imp_dsc->unused
+004508ba eb36            jmp     image00000000_00400000+0x508f2 (004508f2)
+004508bc 3a5e38          cmp     bl,byte ptr [esi+38h]
+004508bf 7517            jne     image00000000_00400000+0x508d8 (004508d8)
+
+; imp_stl_re
+004508c1 83c702          add     edi,2                                                  ; skip imp_dsc->proc_id
+004508c4 8bc7            mov     eax,edi
+004508c6 50              push    eax
+004508c7 55              push    ebp
+004508c8 8d442410        lea     eax,[esp+10h]
+004508cc 50              push    eax
+004508cd 56              push    esi
+004508ce e8b5fcffff      call    image00000000_00400000+0x50588 (00450588)
+004508d3 83c702          add     edi,2                                                  ; skip imp_dsc->unused
+004508d6 eb1a            jmp     image00000000_00400000+0x508f2 (004508f2)
+
+; rest of types (imp_stl_gpa2, all key1/key2 incl. unrecognized)
+004508d8 83c702          add     edi,2                                                  ; skip imp_dsc->proc_id
+004508db 8bc7            mov     eax,edi
+004508dd 50              push    eax                                                    ; arg: &(imp_dsc->proc_dec_len)
+004508de 55              push    ebp                                                    ; arg: lib_name
+004508df 8d442410        lea     eax,[esp+10h]
+004508e3 50              push    eax                                                    ; arg: &iat_ent (will be updated to the next iat addr entry)
+004508e4 56              push    esi                                                    ; arg: imports
+004508e5 e89efcffff      call    image00000000_00400000+0x50588 (00450588)              ; write_iat_ent()
+004508ea 0fb707          movzx   eax,word ptr [edi]
+004508ed 83c002          add     eax,2
+004508f0 03f8            add     edi,eax                                                ; skip decoded proc name + its size (written on 2 bytes)
+
+; next iter (proc)
+004508f2 8a1f            mov     bl,byte ptr [edi]                                      ; get next imp_tpy
+004508f4 47              inc     edi                                                    ; skip read byte of imp_tpy
+004508f5 3a5e34          cmp     bl,byte ptr [esi+34h]
+004508f8 758a            jne     image00000000_00400000+0x50884 (00450884)              ; is a next proc: imp_dsc->imp_tpy!=imp_dsc->imp_endmrk
+
+; next iter (lib)
+004508fa 8bdf            mov     ebx,edi
+004508fc 8b03            mov     eax,dword ptr [ebx]
+004508fe 85c0            test    eax,eax
+00450900 0f8520ffffff    jne     image00000000_00400000+0x50826 (00450826)              ; process with next entry: lib->last!=0
+
+00450906 8a0424          mov     al,byte ptr [esp]
+00450909 83c40c          add     esp,0Ch
+0045090c 5d              pop     ebp
+0045090d 5f              pop     edi
+0045090e 5e              pop     esi
+0045090f 5b              pop     ebx
+00450910 c3              ret
+
+
+-------- write_iat_ent()
+
+00450588 55              push    ebp
+00450589 8bec            mov     ebp,esp
+0045058b 81c4f8feffff    add     esp,0FFFFFEF8h
+00450591 53              push    ebx
+00450592 56              push    esi
+00450593 57              push    edi
+00450594 8b5514          mov     edx,dword ptr [ebp+14h]                                ; &proc_dec_len
+00450597 8b5d08          mov     ebx,dword ptr [ebp+8]                                  ; imports
+0045059a 8dbdfafeffff    lea     edi,[ebp-106h]
+004505a0 8bc2            mov     eax,edx
+004505a2 48              dec     eax
+004505a3 83e802          sub     eax,2
+004505a6 0fb630          movzx   esi,byte ptr [eax]                                     ; imp_tpy
+004505a9 8b4510          mov     eax,dword ptr [ebp+10h]
+004505ac 83e802          sub     eax,2
+004505af 0fb600          movzx   eax,byte ptr [eax]                                     ; lib_id
+004505b2 3b432c          cmp     eax,dword ptr [ebx+2Ch]
+004505b5 7606            jbe     image00400000+0x505bd (004505bd)
+004505b7 89432c          mov     dword ptr [ebx+2Ch],eax
+004505ba eb01            jmp     image00400000+0x505bd (004505bd)
+004505bc 69              ???
+004505bd 33c0            xor     eax,eax
+004505bf 8a433b          mov     al,byte ptr [ebx+3Bh]
+004505c2 3bf0            cmp     esi,eax
+004505c4 755e            jne     image00400000+0x50624 (00450624)
+004505c6 eb01            jmp     image00400000+0x505c9 (004505c9)
+004505c8 c7              ???
+
+; imp_key2_iat (key2 decryption, resolved to proc addr)
+004505c9 668b02          mov     ax,word ptr [edx]                                      ; proc_dec_len
+004505cc 668945fa        mov     word ptr [ebp-6],ax
+004505d0 83c202          add     edx,2
+004505d3 8955fc          mov     dword ptr [ebp-4],edx
+004505d6 66817dfaff00    cmp     word ptr [ebp-6],0FFh
+004505dc 760b            jbe     image00000000_00400000+0x505e9 (004505e9)
+004505de 0fb745fa        movzx   eax,word ptr [ebp-6]
+004505e2 e85d8ffdff      call    image00000000_00400000+0x29544 (00429544)              ; malloc()
+004505e7 8bf8            mov     edi,eax
+004505e9 0fb775fa        movzx   esi,word ptr [ebp-6]
+004505ed 8bce            mov     ecx,esi
+004505ef 8b55fc          mov     edx,dword ptr [ebp-4]
+004505f2 8bc7            mov     eax,edi
+004505f4 e89fc4fdff      call    image00000000_00400000+0x2ca98 (0042ca98)              ; memcpy()
+004505f9 6a0a            push    0Ah
+004505fb 8d4b12          lea     ecx,[ebx+12h]                                          ; arg: key2
+004505fe 8bd6            mov     edx,esi
+00450600 8bc7            mov     eax,edi
+00450602 e8ad87feff      call    image00000000_00400000+0x38db4 (00438db4)              ; decode()
+00450607 897dfc          mov     dword ptr [ebp-4],edi
+0045060a 8b45fc          mov     eax,dword ptr [ebp-4]
+0045060d 50              push    eax                                                    ; arg: proc_name
+0045060e 8b4510          mov     eax,dword ptr [ebp+10h]
+00450611 50              push    eax                                                    ; arg: lib_name
+00450612 53              push    ebx                                                    ; arg: imports
+00450613 e87cfdffff      call    image00000000_00400000+0x50394 (00450394)              ; proc_addr = resolve_proc()
+00450618 8b550c          mov     edx,dword ptr [ebp+0Ch]
+0045061b 8b12            mov     edx,dword ptr [edx]
+0045061d 8902            mov     dword ptr [edx],eax                                    ; *iat_ent = proc_addr
+0045061f e974010000      jmp     image00000000_00400000+0x50798 (00450798)              ; finish
+
+00450624 33c0            xor     eax,eax
+00450626 8a4335          mov     al,byte ptr [ebx+35h]
+00450629 3bf0            cmp     esi,eax
+0045062b 7422            je      image00000000_00400000+0x5064f (0045064f)
+0045062d 33c0            xor     eax,eax
+0045062f 8a4336          mov     al,byte ptr [ebx+36h]
+00450632 3bf0            cmp     esi,eax
+00450634 7419            je      image00000000_00400000+0x5064f (0045064f)
+00450636 33c0            xor     eax,eax
+00450638 8a4337          mov     al,byte ptr [ebx+37h]
+0045063b 3bf0            cmp     esi,eax
+0045063d 7410            je      image00000000_00400000+0x5064f (0045064f)
+0045063f 33c0            xor     eax,eax
+00450641 8a433a          mov     al,byte ptr [ebx+3Ah]
+00450644 3bf0            cmp     esi,eax
+00450646 0f85b7000000    jne     image00000000_00400000+0x50703 (00450703)
+0045064c eb01            jmp     image00000000_00400000+0x5064f (0045064f)
+0045064e e8              ???
+
+; imp_key1_noiat (do not resolve)
+; imp_key1_iat (key1 decryption, resolved to proc addr)
+; imp_plain (no decryption, resolved to proc addr)
+; imp_stl_gpa2 (key1 decryption, resolved to &imp_stl_gpa2_proc())
+0045064f 33c0            xor     eax,eax
+00450651 8a4336          mov     al,byte ptr [ebx+36h]
+00450654 3bf0            cmp     esi,eax
+00450656 7409            je      image00400000+0x50661 (00450661)
+00450658 33c0            xor     eax,eax
+0045065a 8a433a          mov     al,byte ptr [ebx+3Ah]
+0045065d 3bf0            cmp     esi,eax
+0045065f 7543            jne     image00000000_00400000+0x506a4 (004506a4)
+
+; imp_key1_iat, imp_stl_gpa2
+00450661 668b02          mov     ax,word ptr [edx]
+00450664 668945fa        mov     word ptr [ebp-6],ax
+00450668 83c202          add     edx,2
+0045066b 8955fc          mov     dword ptr [ebp-4],edx
+0045066e 66817dfaff00    cmp     word ptr [ebp-6],0FFh
+00450674 760b            jbe     image00000000_00400000+0x50681 (00450681)
+00450676 0fb745fa        movzx   eax,word ptr [ebp-6]
+0045067a e8c58efdff      call    image00000000_00400000+0x29544 (00429544)              ; malloc()
+0045067f 8bf8            mov     edi,eax
+00450681 0fb74dfa        movzx   ecx,word ptr [ebp-6]
+00450685 8b55fc          mov     edx,dword ptr [ebp-4]
+00450688 8bc7            mov     eax,edi
+0045068a e809c4fdff      call    image00000000_00400000+0x2ca98 (0042ca98)              ; memcpy()
+0045068f 6a0a            push    0Ah
+00450691 8d4b08          lea     ecx,[ebx+8]                                            ; arg: key1
+00450694 0fb755fa        movzx   edx,word ptr [ebp-6]
+00450698 8bc7            mov     eax,edi
+0045069a e81587feff      call    image00000000_00400000+0x38db4 (00438db4)              ; decode()
+0045069f 897dfc          mov     dword ptr [ebp-4],edi
+004506a2 eb08            jmp     image00000000_00400000+0x506ac (004506ac)
+
+004506a4 8b02            mov     eax,dword ptr [edx]
+004506a6 8945fc          mov     dword ptr [ebp-4],eax
+004506a9 eb01            jmp     image00000000_00400000+0x506ac (004506ac)
+004506ab 9a              ???
+004506ac 33c0            xor     eax,eax
+004506ae 8a433a          mov     al,byte ptr [ebx+3Ah]
+004506b1 3bf0            cmp     esi,eax
+004506b3 7527            jne     image00400000+0x506dc (004506dc)
+
+; imp_stl_gpa2
+004506b5 8b45fc          mov     eax,dword ptr [ebp-4]
+004506b8 50              push    eax
+004506b9 8b4510          mov     eax,dword ptr [ebp+10h]
+004506bc 50              push    eax
+004506bd 53              push    ebx
+004506be e8d1fcffff      call    image00000000_00400000+0x50394 (00450394)              ; proc_addr = resolve_proc()
+004506c3 8b15fc284500    mov     edx,dword ptr [image00000000_00400000+0x528fc (004528fc)]
+004506c9 8902            mov     dword ptr [edx],eax                                    ; save proc_addr under 00454468
+004506cb b8883c4400      mov     eax,offset image00000000_00400000+0x43c88 (00443c88)
+004506d0 8b550c          mov     edx,dword ptr [ebp+0Ch]
+004506d3 8b12            mov     edx,dword ptr [edx]
+004506d5 8902            mov     dword ptr [edx],eax                                    ; *iat_ent = &imp_stl_gpa2_proc()
+004506d7 e9bc000000      jmp     image00000000_00400000+0x50798 (00450798)              ; finish
+
+; imp_key1_noiat, imp_key1_iat, imp_plain
+004506dc 33c0            xor     eax,eax
+004506de 8a4335          mov     al,byte ptr [ebx+35h]
+004506e1 3bf0            cmp     esi,eax
+004506e3 0f84af000000    je      image00000000_00400000+0x50798 (00450798)             ; do not resolve imp_key1_noiat: if (imp_tpy==imp_key1_noiat) goto finish
+
+; imp_key1_iat, imp_plain
+004506e9 8b45fc          mov     eax,dword ptr [ebp-4]
+004506ec 50              push    eax
+004506ed 8b4510          mov     eax,dword ptr [ebp+10h]
+004506f0 50              push    eax
+004506f1 53              push    ebx
+004506f2 e89dfcffff      call    image00000000_00400000+0x50394 (00450394)              ; proc_addr = resolve_proc()
+004506f7 8b550c          mov     edx,dword ptr [ebp+0Ch]
+004506fa 8b12            mov     edx,dword ptr [edx]
+004506fc 8902            mov     dword ptr [edx],eax                                    ; *iat_ent = proc_addr
+004506fe e995000000      jmp     image00000000_00400000+0x50798 (00450798)              ; finish
+
+00450703 33c0            xor     eax,eax
+00450705 8a4338          mov     al,byte ptr [ebx+38h]
+00450708 3bf0            cmp     esi,eax
+0045070a 7541            jne     image00000000_00400000+0x5074d (0045074d)
+0045070c eb01            jmp     image00000000_00400000+0x5070f (0045070f)
+0045070e 9a              ???
+
+; imp_stl_re
+0045070f b830f84400      mov     eax,offset image00400000+0x4f830 (0044f830)
+00450714 8b550c          mov     edx,dword ptr [ebp+0Ch]
+00450717 8b12            mov     edx,dword ptr [edx]
+00450719 8902            mov     dword ptr [edx],eax                                    ; *iat_ent = &call_stl_re()
+0045071b b85c094500      mov     eax,offset image00400000+0x5095c (0045095c)
+00450720 be38f84400      mov     esi,offset image00400000+0x4f838 (0044f838)
+00450725 2bc6            sub     eax,esi
+00450727 50              push    eax
+00450728 56              push    esi
+00450729 e8167dfeff      call    image00000000_00400000+0x38444 (00438444)              ; crc_check()
+0045072e 3b4328          cmp     eax,dword ptr [ebx+28h]
+; crc error
+00450731 7465            je      image00000000_00400000+0x50798 (00450798)              ; finish
+00450733 6aff            push    0FFFFFFFFh
+00450735 e8ae9dfeff      call    image00000000_00400000+0x3a4e8 (0043a4e8)              ; rand()%0xffffffff
+0045073a 8d5308          lea     edx,[ebx+8]
+0045073d 8902            mov     dword ptr [edx],eax                                    ; corrupt key1
+0045073f 6a1e            push    1Eh
+00450741 e8a29dfeff      call    image00000000_00400000+0x3a4e8 (0043a4e8)              ; rand()%0x1e
+00450746 8b550c          mov     edx,dword ptr [ebp+0Ch]
+00450749 0102            add     dword ptr [edx],eax
+0045074b eb4b            jmp     image00000000_00400000+0x50798 (00450798)              ; finish
+
+0045074d 33c0            xor     eax,eax
+0045074f 8a4339          mov     al,byte ptr [ebx+39h]
+00450752 3bf0            cmp     esi,eax
+00450754 7542            jne     image00000000_00400000+0x50798 (00450798)
+00450756 eb01            jmp     image00000000_00400000+0x50759 (00450759)
+00450758 69              ???
+
+; imp_stl_gpa
+00450759 b8603c4400      mov     eax,offset image00400000+0x43c60 (00443c60)
+0045075e 8b550c          mov     edx,dword ptr [ebp+0Ch]
+00450761 8b12            mov     edx,dword ptr [edx]
+00450763 8902            mov     dword ptr [edx],eax                                    ; *iat_ent = &imp_stl_gpa()
+00450765 b85c094500      mov     eax,offset image00400000+0x5095c (0045095c)
+0045076a be38f84400      mov     esi,offset image00400000+0x4f838 (0044f838)
+0045076f 2bc6            sub     eax,esi
+00450771 50              push    eax
+00450772 56              push    esi
+00450773 e8cc7cfeff      call    image00000000_00400000+0x38444 (00438444)
+00450778 3b4328          cmp     eax,dword ptr [ebx+28h]                                ; crc_check()
+0045077b 741b            je      image00000000_00400000+0x50798 (00450798)
+; crc error
+0045077d 6aff            push    0FFFFFFFFh
+0045077f e8649dfeff      call    image00000000_00400000+0x3a4e8 (0043a4e8)              ; rand()%0xffffffff
+00450784 8d5308          lea     edx,[ebx+8]
+00450787 8902            mov     dword ptr [edx],eax                                    ; corrupt key1
+00450789 6a32            push    32h
+0045078b e8589dfeff      call    image00000000_00400000+0x3a4e8 (0043a4e8)              ; rand()%0x32
+00450790 8b550c          mov     edx,dword ptr [ebp+0Ch]
+00450793 0102            add     dword ptr [edx],eax
+00450795 eb01            jmp     image00000000_00400000+0x50798 (00450798)              ; finish
+00450797 e9              ???
+
+; finish
+; imp_key1_noiat, imp_key2_noiat incl. unrecognized types (do not resolve)
+00450798 8b450c          mov     eax,dword ptr [ebp+0Ch]
+0045079b 830004          add     dword ptr [eax],4                                      ; point to the next iat entry: iat_ent+=4
+0045079e 8d85fafeffff    lea     eax,[ebp-106h]
+004507a4 3bf8            cmp     edi,eax
+004507a6 7407            je      image00400000+0x507af (004507af)
+004507a8 8bc7            mov     eax,edi
+004507aa e8ad8dfdff      call    image00400000+0x2955c (0042955c)                       ; free()
+004507af 5f              pop     edi
+004507b0 5e              pop     esi
+004507b1 5b              pop     ebx
+004507b2 8be5            mov     esp,ebp
+004507b4 5d              pop     ebp
+004507b5 c21000          ret     10h
+
+
+-------- imp_stl_gpa()
+Stolen implementation of GetProcAddress(HMODULE hModule, LPCSTR lpProcName)
+
+if (hModule == -1)
+then
+    This is a call for ASPR utility API. Addresses of CAPI procs
+    are stored in the capi table. lpProcName is an index in this table
+    (starting from 1 up to 15).
+else
+    redirect the call to kernel32!GetProcAddress
+
+00443c60 55              push    ebp
+00443c61 8bec            mov     ebp,esp
+00443c63 8b550c          mov     edx,dword ptr [ebp+0Ch]
+00443c66 8b4508          mov     eax,dword ptr [ebp+8]
+00443c69 3b059c254500    cmp     eax,dword ptr [image00000000_00400000+0x5259c (0045259c)]  ; capi[0] is -1 (reserved value)
+00443c6f 7509            jne     image00000000_00400000+0x43c7a (00443c7a)                  ; hModule!=capi[0]
+; ASPR utility API
+00443c71 8b04959c254500  mov     eax,dword ptr image00000000_00400000+0x5259c (0045259c)[edx*4] ; capi[lpProcName]
+00443c78 eb07            jmp     image00000000_00400000+0x43c81 (00443c81)
+; redirect to sys API
+00443c7a 52              push    edx
+00443c7b 50              push    eax
+00443c7c e8bf8cfeff      call    image00000000_00400000+0x2c940 (0042c940)              ; kernel32!GetProcAddress
+00443c81 5d              pop     ebp
+00443c82 c20800          ret     8
+
+
+-------- imp_stl_gpa2_proc()
+Looks like alternative version of resolving imported proc addresses.
+Gets 1 argument 'arg' as a pointer to the following struct:
+struct {
+    HMODULE *p_hModule;
+    LPCSTR *p_lpProcName;
+};
+
+00443c88 55              push    ebp
+00443c89 8bec            mov     ebp,esp
+00443c8b 8b4508          mov     eax,dword ptr [ebp+8]
+00443c8e 8b10            mov     edx,dword ptr [eax]
+00443c90 8b12            mov     edx,dword ptr [edx]
+00443c92 3b159c254500    cmp     edx,dword ptr [image00000000_00400000+0x5259c (0045259c)]
+00443c98 750e            jne     image00000000_00400000+0x43ca8 (00443ca8)                      ; *(arg->p_hModule)!=capi[0]
+00443c9a 8b4004          mov     eax,dword ptr [eax+4]
+00443c9d 8b00            mov     eax,dword ptr [eax]
+00443c9f 8b04859c254500  mov     eax,dword ptr image00000000_00400000+0x5259c (0045259c)[eax*4] ; capi[*(arg->p_lpProcName)]
+00443ca6 eb07            jmp     image00000000_00400000+0x43caf (00443caf)
+00443ca8 50              push    eax
+00443ca9 ff1568444500    call    dword ptr [image00000000_00400000+0x54468 (00454468)]  ; call original proc resolved during IAT processing
+00443caf 5d              pop     ebp
+00443cb0 c20400          ret     4
+
+
+-------- call_stl_re()
+
+0044f830 e8c3ffffff      call    image00000000_00400000+0x4f7f8 (0044f7f8)
+0044f835 ffe0            jmp     eax                                                        ; call rise exception (internal impl. or via kernel32!RaiseException)
+
+; looks stolen (by the code section) kernel32 imports (in ASPR import table)
+0044f7f8 8b15c0274500    mov     edx,dword ptr [image00000000_00400000+0x527c0 (004527c0)]
+0044f7fe 8b520a          mov     edx,dword ptr [edx+0Ah]                                    ; code sect. RVA
+0044f801 a14c294500      mov     eax,dword ptr [image00000000_00400000+0x5294c (0045294c)]
+0044f806 8b00            mov     eax,dword ptr [eax]
+0044f808 0310            add     edx,dword ptr [eax]                                        ; arg: chk_area = code sect. addr
+0044f80a 8b0dc0274500    mov     ecx,dword ptr [image00000000_00400000+0x527c0 (004527c0)]
+0044f810 8b490e          mov     ecx,dword ptr [ecx+0Eh]                                    ; arg: chk_area_len = length of checked code
+0044f813 a14c294500      mov     eax,dword ptr [image00000000_00400000+0x5294c (0045294c)]
+0044f818 8b00            mov     eax,dword ptr [eax]
+0044f81a 8b00            mov     eax,dword ptr [eax]                                        ; arg: mod_base
+0044f81c e883fcffff      call    image00000000_00400000+0x4f4a4 (0044f4a4)                  ; look a handler in the code section; if found return it
+0044f821 85c0            test    eax,eax
+0044f823 7507            jne     image00000000_00400000+0x4f82c (0044f82c)
+; standard kernel32 impl. (kernel32!RaiseException)
+0044f825 a148284500      mov     eax,dword ptr [image00000000_00400000+0x52848 (00452848)]  ; returns 004539d8
+0044f82a 8b00            mov     eax,dword ptr [eax]                                        ; return kernel32!RaiseException
+; ok
+0044f82c c3              ret
+
+; looks for stolen kernel32.dll import (in import directory of ASPR protector) in
+; the area started from chk_area(edx) pointer with length chk_area_len(ecx)
+;
+; Since ASPR imports only the following kernel32 procs:
+;   GetModuleHandleA
+;   LoadLibraryA
+;   GetProcAddress
+;   RaiseException
+;
+; GetProcAddress has its internal impl. in ASPR, there would be difficult to write own impl.
+; of GetModuleHandleA or LoadLibraryA, it looks like only RaiseException may have the internal
+; implementation searched by the proc
+;
+0044f4a4 53              push    ebx
+0044f4a5 56              push    esi
+0044f4a6 57              push    edi
+0044f4a7 55              push    ebp
+0044f4a8 83c4f0          add     esp,0FFFFFFF0h
+0044f4ab 8bf1            mov     esi,ecx                                                    ; chk_area_len
+0044f4ad 8bda            mov     ebx,edx                                                    ; chk_area
+0044f4af 890424          mov     dword ptr [esp],eax                                        ; mod_base
+0044f4b2 33c0            xor     eax,eax
+0044f4b4 89442404        mov     dword ptr [esp+4],eax                                      ; ret=0 (not found)
+0044f4b8 8b0424          mov     eax,dword ptr [esp]
+0044f4bb e8a0ffffff      call    image00000000_00400000+0x4f460 (0044f460)                  ; PE_header
+0044f4c0 85c0            test    eax,eax
+0044f4c2 7465            je      image00000000_00400000+0x4f529 (0044f529)                  ; finish
+0044f4c4 8b9080000000    mov     edx,dword ptr [eax+80h]
+0044f4ca 89542408        mov     dword ptr [esp+8],edx                                      ; ImportTab.rva
+0044f4ce 8b9084000000    mov     edx,dword ptr [eax+84h]
+0044f4d4 8954240c        mov     dword ptr [esp+0Ch],edx                                    ; ImportTab.size
+0044f4d8 8b442408        mov     eax,dword ptr [esp+8]
+0044f4dc 85c0            test    eax,eax
+0044f4de 7449            je      image00000000_00400000+0x4f529 (0044f529)                  ; if ImportTab not exist then finish
+0044f4e0 8b3c24          mov     edi,dword ptr [esp]
+0044f4e3 03f8            add     edi,eax                                                    ; idt = ImportTab+mod_base  (IDT of protected module)
+0044f4e5 eb3b            jmp     image00000000_00400000+0x4f522 (0044f522)
+loop_lib:
+0044f4e7 8be8            mov     ebp,eax
+0044f4e9 032c24          add     ebp,dword ptr [esp]                                        ; dll_name = idt->Name+mod_base
+0044f4ec ba38f54400      mov     edx,offset image00000000_00400000+0x4f538 (0044f538)       ; "kernel32.dll"
+0044f4f1 8bc5            mov     eax,ebp
+0044f4f3 e8c8e8fdff      call    image00000000_00400000+0x2ddc0 (0042ddc0)                  ; cmpstr(dll_name, "kernel32.dll")
+0044f4f8 85c0            test    eax,eax
+0044f4fa 7523            jne     image00000000_00400000+0x4f51f (0044f51f)
+; dll_name is "kernel32.dll"
+0044f4fc 8b4710          mov     eax,dword ptr [edi+10h]
+0044f4ff 030424          add     eax,dword ptr [esp]                                        ; iat = idt->FirstThunk + mod_base
+0044f502 eb16            jmp     image00000000_00400000+0x4f51a (0044f51a)
+loop_iat:
+0044f504 8b10            mov     edx,dword ptr [eax]                                        ; proc = *iat
+0044f506 3bda            cmp     ebx,edx
+0044f508 730d            jae     image00000000_00400000+0x4f517 (0044f517)                  ; check bottom limit
+0044f50a 8d0c33          lea     ecx,[ebx+esi]
+0044f50d 3bd1            cmp     edx,ecx
+0044f50f 7306            jae     image00000000_00400000+0x4f517 (0044f517)                  ; check upper limit
+0044f511 89542404        mov     dword ptr [esp+4],edx
+0044f515 eb12            jmp     image00000000_00400000+0x4f529 (0044f529)                  ; found: ret=proc; goto finish
+0044f517 83c004          add     eax,4                                                      ; next iat entry: iat+=4
+; next iter (loop_iat)
+0044f51a 833800          cmp     dword ptr [eax],0
+0044f51d 75e5            jne     image00000000_00400000+0x4f504 (0044f504)                  ; is last entry in IAT
+0044f51f 83c714          add     edi,14h                                                    ; idt+sizeof(idt entry)
+; next iter (loop_lib)
+0044f522 8b470c          mov     eax,dword ptr [edi+0Ch]
+0044f525 85c0            test    eax,eax
+0044f527 75be            jne     image00000000_00400000+0x4f4e7 (0044f4e7)                  ; if (idt->Name!=NULL) goto loop_lib
+0044f529 8b442404        mov     eax,dword ptr [esp+4]
+0044f52d 83c410          add     esp,10h
+0044f530 5d              pop     ebp
+0044f531 5f              pop     edi
+0044f532 5e              pop     esi
+0044f533 5b              pop     ebx
+0044f534 c3              ret

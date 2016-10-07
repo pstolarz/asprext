@@ -1,0 +1,2134 @@
+0:000> !aspr_imports
+Library: USER32.dll [BD57]; mod base: 7e410000; ASPR maintained IAT addr: 0056d668
+  GetDlgCtrlID [5DCB]; type: K1 encrypted, IAT; proc addr: 7e42af1b
+  LoadStringW [3020]; type: K1 encrypted, IAT; proc addr: 7e419e36
+  CreateAcceleratorTableW [C1C0]; type: K1 encrypted, IAT; proc addr: 7e41d9bb
+  CopyAcceleratorTableW [E157]; type: K1 encrypted, IAT; proc addr: 7e44fc5e
+  GetMenuItemInfoW [0450]; type: K1 encrypted, IAT; proc addr: 7e41f72a
+  GetMessagePos [2B5F]; type: K1 encrypted, IAT; proc addr: 7e42996c
+  DestroyAcceleratorTable [E300]; type: K1 encrypted, IAT; proc addr: 7e43fe8d
+  AdjustWindowRectEx [8766]; type: K1 encrypted, IAT; proc addr: 7e42e7ea
+  keybd_event [AF5C]; type: K1 encrypted, IAT; proc addr: 7e466783
+  UnpackDDElParam [C72E]; type: K1 encrypted, IAT; proc addr: 7e45b9c5
+  IsWindowUnicode [FC9B]; type: K1 encrypted, IAT; proc addr: 7e429f72
+  ReuseDDElParam [E6F9]; type: K1 encrypted, IAT; proc addr: 7e45badb
+  GetWindowLongW [DCC7]; type: K1 encrypted, IAT; proc addr: 7e4188a6
+  TranslateAcceleratorW [F0AC]; type: K1 encrypted, IAT; proc addr: 7e41941e
+  TranslateMDISysAccel [C7E2]; type: K1 encrypted, IAT; proc addr: 7e42fb2f
+  WindowFromPoint [D51D]; type: K1 encrypted, IAT; proc addr: 7e429766
+  IsChild [85F5]; type: K1 encrypted, IAT; proc addr: 7e41970e
+  GetKeyboardLayout [57C3]; type: K1 encrypted, IAT; proc addr: 7e429bf6
+  SetLayeredWindowAttributes [890D]; type: K1 encrypted, IAT; proc addr: 7e42ce12
+  GetMenuInfo [8E4F]; type: K1 encrypted, IAT; proc addr: 7e456725
+  SetMenuInfo [1E95]; type: K1 encrypted, IAT; proc addr: 7e46523c
+  SetParent [58CC]; type: K1 encrypted, IAT; proc addr: 7e42c7f9
+  IsWindowVisible [4F90]; type: K1 encrypted, IAT; proc addr: 7e429e3d
+  ModifyMenuW [6853]; type: K1 encrypted, IAT; proc addr: 7e41f51f
+  SetMenuItemInfoW [3D9B]; type: K1 encrypted, IAT; proc addr: 7e423281
+  GetMenuStringW [3982]; type: K1 encrypted, IAT; proc addr: 7e4564e4
+  GetMenuState [D6C0]; type: K1 encrypted, IAT; proc addr: 7e41f967
+  CreatePopupMenu [A534]; type: K1 encrypted, IAT; proc addr: 7e41f601
+  GetMenu [EC80]; type: K1 encrypted, IAT; proc addr: 7e4314ba
+  EnableMenuItem [A52A]; type: K1 encrypted, IAT; proc addr: 7e42d2c4
+  CopyRect [A2A7]; type: K1 encrypted, IAT; proc addr: 7e42a042
+  InvertRect [739D]; type: K1 encrypted, IAT; proc addr: 7e44fc72
+  GetCaretPos [D8BA]; type: K1 encrypted, IAT; proc addr: 7e42f6a1
+  SetCaretPos [9400]; type: K1 encrypted, IAT; proc addr: 7e42a962
+  ShowCaret [3526]; type: K1 encrypted, IAT; proc addr: 7e42b09a
+  HideCaret [6858]; type: K1 encrypted, IAT; proc addr: 7e42b086
+  CreateCaret [E378]; type: K1 encrypted, IAT; proc addr: 7e42a94e
+  OpenClipboard [09E6]; type: K1 encrypted, IAT; proc addr: 7e430277
+  LoadImageW [774A]; type: K1 encrypted, IAT; proc addr: 7e427b97
+  IsCharUpperW [FD24]; type: K1 encrypted, IAT; proc addr: 7e46a1df
+  IsCharLowerW [CBA1]; type: K1 encrypted, IAT; proc addr: 7e44f3b2
+  IsWindowEnabled [5849]; type: K1 encrypted, IAT; proc addr: 7e42977a
+  GetActiveWindow [B2F1]; type: K1 encrypted, IAT; proc addr: 7e42c2e8
+  SetActiveWindow [E0BC]; type: K1 encrypted, IAT; proc addr: 7e427822
+  GetSysColor [EE0C]; type: K1 encrypted, IAT; proc addr: 7e418e78
+  GetSysColorBrush [CF53]; type: K1 encrypted, IAT; proc addr: 7e418eab
+  EmptyClipboard [B89E]; type: K1 encrypted, IAT; proc addr: 7e430d96
+  SetClipboardData [2427]; type: K1 encrypted, IAT; proc addr: 7e430f9e
+  CloseClipboard [5802]; type: K1 encrypted, IAT; proc addr: 7e430265
+  DrawTextW [0A59]; type: K1 encrypted, IAT; proc addr: 7e42d7e2
+  FindWindowW [0D9B]; type: K1 encrypted, IAT; proc addr: 7e42c9c3
+  GetFocus [913B]; type: K1 encrypted, IAT; proc addr: 7e4298c8
+  SetWindowTextW [A7F2]; type: K1 encrypted, IAT; proc addr: 7e42960e
+  GetWindowTextLengthW [437D]; type: K1 encrypted, IAT; proc addr: 7e427836
+  GetWindowTextW [3E4E]; type: K1 encrypted, IAT; proc addr: 7e42a5cd
+  IsCharAlphaNumericW [B675]; type: K1 encrypted, IAT; proc addr: 7e421ac2
+  CharUpperW [7875]; type: K1 encrypted, IAT; proc addr: 7e4190d2
+  CheckMenuItem [5AA4]; type: K1 encrypted, IAT; proc addr: 7e431abd
+  AppendMenuW [B0DD]; type: K1 encrypted, IAT; proc addr: 7e4232ba
+  GetTabbedTextExtentW [73FD]; type: K1 encrypted, IAT; proc addr: 7e45a677
+  ClientToScreen [5182]; type: K1 encrypted, IAT; proc addr: 7e429b60
+  DialogBoxParamW [7B9E]; type: K1 encrypted, IAT; proc addr: 7e4247ab
+  IsWindow [9406]; type: K1 encrypted, IAT; proc addr: 7e429313
+  DestroyMenu [15F6]; type: K1 encrypted, IAT; proc addr: 7e42d39d
+  LoadMenuW [5BF3]; type: K1 encrypted, IAT; proc addr: 7e42eb48
+  TrackPopupMenuEx [8F91]; type: K1 encrypted, IAT; proc addr: 7e46cf62
+  GetDlgItem [C639]; type: K1 encrypted, IAT; proc addr: 7e42436e
+  SetWindowLongW [4804]; type: K1 encrypted, IAT; proc addr: 7e42c2bb
+  GetDesktopWindow [533A]; type: K1 encrypted, IAT; proc addr: 7e42d1d2
+  SetForegroundWindow [E5A6]; type: K1 encrypted, IAT; proc addr: 7e4242ed
+  DrawMenuBar [D0F9]; type: K1 encrypted, IAT; proc addr: 7e44f69c
+  InsertMenuW [6E21]; type: K1 encrypted, IAT; proc addr: 7e41f60e
+  GetSubMenu [715D]; type: K1 encrypted, IAT; proc addr: 7e42d896
+  DrawFocusRect [BEF8]; type: K1 encrypted, IAT; proc addr: 7e42f94f
+  GetMenuItemCount [5474]; type: K1 encrypted, IAT; proc addr: 7e42ef1c
+  DeleteMenu [2EA2]; type: K1 encrypted, IAT; proc addr: 7e42ced3
+  MessageBeep [5139]; type: K1 encrypted, IAT; proc addr: 7e431f7b
+  EndDialog [A9BB]; type: K1 encrypted, IAT; proc addr: 7e424a4e
+  CallWindowProcW [7F5E]; type: K1 encrypted, IAT; proc addr: 7e42a01e
+  SystemParametersInfoW [3985]; type: K1 encrypted, IAT; proc addr: 7e419f06
+  SetWindowPos [02F5]; type: K1 encrypted, IAT; proc addr: 7e4299f3
+  DdeUninitialize [D7AA]; type: K1 encrypted, IAT; proc addr: 7e45a732
+  DdeClientTransaction [6F13]; type: K1 encrypted, IAT; proc addr: 7e46a6a2
+  DdeDisconnect [98FD]; type: K1 encrypted, IAT; proc addr: 7e4583c4
+  DdeCreateStringHandleW [CEC4]; type: K1 encrypted, IAT; proc addr: 7e420447
+  DdeConnect [DBB4]; type: K1 encrypted, IAT; proc addr: 7e4581c3
+  DdeFreeStringHandle [93ED]; type: K1 encrypted, IAT; proc addr: 7e461f70
+  DdeInitializeW [1742]; type: K1 encrypted, IAT; proc addr: 7e4206d7
+  SetWindowsHookExW [61E2]; type: K1 encrypted, IAT; proc addr: 7e42820f
+  CallNextHookEx [7AE8]; type: K1 encrypted, IAT; proc addr: 7e42b3c6
+  GetClassNameW [75E3]; type: K1 encrypted, IAT; proc addr: 7e429d12
+  SetPropW [8593]; type: K1 encrypted, IAT; proc addr: 7e42c0b9
+  GetPropW [61C7]; type: K1 encrypted, IAT; proc addr: 7e4294b3
+  GetWindow [7C9F]; type: K1 encrypted, IAT; proc addr: 7e429655
+  GetDC [7565]; type: K1 encrypted, IAT; proc addr: 7e4186c7
+  ReleaseDC [F08E]; type: K1 encrypted, IAT; proc addr: 7e41869d
+  InvalidateRgn [A1AE]; type: K1 encrypted, IAT; proc addr: 7e42cdfe
+  GetCapture [A5E9]; type: K1 encrypted, IAT; proc addr: 7e4194da
+  KillTimer [6475]; type: K1 encrypted, IAT; proc addr: 7e418c42
+  SetTimer [0DB3]; type: K1 encrypted, IAT; proc addr: 7e418c2e
+  RegisterWindowMessageW [764B]; type: K1 encrypted, IAT; proc addr: 7e41af34
+  GetKeyState [4C3B]; type: K1 encrypted, IAT; proc addr: 7e429ed9
+  SetClipboardViewer [1407]; type: K1 encrypted, IAT; proc addr: 7e430473
+  ChangeClipboardChain [6E33]; type: K1 encrypted, IAT; proc addr: 7e430487
+  IsZoomed [E3C8]; type: K1 encrypted, IAT; proc addr: 7e429c8a
+  IsIconic [2B57]; type: K1 encrypted, IAT; proc addr: 7e4297ff
+  IsClipboardFormatAvailable [319C]; type: K1 encrypted, IAT; proc addr: 7e42f166
+  GetClassLongW [42FF]; type: K1 encrypted, IAT; proc addr: 7e429ae9
+  SetClassLongW [A203]; type: K1 encrypted, IAT; proc addr: 7e41e14b
+  WinHelpW [6A7C]; type: K1 encrypted, IAT; proc addr: 7e461bd4
+  GetCursorPos [111A]; type: K1 encrypted, IAT; proc addr: 7e42974e
+  PtInRect [BE0E]; type: K1 encrypted, IAT; proc addr: 7e429719
+  TrackMouseEvent [3306]; type: K1 encrypted, IAT; proc addr: 7e42c80d
+  ReleaseCapture [FCCF]; type: K1 encrypted, IAT; proc addr: 7e42c37a
+  OffsetRect [3EEF]; type: K1 encrypted, IAT; proc addr: 7e429011
+  SetRect [5CEF]; type: K1 encrypted, IAT; proc addr: 7e428fa6
+  InflateRect [87C4]; type: K1 encrypted, IAT; proc addr: 7e4298d5
+  FillRect [C90B]; type: K1 encrypted, IAT; proc addr: 7e429c2f
+  TabbedTextOutW [F666]; type: K1 encrypted, IAT; proc addr: 7e45a5b6
+  GetParent [A891]; type: K1 encrypted, IAT; proc addr: 7e42910f
+  SetCapture [EF1A]; type: K1 encrypted, IAT; proc addr: 7e42c35e
+  InvalidateRect [4467]; type: K1 encrypted, IAT; proc addr: 7e428fd5
+  UpdateWindow [D84A]; type: K1 encrypted, IAT; proc addr: 7e42aeab
+  ScreenToClient [364F]; type: K1 encrypted, IAT; proc addr: 7e4297a0
+  PostMessageW [4B06]; type: K1 encrypted, IAT; proc addr: 7e418ccb
+  EnableWindow [6CC5]; type: K1 encrypted, IAT; proc addr: 7e429849
+  GetClientRect [7DBB]; type: K1 encrypted, IAT; proc addr: 7e42908e
+  GetWindowRect [F63F]; type: K1 encrypted, IAT; proc addr: 7e4290b4
+  GetKeyNameTextW [C822]; type: K1 encrypted, IAT; proc addr: 7e45958f
+  MapVirtualKeyW [4E21]; type: K1 encrypted, IAT; proc addr: 7e45029e
+  LoadAcceleratorsW [C34F]; type: K1 encrypted, IAT; proc addr: 7e42ee76
+  DestroyIcon [1ABE]; type: K1 encrypted, IAT; proc addr: 7e42d312
+  SendDlgItemMessageA [9365]; type: K1 encrypted, IAT; proc addr: 7e43c2e7
+  SendDlgItemMessageW [7F39]; type: K1 encrypted, IAT; proc addr: 7e4273cc
+  LoadIconW [E86A]; type: K1 encrypted, IAT; proc addr: 7e42e8bc
+  LoadBitmapW [2535]; type: K1 encrypted, IAT; proc addr: 7e420242
+  GetMenuCheckMarkDimensions [4A1C]; type: K1 encrypted, IAT; proc addr: 7e4502f9
+  SetMenuItemBitmaps [417B]; type: K1 encrypted, IAT; proc addr: 7e44fab2
+  SendMessageW [DEE0]; type: K1 encrypted, IAT; proc addr: 7e42929a
+  SetDlgItemTextW [E42E]; type: K1 encrypted, IAT; proc addr: 7e42736c
+  IsDialogMessageW [2025]; type: K1 encrypted, IAT; proc addr: 7e427424
+  MoveWindow [302D]; type: K1 encrypted, IAT; proc addr: 7e42b29e
+  LoadCursorW [66C9]; type: K1 encrypted, IAT; proc addr: 7e419d69
+  CharNextW [6E9D]; type: K1 encrypted, IAT; proc addr: 7e42b1b0
+  CharPrevW [F86B]; type: K1 encrypted, IAT; proc addr: 7e42d607
+  GetClipboardData [AAE0]; type: K1 encrypted, IAT; proc addr: 7e430dba
+  GetForegroundWindow [D2A5]; type: K1 encrypted, IAT; proc addr: 7e429823
+  DefWindowProcW [6869]; type: K1 encrypted, IAT; proc addr: 7e428d20
+  SetCursor [EBA7]; type: K1 encrypted, IAT; proc addr: 7e429930
+  SetCursorPos [6718]; type: K1 encrypted, IAT; proc addr: 7e4561b3
+  CharNextExA [8FB2]; type: K1 encrypted, IAT; proc addr: 7e46984e
+  RemovePropW [1C3A]; type: K1 encrypted, IAT; proc addr: 7e42c076
+  SetFocus [F956]; type: K1 encrypted, IAT; proc addr: 7e42b112
+  GetLastActivePopup [D536]; type: K1 encrypted, IAT; proc addr: 7e43157a
+  DispatchMessageW [CE8A]; type: K1 encrypted, IAT; proc addr: 7e418a01
+  GetTopWindow [3688]; type: K1 encrypted, IAT; proc addr: 7e42f25b
+  UnhookWindowsHookEx [DEF7]; type: K1 encrypted, IAT; proc addr: 7e42d5f3
+  PeekMessageW [44A8]; type: K1 encrypted, IAT; proc addr: 7e41929b
+  MapWindowPoints [E802]; type: K1 encrypted, IAT; proc addr: 7e429507
+  ScrollWindow [2DE2]; type: K1 encrypted, IAT; proc addr: 7e42ff39
+  TrackPopupMenu [5188]; type: K1 encrypted, IAT; proc addr: 7e46531e
+  SetMenu [F351]; type: K1 encrypted, IAT; proc addr: 7e44f3f6
+  SetScrollRange [5A40]; type: K1 encrypted, IAT; proc addr: 7e42f99b
+  GetScrollRange [A47B]; type: K1 encrypted, IAT; proc addr: 7e42f787
+  SetScrollPos [1541]; type: K1 encrypted, IAT; proc addr: 7e42f750
+  GetScrollPos [743B]; type: K1 encrypted, IAT; proc addr: 7e42f704
+  ShowScrollBar [7A1C]; type: K1 encrypted, IAT; proc addr: 7e42f2f2
+  MessageBoxW [4EFC]; type: K1 encrypted, IAT; proc addr: 7e466534
+  CreateWindowExW [AF8F]; type: K1 encrypted, IAT; proc addr: 7e42d0a3
+  GetClassInfoExW [197D]; type: K1 encrypted, IAT; proc addr: 7e41debc
+  GetClassInfoW [34BA]; type: K1 encrypted, IAT; proc addr: 7e42e81e
+  RegisterClassW [2C87]; type: K1 encrypted, IAT; proc addr: 7e41a39a
+  EqualRect [AF54]; type: K1 encrypted, IAT; proc addr: 7e429e81
+  DeferWindowPos [4D67]; type: K1 encrypted, IAT; proc addr: 7e42afdb
+  GetScrollInfo [7D65]; type: K1 encrypted, IAT; proc addr: 7e42dfe2
+  SetScrollInfo [1C08]; type: K1 encrypted, IAT; proc addr: 7e419056
+  SetWindowPlacement [C75E]; type: K1 encrypted, IAT; proc addr: 7e41de46
+  IntersectRect [06F6]; type: K1 encrypted, IAT; proc addr: 7e428f1f
+  SystemParametersInfoA [43AF]; type: K1 encrypted, IAT; proc addr: 7e42deb2
+  GetWindowPlacement [1AC1]; type: K1 encrypted, IAT; proc addr: 7e4303c7
+  GetSystemMetrics [3728]; type: K1 encrypted, IAT; proc addr: 7e418f9c
+  CreateDialogIndirectParamW [C574]; type: K1 encrypted, IAT; proc addr: 7e43f01f
+  DestroyWindow [0DC8]; type: K1 encrypted, IAT; proc addr: 7e42b19c
+  GetNextDlgTabItem [B815]; type: K1 encrypted, IAT; proc addr: 7e4237c3
+  ShowWindow [3DCE]; type: K1 encrypted, IAT; proc addr: 7e42af56
+  ScrollWindowEx [BF6F]; type: K1 encrypted, IAT; proc addr: 7e430187
+  RemoveMenu [931C]; type: K1 encrypted, IAT; proc addr: 7e41f716
+  DrawTextExW [8A96]; type: K1 encrypted, IAT; proc addr: 7e42b415
+  GrayStringW [9353]; type: K1 encrypted, IAT; proc addr: 7e455b35
+  GetWindowDC [30DF]; type: K1 encrypted, IAT; proc addr: 7e419021
+  BeginPaint [F331]; type: K1 encrypted, IAT; proc addr: 7e428fe9
+  EndPaint [B24B]; type: K1 encrypted, IAT; proc addr: 7e428ffd
+  GetWindowThreadProcessId [2417]; type: K1 encrypted, IAT; proc addr: 7e418a80
+  DefFrameProcW [F490]; type: K1 encrypted, IAT; proc addr: 7e430833
+  DefMDIChildProcW [64C1]; type: K1 encrypted, IAT; proc addr: 7e430a47
+  RedrawWindow [B444]; type: K1 encrypted, IAT; proc addr: 7e429944
+  InsertMenuItemW [8A94]; type: K1 encrypted, IAT; proc addr: 7e41f5c8
+  ValidateRect [D4D7]; type: K1 encrypted, IAT; proc addr: 7e42fbbd
+  TranslateMessage [7914]; type: K1 encrypted, IAT; proc addr: 7e418bf6
+  GetMessageW [3B62]; type: K1 encrypted, IAT; proc addr: 7e4191c6
+  ShowOwnedPopups [035A]; type: K1 encrypted, IAT; proc addr: 7e4561e6
+  IsRectEmpty [3F74]; type: K1 encrypted, IAT; proc addr: 7e4298fe
+  GetSystemMenu [4FA1]; type: K1 encrypted, IAT; proc addr: 7e42b222
+  WaitMessage [8A60]; type: K1 encrypted, IAT; proc addr: 7e41940c
+  DestroyCursor [D74A]; type: K1 encrypted, IAT; proc addr: 7e42d312
+  DrawIcon [48C2]; type: K1 encrypted, IAT; proc addr: 7e43d06c
+  SetWindowRgn [55E5]; type: K1 encrypted, IAT; proc addr: 7e42e528
+  UnregisterClassW [AB27]; type: K1 encrypted, IAT; proc addr: 7e419aa4
+  PostThreadMessageW [7818]; type: K1 encrypted, IAT; proc addr: 7e4277b8
+  GetDCEx [2A27]; type: K1 encrypted, IAT; proc addr: 7e42c595
+  LockWindowUpdate [6F84]; type: K1 encrypted, IAT; proc addr: 7e439636
+  MapDialogRect [A751]; type: K1 encrypted, IAT; proc addr: 7e45be4c
+  SetWindowContextHelpId [CAFC]; type: K1 encrypted, IAT; proc addr: 7e43fdd9
+  CreateMenu [A7B7]; type: K1 encrypted, IAT; proc addr: 7e42f306
+  GetTabbedTextExtentA [A29F]; type: K1 encrypted, IAT; proc addr: 7e45a6a1
+  GetNextDlgGroupItem [55FC]; type: K1 encrypted, IAT; proc addr: 7e45bf27
+  GetMessageTime [5DB9]; type: K1 encrypted, IAT; proc addr: 7e429de0
+  GetDoubleClickTime [092B]; type: K1 encrypted, IAT; proc addr: 7e42d86b
+  RegisterClipboardFormatW [A476]; type: K1 encrypted, IAT; proc addr: 7e41af34
+  BringWindowToTop [8AD1]; type: K1 encrypted, IAT; proc addr: 7e4303a8
+  EndDeferWindowPos [81D1]; type: K1 encrypted, IAT; proc addr: 7e42af8d
+  BeginDeferWindowPos [9203]; type: K1 encrypted, IAT; proc addr: 7e42afb9
+  PostQuitMessage [E240]; type: K1 encrypted, IAT; proc addr: 7e42ca5a
+  CharLowerW [B255]; type: K1 encrypted, IAT; proc addr: 7e42b24c
+  SetRectEmpty [8A08]; type: K1 encrypted, IAT; proc addr: 7e429cba
+  GetMenuItemID [A4F8]; type: K1 encrypted, IAT; proc addr: 7e44f1c8
+Library: COMCTL32.dll [4F92]; mod base: 773d0000; ASPR maintained IAT addr: 0056d088
+  ImageList_DrawEx [E248]; type: K2 encrypted, IAT; proc addr: 773e53d0
+  ImageList_DrawIndirect [2771]; type: K2 encrypted, IAT; proc addr: 773e553d
+  ImageList_Draw [A617]; type: K2 encrypted, IAT; proc addr: 773e5468
+Library: WSOCK32.dll [24FB]; mod base: 71ad0000; ASPR maintained IAT addr: 0056da50
+  ordinal #23 [FEA6]; type: plain, IAT; proc addr: 71ad2e1b
+  ordinal #21 [194A]; type: plain, IAT; proc addr: 71ad2e30
+  ordinal #3 [CE3E]; type: plain, IAT; proc addr: 71ad2c01
+  ordinal #22 [18B4]; type: plain, IAT; proc addr: 71ad2e0b
+  ordinal #111 [B379]; type: plain, IAT; proc addr: 71ad2b1b
+  ordinal #116 [900C]; type: plain, IAT; proc addr: 71ad2b09
+  ordinal #1 [C013]; type: plain, IAT; proc addr: 71ad2be7
+  ordinal #2 [C3BF]; type: plain, IAT; proc addr: 71ad2bf5
+  ordinal #6 [DCD5]; type: plain, IAT; proc addr: 71ad2cf2
+  ordinal #13 [F541]; type: plain, IAT; proc addr: 71ad2d69
+  ordinal #4 [14D3]; type: plain, IAT; proc addr: 71ad2c14
+  ordinal #10 [46CE]; type: plain, IAT; proc addr: 71ad2d1f
+  ordinal #52 [218B]; type: plain, IAT; proc addr: 71ad2c4a
+  ordinal #55 [F79B]; type: plain, IAT; proc addr: 71ad2cc8
+  ordinal #9 [1570]; type: plain, IAT; proc addr: 71ad2d12
+  ordinal #18 [2BDE]; type: plain, IAT; proc addr: 71ad2dcf
+  ordinal #115 [8579]; type: plain, IAT; proc addr: 71ad2b8a
+  ordinal #19 [0432]; type: plain, IAT; proc addr: 71ad2ddd
+  ordinal #16 [63C4]; type: plain, IAT; proc addr: 71ad2e70
+Library: VERSION.dll [2300]; mod base: 77c00000; ASPR maintained IAT addr: 0056da2c
+  GetFileVersionInfoSizeW [DE4F]; type: K1 encrypted, IAT; proc addr: 77c0138c
+  GetFileVersionInfoW [2C81]; type: K1 encrypted, IAT; proc addr: 77c0166f
+  VerQueryValueW [C512]; type: K1 encrypted, IAT; proc addr: 77c01805
+Library: IMM32.dll [25B1]; mod base: 76390000; ASPR maintained IAT addr: 0056d228
+  ImmGetContext [E392]; type: K1 encrypted, IAT; proc addr: 763923a1
+  ImmGetCompositionStringW [682B]; type: K1 encrypted, IAT; proc addr: 7639548a
+  ImmGetCompositionStringA [FCAC]; type: K1 encrypted, IAT; proc addr: 76395b62
+  ImmEscapeW [FC27]; type: K1 encrypted, IAT; proc addr: 76397ea1
+  ImmEscapeA [70D8]; type: K1 encrypted, IAT; proc addr: 76397c25
+  ImmSetCompositionWindow [3192]; type: K1 encrypted, IAT; proc addr: 76394dd6
+  ImmSetCompositionFontW [4BA0]; type: K1 encrypted, IAT; proc addr: 763949ce
+  ImmReleaseContext [964E]; type: K1 encrypted, IAT; proc addr: 763929d3
+  ImmGetConversionStatus [AF59]; type: K1 encrypted, IAT; proc addr: 76393a86
+  ImmSetCandidateWindow [3E84]; type: K1 encrypted, IAT; proc addr: 76394e54
+Library: UxTheme.dll [572F]; mod base: 5ad70000; ASPR maintained IAT addr: 0056da0c
+  SetWindowTheme [0341]; type: K1 encrypted, IAT; proc addr: 5ad7b39e
+  GetThemeBackgroundContentRect [12B6]; type: K1 encrypted, IAT; proc addr: 5ad73e8a
+  IsAppThemed [7F68]; type: K1 encrypted, IAT; proc addr: 5ad78b4d
+  CloseThemeData [A6D5]; type: K1 encrypted, IAT; proc addr: 5ad74773
+  OpenThemeData [E9A4]; type: K1 encrypted, IAT; proc addr: 5ad773b8
+  DrawThemeBackground [9A75]; type: K1 encrypted, IAT; proc addr: 5ad72bef
+  EnableThemeDialogTexture [E3F7]; type: K1 encrypted, IAT; proc addr: 5ad7b45b
+Library: MPR.dll [BC33]; mod base: 71b20000; ASPR maintained IAT addr: 0056d550
+  WNetOpenEnumW [446B]; type: K1 encrypted, IAT; proc addr: 71b23910
+  WNetAddConnection2W [F83A]; type: K1 encrypted, IAT; proc addr: 71b250d4
+  WNetGetConnectionW [6471]; type: K1 encrypted, IAT; proc addr: 71b21e09
+  WNetCloseEnum [65E2]; type: K1 encrypted, IAT; proc addr: 71b23e4f
+  WNetEnumResourceW [D3BA]; type: K1 encrypted, IAT; proc addr: 71b23c8a
+Library: USP10.dll [B78F]; mod base: 74d90000; ASPR maintained IAT addr: 0056d9f4
+  ScriptIsComplex [EE3B]; type: K1 encrypted, IAT; proc addr: 74da49ae
+  ScriptStringCPtoX [416F]; type: K1 encrypted, IAT; proc addr: 74da44e8
+  ScriptString_pLogAttr [4077]; type: K1 encrypted, IAT; proc addr: 74da4323
+  ScriptStringFree [0284]; type: K1 encrypted, IAT; proc addr: 74da42b3
+  ScriptStringAnalyse [8A51]; type: K1 encrypted, IAT; proc addr: 74da4043
+Library: gdiplus.dll [4495]; mod base: 4ec50000; ASPR maintained IAT addr: 0056daa8
+  GdipBitmapLockBits [6C75]; type: K1 encrypted, IAT; proc addr: 4ec63dc5
+  GdipCreateBitmapFromScan0 [E346]; type: K1 encrypted, IAT; proc addr: 4ec57263
+  GdipDisposeImage [28CA]; type: K1 encrypted, IAT; proc addr: 4ec571cf
+  GdipDeleteGraphics [1788]; type: K1 encrypted, IAT; proc addr: 4ec5d968
+  GdipAlloc [FB66]; type: K1 encrypted, IAT; proc addr: 4ec5687e
+  GdipBitmapUnlockBits [9530]; type: K1 encrypted, IAT; proc addr: 4ec63e50
+  GdipCreateFromHDC [A816]; type: K1 encrypted, IAT; proc addr: 4ec5e7ca
+  GdipSetInterpolationMode [3973]; type: K1 encrypted, IAT; proc addr: 4ec5f695
+  GdipDrawImageRectRectI [8BDE]; type: K1 encrypted, IAT; proc addr: 4ec619e7
+  GdipFree [44AB]; type: K1 encrypted, IAT; proc addr: 4ec56853
+  GdiplusShutdown [2CEE]; type: K1 encrypted, IAT; proc addr: 4ec67817
+  GdiplusStartup [239F]; type: K1 encrypted, IAT; proc addr: 4ec675e9
+  GdipCloneImage [084C]; type: K1 encrypted, IAT; proc addr: 4ecba865
+Library: CRYPT32.dll [76D2]; mod base: 77a80000; ASPR maintained IAT addr: 0056d0a0
+  CryptFindCertificateKeyProvInfo [D154]; type: K1 encrypted, IAT; proc addr: 77abd487
+  CertStrToNameW [4E91]; type: K1 encrypted, IAT; proc addr: 77ac2823
+  CertCreateSelfSignCertificate [A83D]; type: K1 encrypted, IAT; proc addr: 77a91972
+  CertFreeCertificateContext [A14F]; type: K1 encrypted, IAT; proc addr: 77a91f3f
+Library: Secur32.dll [13F3]; mod base: 77fe0000; ASPR maintained IAT addr: 0056d644
+  FreeCredentialsHandle [5AB9]; type: K1 encrypted, IAT; proc addr: 77fe2baa
+  AcquireCredentialsHandleW [48F6]; type: K1 encrypted, IAT; proc addr: 77fe311c
+  EncryptMessage [CA0D]; type: K1 encrypted, IAT; proc addr: 77fea68d
+  QueryContextAttributesW [5754]; type: K1 encrypted, IAT; proc addr: 77fe5447
+  FreeContextBuffer [6066]; type: K1 encrypted, IAT; proc addr: 77fe2848
+  InitializeSecurityContextW [CD04]; type: K1 encrypted, IAT; proc addr: 77fe5bdb
+  DeleteSecurityContext [BD87]; type: K1 encrypted, IAT; proc addr: 77fe2d26
+  DecryptMessage [B06D]; type: K1 encrypted, IAT; proc addr: 77fea6dc
+Library: dbghelp.dll [ACE3]; mod base: 59a60000; ASPR maintained IAT addr: 0056daa0
+  MiniDumpWriteDump [BF2E]; type: K1 encrypted, IAT; proc addr: 59a8b9b0
+Library: KERNEL32.dll [61F3]; mod base: 7c800000; ASPR maintained IAT addr: 0056d254
+  GetUserDefaultLCID [2314]; type: K2 encrypted, IAT; proc addr: 7c809fb0
+  InterlockedCompareExchange [854F]; type: K2 encrypted, IAT; proc addr: 7c809842
+  EnumSystemLocalesA [7675]; type: K2 encrypted, IAT; proc addr: 7c837ce9
+  IsValidLocale [D7BC]; type: K2 encrypted, IAT; proc addr: 7c81c8bb
+  WriteConsoleA [1BA6]; type: K2 encrypted, IAT; proc addr: 7c81d355
+  GetConsoleOutputCP [95D8]; type: K2 encrypted, IAT; proc addr: 7c81b5bf
+  GetStringTypeW [9963]; type: K2 encrypted, IAT; proc addr: 7c80a530
+  GetStringTypeA [6A5B]; type: K2 encrypted, IAT; proc addr: 7c838a14
+  GetConsoleMode [2C58]; type: K2 encrypted, IAT; proc addr: 7c81b348
+  GetConsoleCP [91EC]; type: K2 encrypted, IAT; proc addr: 7c87528b
+  SetStdHandle [F403]; type: K2 encrypted, IAT; proc addr: 7c81da73
+  LCMapStringA [474D]; type: K2 encrypted, IAT; proc addr: 7c838df0
+  LCMapStringW [44ED]; type: K2 encrypted, IAT; proc addr: 7c80cd48
+  GetTimeZoneInformation [E05D]; type: K2 encrypted, IAT; proc addr: 7c81419f
+  InitializeCriticalSectionAndSpinCount [98A6]; type: K2 encrypted, IAT; proc addr: 7c80b8c9
+  IsValidCodePage [F253]; type: K2 encrypted, IAT; proc addr: 7c811643
+  GetOEMCP [5C0E]; type: K2 encrypted, IAT; proc addr: 7c812d1f
+  GetSystemTimeAsFileTime [83B9]; type: K2 encrypted, IAT; proc addr: 7c8017e9
+  QueryPerformanceCounter [E6BA]; type: K2 encrypted, IAT; proc addr: 7c80a4c7
+  VirtualFree [F4F6]; type: K2 encrypted, IAT; proc addr: 7c809b84
+  HeapCreate [6735]; type: K2 encrypted, IAT; proc addr: 7c810908
+  GetStartupInfoA [850F]; type: K2 encrypted, IAT; proc addr: 7c801ef2
+  GetFileType [0009]; type: K2 encrypted, IAT; proc addr: 7c8113c9
+  SetHandleCount [7E4E]; type: K2 encrypted, IAT; proc addr: 7c80cd37
+  GetCommandLineW [B0CB]; type: K2 encrypted, IAT; proc addr: 7c81771b
+  GetEnvironmentStringsW [F31E]; type: K2 encrypted, IAT; proc addr: 7c810c58
+  FreeEnvironmentStringsW [F3B4]; type: K2 encrypted, IAT; proc addr: 7c81583f
+  GetModuleFileNameA [7545]; type: K2 encrypted, IAT; proc addr: 7c80b56f
+  VirtualQuery [8356]; type: K2 encrypted, IAT; proc addr: 7c80ba71
+  GetSystemInfo [EA2D]; type: K2 encrypted, IAT; proc addr: 7c810aa6
+  VirtualAlloc [558F]; type: K2 encrypted, IAT; proc addr: 7c809af1
+  VirtualProtect [9D13]; type: K2 encrypted, IAT; proc addr: 7c801ad4
+  HeapSize [CFDF]; type: K2 encrypted, IAT; proc addr: 7c809136
+  CreateThread [8426]; type: K1 encrypted, IAT; proc addr: 7c810707
+  ExitThread [5E99]; type: K2 encrypted, IAT; proc addr: 7c80c0f8
+  RaiseException [67FC]; type: K1 encrypted, IAT; proc addr: 7c812f81
+  WriteConsoleW [3BA7]; type: K2 encrypted, IAT; proc addr: 7c814564
+  CreateFileA [CCF2]; type: K1 encrypted, IAT; proc addr: 7c801a28
+  SetEnvironmentVariableA [22DB]; type: K2 encrypted, IAT; proc addr: 7c833e78
+  GetLocaleInfoA [3449]; type: K2 encrypted, IAT; proc addr: 7c80d302
+  HeapReAlloc [410B]; type: K2 encrypted, IAT; proc addr: 7c80911e
+  IsDebuggerPresent [171B]; type: K2 encrypted, IAT; proc addr: 7c81f424
+  UnhandledExceptionFilter [A864]; type: K1 encrypted, IAT; proc addr: 7c864042
+  TerminateProcess [EF85]; type: K2 encrypted, IAT; proc addr: 7c801e1a
+  HeapFree [4FB5]; type: K2 encrypted, IAT; proc addr: 7c80910c
+  HeapAlloc [4C9D]; type: K2 encrypted, IAT; proc addr: 7c8090f6
+  RtlUnwind [EBA1]; type: K2 encrypted, IAT; proc addr: 7c8092a6
+  GetStartupInfoW [5BFB]; type: K2 encrypted, IAT; proc addr: 7c801e54
+  GetFileSizeEx [1805]; type: K2 encrypted, IAT; proc addr: 7c810f81
+  LocalFileTimeToFileTime [180D]; type: K2 encrypted, IAT; proc addr: 7c814604
+  GetFileAttributesExW [1CE4]; type: K2 encrypted, IAT; proc addr: 7c81166d
+  SizeofResource [746D]; type: K2 encrypted, IAT; proc addr: 7c80bd09
+  LockResource [6DC0]; type: K2 encrypted, IAT; proc addr: 7c80cd37
+  LoadResource [01ED]; type: K2 encrypted, IAT; proc addr: 7c80a055
+  FindResourceW [A32D]; type: K2 encrypted, IAT; proc addr: 7c80bc6e
+  LoadLibraryW [AA17]; type: K2 encrypted, IAT; proc addr: 7c80aeeb
+  GetModuleHandleW [6DF8]; type: K2 encrypted, IAT; proc addr: 7c80e4dd
+  GetProcAddress [DE4E]; type: stolen, IAT; proc addr: 7c80ae40
+  SetLastError [B03D]; type: K2 encrypted, IAT; proc addr: 7c8092ef
+  GetLastError [F8E4]; type: K2 encrypted, IAT; proc addr: 7c8090db
+  MultiByteToWideChar [D43C]; type: K2 encrypted, IAT; proc addr: 7c809c98
+  GetACP [26AA]; type: K2 encrypted, IAT; proc addr: 7c8099b5
+  GlobalMemoryStatus [71DB]; type: K2 encrypted, IAT; proc addr: 7c813baa
+  GetTickCount [0DF1]; type: K2 encrypted, IAT; proc addr: 7c80934a
+  WideCharToMultiByte [AB03]; type: K2 encrypted, IAT; proc addr: 7c80a174
+  CopyFileW [1BFB]; type: K2 encrypted, IAT; proc addr: 7c830f97
+  FindCloseChangeNotification [2C66]; type: K2 encrypted, IAT; proc addr: 7c8357d9
+  WaitForSingleObject [FC3F]; type: K2 encrypted, IAT; proc addr: 7c802530
+  FindNextChangeNotification [C353]; type: K2 encrypted, IAT; proc addr: 7c832b15
+  FindFirstChangeNotificationW [CD1C]; type: K2 encrypted, IAT; proc addr: 7c8355ef
+  InterlockedIncrement [CA9C]; type: K2 encrypted, IAT; proc addr: 7c809806
+  InterlockedDecrement [3BBE]; type: K2 encrypted, IAT; proc addr: 7c80981a
+  GetTimeFormatW [9FB7]; type: K2 encrypted, IAT; proc addr: 7c8349d3
+  GetDateFormatW [5D6A]; type: K2 encrypted, IAT; proc addr: 7c834175
+  GlobalFree [AEAA]; type: K2 encrypted, IAT; proc addr: 7c80fcff
+  GlobalUnlock [EE78]; type: K2 encrypted, IAT; proc addr: 7c80ff52
+  GlobalLock [BE61]; type: K2 encrypted, IAT; proc addr: 7c80ffe9
+  GlobalAlloc [2794]; type: K2 encrypted, IAT; proc addr: 7c80fdfd
+  FreeLibrary [D075]; type: K2 encrypted, IAT; proc addr: 7c80ac7e
+  CloseHandle [A81B]; type: K1 encrypted, IAT; proc addr: 7c809be7
+  GetSystemDefaultLCID [6E9C]; type: K2 encrypted, IAT; proc addr: 7c80bfdd
+  SetThreadLocale [98BF]; type: K2 encrypted, IAT; proc addr: 7c81bfea
+  GetUserDefaultUILanguage [7529]; type: K2 encrypted, IAT; proc addr: 7c81f401
+  SetThreadUILanguage [33AC]; type: K2 encrypted, IAT; proc addr: 7c81b688
+  GetStringTypeExW [9D75]; type: K2 encrypted, IAT; proc addr: 7c80c08f
+  GetThreadLocale [DFE1]; type: K2 encrypted, IAT; proc addr: 7c80a4b5
+  lstrlenW [0C02]; type: K2 encrypted, IAT; proc addr: 7c809aa9
+  lstrcmpiW [1387]; type: K2 encrypted, IAT; proc addr: 7c80aa36
+  ReadFile [45AB]; type: K1 encrypted, IAT; proc addr: 7c801812
+  SetFilePointer [CD5C]; type: K1 encrypted, IAT; proc addr: 7c811106
+  GetFileSize [FC56]; type: K2 encrypted, IAT; proc addr: 7c810fef
+  CreateFileW [B79A]; type: K2 encrypted, IAT; proc addr: 7c810cd9
+  SetCurrentDirectoryW [6ED4]; type: K2 encrypted, IAT; proc addr: 7c80f3bf
+  GetCPInfo [7EDA]; type: K2 encrypted, IAT; proc addr: 7c810bc6
+  GetShortPathNameW [70EC]; type: K2 encrypted, IAT; proc addr: 7c820996
+  GetModuleFileNameW [A5E2]; type: K2 encrypted, IAT; proc addr: 7c80b475
+  CreateFileMappingW [E7D2]; type: K2 encrypted, IAT; proc addr: 7c80943c
+  OpenFileMappingW [B369]; type: K2 encrypted, IAT; proc addr: 7c80bb7a
+  FindClose [6C7A]; type: K2 encrypted, IAT; proc addr: 7c80ee9c
+  FindNextFileW [1128]; type: K2 encrypted, IAT; proc addr: 7c80f015
+  FindFirstFileW [2878]; type: K2 encrypted, IAT; proc addr: 7c80ee7d
+  GetFullPathNameW [E3D8]; type: K2 encrypted, IAT; proc addr: 7c80b8f2
+  GetFileAttributesW [B378]; type: K2 encrypted, IAT; proc addr: 7c80b7ec
+  DeleteFileW [99F7]; type: K2 encrypted, IAT; proc addr: 7c832933
+  GetTempFileNameW [0676]; type: K2 encrypted, IAT; proc addr: 7c8359bb
+  GetSystemTime [7B53]; type: K2 encrypted, IAT; proc addr: 7c80176f
+  GetCurrentDirectoryW [572D]; type: K2 encrypted, IAT; proc addr: 7c80b917
+  SetUnhandledExceptionFilter [35DF]; type: K2 encrypted, IAT; proc addr: 7c8449cd
+  MulDiv [298A]; type: K2 encrypted, IAT; proc addr: 7c809866
+  UnmapViewOfFile [CC3B]; type: K2 encrypted, IAT; proc addr: 7c80ba14
+  lstrlenA [EDF9]; type: K2 encrypted, IAT; proc addr: 7c80be56
+  MapViewOfFile [78ED]; type: K2 encrypted, IAT; proc addr: 7c80b9a5
+  CreateFileMappingA [6AEA]; type: K2 encrypted, IAT; proc addr: 7c80950a
+  GetCurrentThreadId [9D49]; type: K2 encrypted, IAT; proc addr: 7c8097d0
+  GetTempPathW [C4E1]; type: K2 encrypted, IAT; proc addr: 7c813242
+  SystemTimeToFileTime [BD6B]; type: K2 encrypted, IAT; proc addr: 7c811094
+  GetCurrentThread [8BED]; type: K2 encrypted, IAT; proc addr: 7c80998b
+  SetEndOfFile [6AE3]; type: K2 encrypted, IAT; proc addr: 7c832a46
+  ExpandEnvironmentStringsW [965B]; type: K2 encrypted, IAT; proc addr: 7c8130af
+  GetFileTime [E5D5]; type: K2 encrypted, IAT; proc addr: 7c83261d
+  FreeResource [EFFA]; type: K2 encrypted, IAT; proc addr: 7c8277ea
+  GetVersionExW [B8BE]; type: K2 encrypted, IAT; proc addr: 7c80af05
+  GetCurrentProcess [9259]; type: K2 encrypted, IAT; proc addr: 7c80de95
+  GetCurrentProcessId [B51E]; type: K2 encrypted, IAT; proc addr: 7c8099c0
+  CreateDirectoryW [45B5]; type: K2 encrypted, IAT; proc addr: 7c832dd2
+  GetLocalTime [0FB7]; type: K2 encrypted, IAT; proc addr: 7c80a874
+  ExitProcess [C399]; type: K1 encrypted, IAT; proc addr: 7c81d20a
+  LocalFree [F922]; type: K2 encrypted, IAT; proc addr: 7c8099cf
+  FormatMessageW [4B66]; type: K2 encrypted, IAT; proc addr: 7c83558f
+  WriteFile [83EC]; type: K2 encrypted, IAT; proc addr: 7c8112ff
+  Sleep [1E2D]; type: K2 encrypted, IAT; proc addr: 7c802446
+  GetLocaleInfoW [036D]; type: K2 encrypted, IAT; proc addr: 7c811ada
+  GlobalAddAtomW [1AAA]; type: K2 encrypted, IAT; proc addr: 7c81013c
+  GlobalGetAtomNameW [DF1F]; type: K2 encrypted, IAT; proc addr: 7c82daf6
+  GetPrivateProfileStringW [C346]; type: K2 encrypted, IAT; proc addr: 7c80fa2d
+  IsDBCSLeadByte [2C2B]; type: K2 encrypted, IAT; proc addr: 7c80b87c
+  CreateProcessW [A75D]; type: K2 encrypted, IAT; proc addr: 7c802336
+  SetFileAttributesW [CB4D]; type: K2 encrypted, IAT; proc addr: 7c831ead
+  GetStdHandle [4646]; type: K2 encrypted, IAT; proc addr: 7c810c89
+  GetProcessHeap [5B6F]; type: K2 encrypted, IAT; proc addr: 7c80ac61
+  FileTimeToSystemTime [5DC8]; type: K2 encrypted, IAT; proc addr: 7c80e88c
+  FileTimeToLocalFileTime [998A]; type: K2 encrypted, IAT; proc addr: 7c80e906
+  lstrcmpW [FF06]; type: K2 encrypted, IAT; proc addr: 7c80aa6c
+  EnumSystemCodePagesW [D4A9]; type: K2 encrypted, IAT; proc addr: 7c8798f7
+  GetExitCodeProcess [0C09]; type: K2 encrypted, IAT; proc addr: 7c81b24b
+  FlushFileBuffers [8121]; type: K2 encrypted, IAT; proc addr: 7c812bb9
+  CreatePipe [B565]; type: K2 encrypted, IAT; proc addr: 7c81df37
+  GetVolumeInformationW [C063]; type: K2 encrypted, IAT; proc addr: 7c80fab5
+  ResumeThread [82C0]; type: K2 encrypted, IAT; proc addr: 7c8332f7
+  SuspendThread [72EB]; type: K2 encrypted, IAT; proc addr: 7c83973a
+  GetDriveTypeW [3214]; type: K2 encrypted, IAT; proc addr: 7c80b370
+  ExpandEnvironmentStringsA [303D]; type: K2 encrypted, IAT; proc addr: 7c8333d9
+  LoadLibraryA [9901]; type: K1 encrypted, IAT; proc addr: 7c801d7b
+  GetVersionExA [DCED]; type: K2 encrypted, IAT; proc addr: 7c810830
+  CompareStringW [809E]; type: K2 encrypted, IAT; proc addr: 7c80a3fe
+  GlobalDeleteAtom [9929]; type: K2 encrypted, IAT; proc addr: 7c813673
+  GlobalFindAtomW [7F76]; type: K2 encrypted, IAT; proc addr: 7c813f77
+  GlobalSize [FA36]; type: K2 encrypted, IAT; proc addr: 7c813e81
+  GetModuleHandleA [EEBA]; type: K2 encrypted, IAT; proc addr: 7c80b741
+  lstrcmpA [FFE8]; type: K2 encrypted, IAT; proc addr: 7c81382c
+  SetThreadPriority [8ED5]; type: K2 encrypted, IAT; proc addr: 7c80c1a8
+  SetEvent [8AF9]; type: K2 encrypted, IAT; proc addr: 7c80a0b7
+  CreateEventW [14D7]; type: K2 encrypted, IAT; proc addr: 7c80a749
+  InterlockedExchange [53C6]; type: K2 encrypted, IAT; proc addr: 7c80982e
+  CompareStringA [FD83]; type: K2 encrypted, IAT; proc addr: 7c80d117
+  EnumResourceLanguagesW [10E8]; type: K2 encrypted, IAT; proc addr: 7c860711
+  ConvertDefaultLocale [73DE]; type: K2 encrypted, IAT; proc addr: 7c8383d7
+  GetPrivateProfileIntW [B392]; type: K2 encrypted, IAT; proc addr: 7c833130
+  WritePrivateProfileStringW [2888]; type: K2 encrypted, IAT; proc addr: 7c820574
+  SetErrorMode [EBCF]; type: K2 encrypted, IAT; proc addr: 7c80acaf
+  MoveFileW [744C]; type: K2 encrypted, IAT; proc addr: 7c822989
+  LockFile [98E2]; type: K2 encrypted, IAT; proc addr: 7c832d61
+  UnlockFile [5BB3]; type: K2 encrypted, IAT; proc addr: 7c832cbc
+  DuplicateHandle [F27A]; type: K2 encrypted, IAT; proc addr: 7c80de9e
+  SetFileTime [D273]; type: K2 encrypted, IAT; proc addr: 7c832690
+  GetDiskFreeSpaceW [2587]; type: K2 encrypted, IAT; proc addr: 7c8318d3
+  GlobalFlags [450F]; type: K2 encrypted, IAT; proc addr: 7c83677a
+  GetProfileIntW [63C2]; type: K2 encrypted, IAT; proc addr: 7c830fbe
+  LocalAlloc [C40C]; type: K2 encrypted, IAT; proc addr: 7c809a2d
+  LeaveCriticalSection [0F4C]; type: K2 encrypted, IAT; proc addr: 7c8091c9
+  TlsGetValue [7F86]; type: K2 encrypted, IAT; proc addr: 7c8097e0
+  EnterCriticalSection [4BF2]; type: K2 encrypted, IAT; proc addr: 7c8090bd
+  GlobalReAlloc [6302]; type: K2 encrypted, IAT; proc addr: 7c812931
+  GlobalHandle [E5F3]; type: K2 encrypted, IAT; proc addr: 7c813d9d
+  InitializeCriticalSection [E0D4]; type: K2 encrypted, IAT; proc addr: 7c809f91
+  TlsAlloc [BA62]; type: K2 encrypted, IAT; proc addr: 7c810aef
+  TlsSetValue [297C]; type: K2 encrypted, IAT; proc addr: 7c809c65
+  LocalReAlloc [AF72]; type: K2 encrypted, IAT; proc addr: 7c8133e0
+  DeleteCriticalSection [76B1]; type: K2 encrypted, IAT; proc addr: 7c80906a
+  TlsFree [6353]; type: K2 encrypted, IAT; proc addr: 7c81f62b
+Library: GDI32.dll [280B]; mod base: 77f10000; ASPR maintained IAT addr: 0056d0b4
+  GetStretchBltMode [8B29]; type: K1 encrypted, IAT; proc addr: 77f43d4e
+  GetROP2 [166C]; type: K1 encrypted, IAT; proc addr: 77f1ec02
+  GetPolyFillMode [5F38]; type: K1 encrypted, IAT; proc addr: 77f23672
+  GetNearestColor [8A09]; type: K1 encrypted, IAT; proc addr: 77f1aad3
+  GetCharWidthW [F7D0]; type: K1 encrypted, IAT; proc addr: 77f1f865
+  Ellipse [A6EB]; type: K1 encrypted, IAT; proc addr: 77f2c577
+  LPtoDP [E89B]; type: K1 encrypted, IAT; proc addr: 77f1d4c7
+  CreateEllipticRgn [4F2A]; type: K1 encrypted, IAT; proc addr: 77f44d59
+  GetMapMode [D319]; type: K1 encrypted, IAT; proc addr: 77f18eec
+  SetRectRgn [D565]; type: K1 encrypted, IAT; proc addr: 77f1975e
+  GetViewportOrgEx [A40B]; type: K1 encrypted, IAT; proc addr: 77f17c01
+  EndDoc [BF53]; type: K1 encrypted, IAT; proc addr: 77f2df01
+  AbortDoc [2D97]; type: K1 encrypted, IAT; proc addr: 77f45021
+  SetAbortProc [CBF0]; type: K1 encrypted, IAT; proc addr: 77f45141
+  EndPage [57E3]; type: K1 encrypted, IAT; proc addr: 77f2dc71
+  StartPage [3E02]; type: K1 encrypted, IAT; proc addr: 77f2f4ae
+  DPtoLP [4B18]; type: K1 encrypted, IAT; proc addr: 77f1e611
+  ExtSelectClipRgn [39BE]; type: K1 encrypted, IAT; proc addr: 77f17874
+  GetCurrentPositionEx [FD14]; type: K1 encrypted, IAT; proc addr: 77f2ee85
+  ScaleWindowExtEx [28A1]; type: K1 encrypted, IAT; proc addr: 77f3d889
+  SetWindowExtEx [422F]; type: K1 encrypted, IAT; proc addr: 77f272d4
+  SetWindowOrgEx [A0DC]; type: K1 encrypted, IAT; proc addr: 77f18e14
+  ScaleViewportExtEx [33D7]; type: K1 encrypted, IAT; proc addr: 77f3d7a8
+  GetTextAlign [CDED]; type: K1 encrypted, IAT; proc addr: 77f1d427
+  OffsetViewportOrgEx [40FF]; type: K1 encrypted, IAT; proc addr: 77f1c016
+  SetViewportOrgEx [DE31]; type: K1 encrypted, IAT; proc addr: 77f17b4c
+  Escape [DB8E]; type: K1 encrypted, IAT; proc addr: 77f26f5a
+  TextOutW [1594]; type: K1 encrypted, IAT; proc addr: 77f17eac
+  RectVisible [434A]; type: K1 encrypted, IAT; proc addr: 77f1821b
+  PtVisible [E7B2]; type: K1 encrypted, IAT; proc addr: 77f46b57
+  StartDocW [B9FB]; type: K1 encrypted, IAT; proc addr: 77f45cb1
+  GetPixel [7404]; type: K1 encrypted, IAT; proc addr: 77f1b74c
+  GetWindowExtEx [45BB]; type: K1 encrypted, IAT; proc addr: 77f17c79
+  GetViewportExtEx [FCE3]; type: K1 encrypted, IAT; proc addr: 77f17cf1
+  IntersectClipRect [5DA7]; type: K1 encrypted, IAT; proc addr: 77f16a56
+  ExcludeClipRect [0695]; type: K1 encrypted, IAT; proc addr: 77f190ec
+  SetMapMode [4272]; type: K1 encrypted, IAT; proc addr: 77f1941f
+  SetStretchBltMode [C595]; type: K1 encrypted, IAT; proc addr: 77f18597
+  SetROP2 [A78A]; type: K1 encrypted, IAT; proc addr: 77f1d8d0
+  SetPolyFillMode [F3DD]; type: K1 encrypted, IAT; proc addr: 77f20817
+  RestoreDC [82CE]; type: K1 encrypted, IAT; proc addr: 77f18b28
+  SaveDC [1ADD]; type: K1 encrypted, IAT; proc addr: 77f18bee
+  CopyMetaFileW [A800]; type: K1 encrypted, IAT; proc addr: 77f2c3fd
+  CreateBitmap [6C51]; type: K1 encrypted, IAT; proc addr: 77f161ef
+  GetClipBox [1280]; type: K1 encrypted, IAT; proc addr: 77f16aa1
+  SetTextAlign [7650]; type: K1 encrypted, IAT; proc addr: 77f18c8b
+  CreatePolygonRgn [BAEF]; type: K1 encrypted, IAT; proc addr: 77f1a8ba
+  PatBlt [E719]; type: K1 encrypted, IAT; proc addr: 77f1869b
+  GetRgnBox [5FCD]; type: K1 encrypted, IAT; proc addr: 77f1d6e9
+  CombineRgn [4386]; type: K1 encrypted, IAT; proc addr: 77f195e7
+  CreateRectRgn [0F32]; type: K1 encrypted, IAT; proc addr: 77f17786
+  Polygon [7736]; type: K1 encrypted, IAT; proc addr: 77f1edb0
+  GetBkColor [5524]; type: K1 encrypted, IAT; proc addr: 77f18f5b
+  CreatePatternBrush [8FCE]; type: K1 encrypted, IAT; proc addr: 77f1acc8
+  CreateDIBitmap [054A]; type: K1 encrypted, IAT; proc addr: 77f1ad23
+  SelectClipRgn [54D8]; type: K1 encrypted, IAT; proc addr: 77f17aa0
+  ExtTextOutA [77E2]; type: K1 encrypted, IAT; proc addr: 77f1d3fa
+  CreateDIBSection [D42E]; type: K1 encrypted, IAT; proc addr: 77f19e19
+  GetDeviceCaps [1146]; type: K1 encrypted, IAT; proc addr: 77f15a69
+  GetCurrentObject [F6FA]; type: K1 encrypted, IAT; proc addr: 77f1833d
+  EnumFontFamiliesExW [D862]; type: K1 encrypted, IAT; proc addr: 77f1bbf9
+  GetCharABCWidthsW [D5A0]; type: K1 encrypted, IAT; proc addr: 77f1e0bf
+  GetOutlineTextMetricsW [0BF0]; type: K1 encrypted, IAT; proc addr: 77f1f2e9
+  CreateICW [5941]; type: K1 encrypted, IAT; proc addr: 77f2c823
+  GetTextMetricsW [DF49]; type: K1 encrypted, IAT; proc addr: 77f17db9
+  Rectangle [D78A]; type: K1 encrypted, IAT; proc addr: 77f1e9be
+  DeleteDC [1F3A]; type: K1 encrypted, IAT; proc addr: 77f16e5f
+  SetTextColor [4A14]; type: K1 encrypted, IAT; proc addr: 77f15d77
+  SetBkColor [4412]; type: K1 encrypted, IAT; proc addr: 77f15e29
+  CreateRectRgnIndirect [9C7C]; type: K1 encrypted, IAT; proc addr: 77f1827c
+  GetObjectW [B9E8]; type: K1 encrypted, IAT; proc addr: 77f183b3
+  GetStockObject [DCFC]; type: K1 encrypted, IAT; proc addr: 77f161c1
+  CreateSolidBrush [B8D5]; type: K1 encrypted, IAT; proc addr: 77f161a5
+  GetBkMode [F12E]; type: K1 encrypted, IAT; proc addr: 77f23605
+  SetBkMode [3680]; type: K1 encrypted, IAT; proc addr: 77f15edb
+  GetTextFaceW [5D3F]; type: K1 encrypted, IAT; proc addr: 77f1a5cb
+  GetTextExtentPoint32A [175E]; type: K1 encrypted, IAT; proc addr: 77f1ef1c
+  GetWindowOrgEx [BDBA]; type: K1 encrypted, IAT; proc addr: 77f1da1e
+  ExtTextOutW [2170]; type: K1 encrypted, IAT; proc addr: 77f18086
+  GetTextColor [5CB9]; type: K1 encrypted, IAT; proc addr: 77f18faf
+  CreatePen [1B6B]; type: K1 encrypted, IAT; proc addr: 77f1a155
+  MoveToEx [D917]; type: K1 encrypted, IAT; proc addr: 77f1a21a
+  LineTo [4A80]; type: K1 encrypted, IAT; proc addr: 77f1d997
+  DeleteObject [BAFB]; type: K1 encrypted, IAT; proc addr: 77f16bfa
+  GetTextExtentPoint32W [F645]; type: K1 encrypted, IAT; proc addr: 77f17f9d
+  BitBlt [1AD9]; type: K1 encrypted, IAT; proc addr: 77f16f79
+  SelectObject [0D78]; type: K1 encrypted, IAT; proc addr: 77f15b70
+  CreateCompatibleDC [C0A8]; type: K1 encrypted, IAT; proc addr: 77f15fe0
+  CreateDCW [4784]; type: K1 encrypted, IAT; proc addr: 77f1be38
+  CreateCompatibleBitmap [6724]; type: K1 encrypted, IAT; proc addr: 77f1700a
+  CreateFontIndirectW [7E13]; type: K1 encrypted, IAT; proc addr: 77f1939e
+  SetViewportExtEx [AB0D]; type: K1 encrypted, IAT; proc addr: 77f2737d
+Library: COMDLG32.dll [A5BD]; mod base: 763b0000; ASPR maintained IAT addr: 0056d098
+  GetFileTitleW [471C]; type: K1 encrypted, IAT; proc addr: 763b2306
+Library: WINSPOOL.DRV [A302]; mod base: 73000000; ASPR maintained IAT addr: 0056da3c
+  DocumentPropertiesW [B0F5]; type: K1 encrypted, IAT; proc addr: 730069c5
+  OpenPrinterW [6324]; type: K1 encrypted, IAT; proc addr: 73005091
+  GetJobW [4401]; type: K1 encrypted, IAT; proc addr: 73008059
+  ClosePrinter [2CAD]; type: K1 encrypted, IAT; proc addr: 73004d40
+Library: ADVAPI32.dll [A01D]; mod base: 77dd0000; ASPR maintained IAT addr: 0056d000
+  CryptGetHashParam [2E96]; type: K1 encrypted, IAT; proc addr: 77de9db4
+  RegCreateKeyW [2D08]; type: K1 encrypted, IAT; proc addr: 77dfba55
+  GetFileSecurityW [61FD]; type: K1 encrypted, IAT; proc addr: 77dfc003
+  SetFileSecurityW [200A]; type: K1 encrypted, IAT; proc addr: 77dea3e1
+  RegOpenKeyExA [3C58]; type: K1 encrypted, IAT; proc addr: 77dd7852
+  RegQueryValueExA [534D]; type: K1 encrypted, IAT; proc addr: 77dd7abb
+  RegEnumKeyW [6C7D]; type: K1 encrypted, IAT; proc addr: 77ddd5e4
+  GetUserNameW [3F07]; type: K1 encrypted, IAT; proc addr: 77de496d
+  RegOpenKeyW [A995]; type: K1 encrypted, IAT; proc addr: 77dd7946
+  CryptGenKey [C5A1]; type: K1 encrypted, IAT; proc addr: 77e11849
+  CryptExportKey [4096]; type: K1 encrypted, IAT; proc addr: 77e11bf9
+  CryptVerifySignatureW [8489]; type: K1 encrypted, IAT; proc addr: 77df3522
+  CryptDecrypt [6BE8]; type: K1 encrypted, IAT; proc addr: 77dea129
+  CryptEncrypt [5BFE]; type: K1 encrypted, IAT; proc addr: 77dee360
+  CryptSetKeyParam [11D9]; type: K1 encrypted, IAT; proc addr: 77e11a51
+  CryptImportKey [9CC9]; type: K1 encrypted, IAT; proc addr: 77dea1f1
+  CryptDestroyKey [F4AB]; type: K1 encrypted, IAT; proc addr: 77de9ebc
+  CryptGenRandom [7215]; type: K1 encrypted, IAT; proc addr: 77dfb3f4
+  CryptCreateHash [2368]; type: K1 encrypted, IAT; proc addr: 77de9c71
+  CryptHashData [F2E9]; type: K1 encrypted, IAT; proc addr: 77de9a9e
+  RegSetValueExW [A4B3]; type: K1 encrypted, IAT; proc addr: 77ddd767
+  CryptDestroyHash [19F9]; type: K1 encrypted, IAT; proc addr: 77de9bcc
+  CryptAcquireContextW [7557]; type: K1 encrypted, IAT; proc addr: 77de7f99
+  CryptReleaseContext [83BB]; type: K1 encrypted, IAT; proc addr: 77de7eee
+  RegOpenKeyExW [1A49]; type: K1 encrypted, IAT; proc addr: 77dd6aaf
+  RegEnumValueW [920E]; type: K1 encrypted, IAT; proc addr: 77dd7eed
+  RegSetValueW [C246]; type: K1 encrypted, IAT; proc addr: 77e36116
+  RegQueryValueW [41CF]; type: K1 encrypted, IAT; proc addr: 77ddd87a
+  RegDeleteValueW [5569]; type: K1 encrypted, IAT; proc addr: 77ddedf1
+  RegDeleteKeyW [EA31]; type: K1 encrypted, IAT; proc addr: 77de559b
+  RegQueryValueExW [693E]; type: K1 encrypted, IAT; proc addr: 77dd6fff
+  RegCreateKeyExW [16BC]; type: K1 encrypted, IAT; proc addr: 77dd776c
+  RegCloseKey [EE3F]; type: K1 encrypted, IAT; proc addr: 77dd6c27
+Library: SHELL32.dll [E169]; mod base: 7c9c0000; ASPR maintained IAT addr: 0056d5cc
+  ExtractIconW [042A]; type: K1 encrypted, IAT; proc addr: 7ca318ee
+  ordinal #62 [1FCA]; type: plain, IAT; proc addr: 7ca76507
+  ExtractIconExW [CDB0]; type: K1 encrypted, IAT; proc addr: 7c9f6cff
+  DragFinish [D9E0]; type: K1 encrypted, IAT; proc addr: 7ca77d58
+  SHBindToParent [5B50]; type: K1 encrypted, IAT; proc addr: 7c9f3d58
+  SHGetSettings [8857]; type: K1 encrypted, IAT; proc addr: 7ca3fc5d
+  SHFileOperationW [733B]; type: K1 encrypted, IAT; proc addr: 7ca70984
+  ShellExecuteExW [7946]; type: K1 encrypted, IAT; proc addr: 7ca0995b
+  DragQueryFileW [3F7C]; type: K1 encrypted, IAT; proc addr: 7ca18376
+  SHGetFileInfoW [08CF]; type: K1 encrypted, IAT; proc addr: 7ca2b0a3
+  DragAcceptFiles [F659]; type: K1 encrypted, IAT; proc addr: 7ca2b259
+  Shell_NotifyIconW [EE8F]; type: K1 encrypted, IAT; proc addr: 7ca2a5df
+  SHBrowseForFolderW [6F31]; type: K1 encrypted, IAT; proc addr: 7cac739d
+  SHGetDesktopFolder [7D70]; type: K1 encrypted, IAT; proc addr: 7c9ebc58
+  SHGetSpecialFolderLocation [16C0]; type: K1 encrypted, IAT; proc addr: 7c9ef7d3
+  SHGetPathFromIDListW [F478]; type: K1 encrypted, IAT; proc addr: 7c9f1040
+  SHGetMalloc [3D0A]; type: K1 encrypted, IAT; proc addr: 7ca2b445
+  SHChangeNotify [A3F3]; type: K1 encrypted, IAT; proc addr: 7c9f8409
+  ShellExecuteW [EC68]; type: K1 encrypted, IAT; proc addr: 7cab5fdd
+  ordinal #16 [63C4]; type: plain, IAT; proc addr: 7c9ece6c
+Library: SHLWAPI.dll [7914]; mod base: 77f60000; ASPR maintained IAT addr: 0056d620
+  PathFindExtensionW [B416]; type: K1 encrypted, IAT; proc addr: 77f66869
+  StrCmpLogicalW [AC65]; type: K1 encrypted, IAT; proc addr: 77f684a5
+  PathRemoveFileSpecW [5ADC]; type: K1 encrypted, IAT; proc addr: 77f67c66
+  PathRemoveExtensionW [9461]; type: K1 encrypted, IAT; proc addr: 77f66903
+  PathFindFileNameW [54D5]; type: K1 encrypted, IAT; proc addr: 77f67087
+  PathStripToRootW [314F]; type: K1 encrypted, IAT; proc addr: 77f68405
+  PathIsUNCW [111C]; type: K1 encrypted, IAT; proc addr: 77f66e7f
+  PathFileExistsW [CED2]; type: K1 encrypted, IAT; proc addr: 77f67d99
+Library: oledlg.dll [10E1]; mod base: 7df70000; ASPR maintained IAT addr: 0056db60
+  OleUIBusyW [42B4]; type: K1 encrypted, IAT; proc addr: 7df746b1
+Library: ole32.dll [A909]; mod base: 774e0000; ASPR maintained IAT addr: 0056dae0
+  CoInitializeEx [FFAF]; type: K1 encrypted, IAT; proc addr: 7750149b
+  OleDuplicateData [01EF]; type: K1 encrypted, IAT; proc addr: 775c9af0
+  ReleaseStgMedium [9A4F]; type: K1 encrypted, IAT; proc addr: 7752b6eb
+  OleUninitialize [66BE]; type: K1 encrypted, IAT; proc addr: 7753327f
+  CLSIDFromProgID [15B8]; type: K1 encrypted, IAT; proc addr: 7751835a
+  CLSIDFromString [18F2]; type: K1 encrypted, IAT; proc addr: 77530975
+  CoTaskMemFree [185F]; type: K1 encrypted, IAT; proc addr: 774fd004
+  CoInitialize [CDCC]; type: K1 encrypted, IAT; proc addr: 7752f9ba
+  CoUninitialize [6D8A]; type: K1 encrypted, IAT; proc addr: 77501364
+  CoTaskMemAlloc [9A83]; type: K1 encrypted, IAT; proc addr: 774fd020
+  CoCreateInstance [474A]; type: K1 encrypted, IAT; proc addr: 774ff1d4
+  CoFreeUnusedLibraries [797B]; type: K1 encrypted, IAT; proc addr: 7752fc01
+  OleInitialize [0229]; type: K1 encrypted, IAT; proc addr: 77501c0a
+  CreateStreamOnHGlobal [EC5F]; type: K1 encrypted, IAT; proc addr: 775059d8
+  OleIsCurrentClipboard [5D27]; type: K1 encrypted, IAT; proc addr: 7757ae4a
+  OleFlushClipboard [576A]; type: K1 encrypted, IAT; proc addr: 7757aff9
+  DoDragDrop [93A1]; type: K1 encrypted, IAT; proc addr: 775d0fb7
+  OleGetClipboard [1A78]; type: K1 encrypted, IAT; proc addr: 77532e47
+  RegisterDragDrop [D026]; type: K1 encrypted, IAT; proc addr: 77501b4a
+  CoLockObjectExternal [9AB7]; type: K1 encrypted, IAT; proc addr: 77533d7c
+  RevokeDragDrop [5677]; type: K1 encrypted, IAT; proc addr: 77532bed
+  CoGetClassObject [F415]; type: K1 encrypted, IAT; proc addr: 7751522d
+  CoRevokeClassObject [581C]; type: K1 encrypted, IAT; proc addr: 77529ea8
+  CoRegisterMessageFilter [F3B9]; type: K1 encrypted, IAT; proc addr: 77555f9f
+  StgOpenStorageOnILockBytes [FA53]; type: K1 encrypted, IAT; proc addr: 775dccc9
+  StgCreateDocfileOnILockBytes [DD2E]; type: K1 encrypted, IAT; proc addr: 775457ec
+  CreateILockBytesOnHGlobal [754E]; type: K1 encrypted, IAT; proc addr: 775456bc
+  OleTranslateAccelerator [6201]; type: K1 encrypted, IAT; proc addr: 77578e72
+  IsAccelerator [B3ED]; type: K1 encrypted, IAT; proc addr: 77578cc9
+  OleCreateMenuDescriptor [B007]; type: K1 encrypted, IAT; proc addr: 77579180
+  OleDestroyMenuDescriptor [4880]; type: K1 encrypted, IAT; proc addr: 7757941a
+Library: OLEAUT32.dll [68AA]; mod base: 77120000; ASPR maintained IAT addr: 0056d578
+  ordinal #24 [9C8C]; type: plain, IAT; proc addr: 771251bc
+  ordinal #23 [FEA6]; type: plain, IAT; proc addr: 7712518d
+  ordinal #19 [0432]; type: plain, IAT; proc addr: 771251cc
+  ordinal #20 [3637]; type: plain, IAT; proc addr: 77125218
+  ordinal #18 [2BDE]; type: plain, IAT; proc addr: 77124e76
+  ordinal #17 [4B0C]; type: plain, IAT; proc addr: 77124fff
+  ordinal #15 [C83F]; type: plain, IAT; proc addr: 7712aa79
+  ordinal #10 [46CE]; type: plain, IAT; proc addr: 77124d6f
+  ordinal #16 [63C4]; type: plain, IAT; proc addr: 77125017
+  ordinal #185 [4C4B]; type: plain, IAT; proc addr: 77143395
+  ordinal #7 [C6CA]; type: plain, IAT; proc addr: 77124c7e
+  ordinal #12 [A6EC]; type: plain, IAT; proc addr: 77126c03
+  ordinal #4 [14D3]; type: plain, IAT; proc addr: 77124ba7
+  ordinal #6 [DCD5]; type: plain, IAT; proc addr: 77124880
+  ordinal #8 [9F6C]; type: plain, IAT; proc addr: 77124980
+  ordinal #184 [94D5]; type: plain, IAT; proc addr: 77135735
+  ordinal #420 [D993]; type: plain, IAT; proc addr: 77144b04
+  ordinal #2 [C3BF]; type: plain, IAT; proc addr: 77124c05
+  ordinal #161 [90FA]; type: plain, IAT; proc addr: 77127a30
+  ordinal #9 [1570]; type: plain, IAT; proc addr: 77124920
+Library: urlmon.dll [6E51]; mod base: 78130000; ASPR maintained IAT addr: 0056db68
+  CoInternetSetFeatureEnabled [410A]; type: K1 encrypted, IAT; proc addr: 7816bbc4
+Library: OLEACC.dll [2AAD]; mod base: 61880000; ASPR maintained IAT addr: 0056d568
+  AccessibleObjectFromWindow [A76C]; type: K1 encrypted, IAT; proc addr: 618a7f2b
+  CreateStdAccessibleObject [DFBF]; type: K1 encrypted, IAT; proc addr: 618a802a
+  LresultFromObject [65C2]; type: K1 encrypted, IAT; proc addr: 618a7ed1
+
+INFO: ASPR ids in the squre brackets
+WARN: Code may reference to the ASPR utility APIs, which may cause problems after unpacking
+
+
+0:000> !aspr_ipatch
+1. Import patch [enhanced standard]
+  import: KERNEL32.dll!GlobalMemoryStatus [7C813BAA]
+  call type: CALL
+  address: 004024ff
+  patch: ff154cd35600
+2. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetACP [7C8099B5]
+  call type: CALL
+  address: 00402570
+  patch: ff1548d35600
+3. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindCloseChangeNotification [7C8357D9]
+  call type: CALL
+  address: 0040a6b5
+  patch: ff155cd35600
+4. Import patch [enhanced standard]
+  import: KERNEL32.dll!WaitForSingleObject [7C802530]
+  call type: CALL
+  address: 0040b17b
+  patch: ff1560d35600
+5. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 00410dde
+  patch: ff1580d05600
+6. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 00411ab9
+  patch: ff158cd35600
+7. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 00411bb0
+  patch: ff1580d05600
+8. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetThreadLocale [7C81BFEA]
+  call type: CALL
+  address: 00411ca5
+  patch: ff1598d35600
+9. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetSystemDefaultLCID [7C80BFDD]
+  call type: CALL
+  address: 00411cac
+  patch: ff1594d35600
+10. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetThreadLocale [7C81BFEA]
+  call type: CALL
+  address: 00411cb3
+  patch: ff1598d35600
+11. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetThreadLocale [7C80A4B5]
+  call type: CALL
+  address: 00411d24
+  patch: ff15a8d35600
+12. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileSize [7C810FEF]
+  call type: CALL
+  address: 004121d4
+  patch: ff15bcd35600
+13. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 00412de7
+  patch: ff158cd35600
+14. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCPInfo [7C810BC6]
+  call type: CALL
+  address: 00412e01
+  patch: ff15c8d35600
+15. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 00415646
+  patch: ff15dcd35600
+16. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 004169c0
+  patch: ff1580d05600
+17. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetSystemTime [7C80176F]
+  call type: CALL
+  address: 004193f0
+  patch: ff15f8d35600
+18. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 00419917
+  patch: ff1580d05600
+19. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 004224a4
+  patch: ff1580d05600
+20. Import patch [enhanced standard]
+  import: SHELL32.dll!SHChangeNotify [7C9F8409]
+  call type: CALL
+  address: 0042c292
+  patch: ff1510d65600
+21. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 00435077
+  patch: ff15dcd35600
+22. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 00435229
+  patch: ff15dcd35600
+23. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 0043527f
+  patch: ff15dcd35600
+24. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 004355fe
+  patch: ff15dcd35600
+25. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetACP [7C8099B5]
+  call type: CALL
+  address: 004360cb
+  patch: ff1548d35600
+26. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptCreateHash [77DE9C71]
+  call type: CALL
+  address: 004393eb
+  patch: ff1548d05600
+27. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptHashData [77DE9A9E]
+  call type: CALL
+  address: 00439405
+  patch: ff154cd05600
+28. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptGetHashParam [77DE9DB4]
+  call type: CALL
+  address: 00439421
+  patch: ff1500d05600
+29. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptDestroyHash [77DE9BCC]
+  call type: CALL
+  address: 00439432
+  patch: ff1554d05600
+30. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptImportKey [77DEA1F1]
+  call type: CALL
+  address: 00439502
+  patch: ff153cd05600
+31. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptDestroyKey [77DE9EBC]
+  call type: CALL
+  address: 00439547
+  patch: ff1540d05600
+32. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptDestroyKey [77DE9EBC]
+  call type: CALL
+  address: 00439567
+  patch: ff1540d05600
+33. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptDecrypt [77DEA129]
+  call type: CALL
+  address: 0043959c
+  patch: ff1530d05600
+34. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptImportKey [77DEA1F1]
+  call type: CALL
+  address: 00439eb4
+  patch: ff153cd05600
+35. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptCreateHash [77DE9C71]
+  call type: CALL
+  address: 00439ed9
+  patch: ff1548d05600
+36. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptHashData [77DE9A9E]
+  call type: CALL
+  address: 00439f09
+  patch: ff154cd05600
+37. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptHashData [77DE9A9E]
+  call type: CALL
+  address: 0043a027
+  patch: ff154cd05600
+38. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptDestroyHash [77DE9BCC]
+  call type: CALL
+  address: 0043a064
+  patch: ff1554d05600
+39. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptDestroyKey [77DE9EBC]
+  call type: CALL
+  address: 0043a07c
+  patch: ff1540d05600
+40. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptGenKey [77E11849]
+  call type: CALL
+  address: 0043a222
+  patch: ff1524d05600
+41. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptDestroyKey [77DE9EBC]
+  call type: CALL
+  address: 0043a3d1
+  patch: ff1540d05600
+42. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptImportKey [77DEA1F1]
+  call type: CALL
+  address: 0043a4f4
+  patch: ff153cd05600
+43. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptExportKey [77E11BF9]
+  call type: CALL
+  address: 0043a53c
+  patch: ff1528d05600
+44. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptDestroyKey [77DE9EBC]
+  call type: CALL
+  address: 0043a5bd
+  patch: ff1540d05600
+45. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptGenRandom [77DFB3F4]
+  call type: CALL
+  address: 0043a811
+  patch: ff1544d05600
+46. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptEncrypt [77DEE360]
+  call type: CALL
+  address: 0043a87c
+  patch: ff1534d05600
+47. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptDecrypt [77DEA129]
+  call type: CALL
+  address: 0043b9a9
+  patch: ff1530d05600
+48. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThreadId [7C8097D0]
+  call type: CALL
+  address: 0043c115
+  patch: ff1518d45600
+49. Import patch [enhanced standard]
+  import: KERNEL32.dll!CreateFileMappingA [7C80950A]
+  call type: CALL
+  address: 0043c140
+  patch: ff1514d45600
+50. Import patch [enhanced standard]
+  import: KERNEL32.dll!MapViewOfFile [7C80B9A5]
+  call type: CALL
+  address: 0043c162
+  patch: ff1510d45600
+51. Import patch [enhanced standard]
+  import: KERNEL32.dll!lstrlenA [7C80BE56]
+  call type: CALL
+  address: 0043c18e
+  patch: ff150cd45600
+52. Import patch [enhanced standard]
+  import: KERNEL32.dll!UnmapViewOfFile [7C80BA14]
+  call type: CALL
+  address: 0043c1e8
+  patch: ff1508d45600
+53. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptGenRandom [77DFB3F4]
+  call type: CALL
+  address: 0043d89c
+  patch: ff1544d05600
+54. Import patch [enhanced standard]
+  import: KERNEL32.dll!SystemTimeToFileTime [7C811094]
+  call type: CALL
+  address: 00444afe
+  patch: ff1520d45600
+55. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetACP [7C8099B5]
+  call type: CALL
+  address: 00448813
+  patch: ff1548d35600
+56. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThread [7C80998B]
+  call type: CALL
+  address: 0044975b
+  patch: ff1524d45600
+57. Import patch [enhanced standard]
+  import: USER32.dll!CloseClipboard [7E430265]
+  call type: JMP
+  address: 0044b52a
+  patch: ff2528d75600
+58. Import patch [enhanced standard]
+  import: USER32.dll!CloseClipboard [7E430265]
+  call type: CALL
+  address: 0044c611
+  patch: ff1528d75600
+59. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetEndOfFile [7C832A46]
+  call type: CALL
+  address: 0044cc10
+  patch: ff1528d45600
+60. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileSize [7C810FEF]
+  call type: CALL
+  address: 0044cc3c
+  patch: ff15bcd35600
+61. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetACP [7C8099B5]
+  call type: CALL
+  address: 0044d957
+  patch: ff1548d35600
+62. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileTime [7C83261D]
+  call type: CALL
+  address: 0044db7f
+  patch: ff1530d45600
+63. Import patch [enhanced standard]
+  import: SHELL32.dll!SHGetSpecialFolderLocation [7C9EF7D3]
+  call type: CALL
+  address: 0044df38
+  patch: ff1504d65600
+64. Import patch [enhanced standard]
+  import: SHELL32.dll!SHGetMalloc [7CA2B445]
+  call type: CALL
+  address: 0044df5a
+  patch: ff150cd65600
+65. Import patch [enhanced standard]
+  import: SHELL32.dll!SHGetDesktopFolder [7C9EBC58]
+  call type: CALL
+  address: 0044e560
+  patch: ff1500d65600
+66. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentProcess [7C80DE95]
+  call type: CALL
+  address: 0044f92a
+  patch: ff153cd45600
+67. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetEndOfFile [7C832A46]
+  call type: CALL
+  address: 0044f9f0
+  patch: ff1528d45600
+68. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileSize [7C810FEF]
+  call type: CALL
+  address: 00450599
+  patch: ff15bcd35600
+69. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetEndOfFile [7C832A46]
+  call type: CALL
+  address: 004505b3
+  patch: ff1528d45600
+70. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileSize [7C810FEF]
+  call type: CALL
+  address: 004509cd
+  patch: ff15bcd35600
+71. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileSize [7C810FEF]
+  call type: CALL
+  address: 00450b06
+  patch: ff15bcd35600
+72. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetEndOfFile [7C832A46]
+  call type: CALL
+  address: 00450b56
+  patch: ff1528d45600
+73. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetEndOfFile [7C832A46]
+  call type: CALL
+  address: 00450bbe
+  patch: ff1528d45600
+74. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetEndOfFile [7C832A46]
+  call type: CALL
+  address: 00450cce
+  patch: ff1528d45600
+75. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetEndOfFile [7C832A46]
+  call type: CALL
+  address: 00450cf6
+  patch: ff1528d45600
+76. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileTime [7C83261D]
+  call type: CALL
+  address: 00451152
+  patch: ff1530d45600
+77. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 0045a0df
+  patch: ff1580d05600
+78. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetACP [7C8099B5]
+  call type: CALL
+  address: 0045cb72
+  patch: ff1548d35600
+79. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 0045e684
+  patch: ff15dcd35600
+80. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 0046187b
+  patch: ff15dcd35600
+81. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 00467e8c
+  patch: ff1580d05600
+82. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 00468fed
+  patch: ff15dcd35600
+83. Import patch [enhanced standard]
+  import: KERNEL32.dll!IsDBCSLeadByte [7C80B87C]
+  call type: CALL
+  address: 00469834
+  patch: ff1570d45600
+84. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 0046a57f
+  patch: ff1580d05600
+85. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 0046a66a
+  patch: ff1580d05600
+86. Import patch [enhanced standard]
+  import: SHELL32.dll!SHGetSettings [7CA3FC5D]
+  call type: CALL
+  address: 00479ab7
+  patch: ff15e0d55600
+87. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetACP [7C8099B5]
+  call type: CALL
+  address: 0047d4bc
+  patch: ff1548d35600
+88. Import patch [enhanced standard]
+  import: KERNEL32.dll!GlobalMemoryStatus [7C813BAA]
+  call type: CALL
+  address: 0047f1ba
+  patch: ff154cd35600
+89. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 0047fee1
+  patch: ff158cd35600
+90. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 0047ff8b
+  patch: ff158cd35600
+91. Import patch [enhanced standard]
+  import: USER32.dll!CloseClipboard [7E430265]
+  call type: CALL
+  address: 004806c1
+  patch: ff1528d75600
+92. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 004831e5
+  patch: ff1580d05600
+93. Import patch [enhanced standard]
+  import: KERNEL32.dll!WaitForSingleObject [7C802530]
+  call type: CALL
+  address: 0048335c
+  patch: ff1560d35600
+94. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 00485dae
+  patch: ff158cd35600
+95. Import patch [enhanced standard]
+  import: USER32.dll!CloseClipboard [7E430265]
+  call type: CALL
+  address: 00487170
+  patch: ff1528d75600
+96. Import patch [enhanced standard]
+  import: USER32.dll!CloseClipboard [7E430265]
+  call type: CALL
+  address: 004871d1
+  patch: ff1528d75600
+97. Import patch [enhanced standard]
+  import: USER32.dll!CloseClipboard [7E430265]
+  call type: CALL
+  address: 0048ab1d
+  patch: ff1528d75600
+98. Import patch [enhanced standard]
+  import: KERNEL32.dll!lstrlenA [7C80BE56]
+  call type: CALL
+  address: 0048d649
+  patch: ff150cd45600
+99. Import patch [enhanced standard]
+  import: KERNEL32.dll!lstrlenA [7C80BE56]
+  call type: CALL
+  address: 0048d6b9
+  patch: ff150cd45600
+100. Import patch [enhanced standard]
+  import: KERNEL32.dll!lstrlenA [7C80BE56]
+  call type: CALL
+  address: 0048d77a
+  patch: ff150cd45600
+101. Import patch [enhanced standard]
+  import: KERNEL32.dll!FileTimeToLocalFileTime [7C80E906]
+  call type: CALL
+  address: 00494334
+  patch: ff1588d45600
+102. Import patch [enhanced standard]
+  import: KERNEL32.dll!FileTimeToSystemTime [7C80E88C]
+  call type: CALL
+  address: 00494344
+  patch: ff1584d45600
+103. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetACP [7C8099B5]
+  call type: CALL
+  address: 00497ff9
+  patch: ff1548d35600
+104. Import patch [enhanced standard]
+  import: USER32.dll!CloseClipboard [7E430265]
+  call type: CALL
+  address: 004a1066
+  patch: ff1528d75600
+105. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 004a4e7f
+  patch: ff158cd35600
+106. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetACP [7C8099B5]
+  call type: CALL
+  address: 004ab6db
+  patch: ff1548d35600
+107. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetACP [7C8099B5]
+  call type: CALL
+  address: 004abb7a
+  patch: ff1548d35600
+108. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptGenKey [77E11849]
+  call type: CALL
+  address: 004ad4de
+  patch: ff1524d05600
+109. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptDestroyKey [77DE9EBC]
+  call type: CALL
+  address: 004ad577
+  patch: ff1540d05600
+110. Import patch [enhanced standard]
+  import: ADVAPI32.dll!CryptReleaseContext [77DE7EEE]
+  call type: CALL
+  address: 004ad587
+  patch: ff155cd05600
+111. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 004b03b1
+  patch: ff1580d05600
+112. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 004b03db
+  patch: ff1580d05600
+113. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 004b0aef
+  patch: ff1580d05600
+114. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 004b10ae
+  patch: ff158cd35600
+115. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentProcess [7C80DE95]
+  call type: CALL
+  address: 004b10dc
+  patch: ff153cd45600
+116. Import patch [enhanced standard]
+  import: KERNEL32.dll!WaitForSingleObject [7C802530]
+  call type: CALL
+  address: 004b1192
+  patch: ff1560d35600
+117. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetExitCodeProcess [7C81B24B]
+  call type: CALL
+  address: 004b11a6
+  patch: ff1594d45600
+118. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 004b11d0
+  patch: ff158cd35600
+119. Import patch [enhanced standard]
+  import: KERNEL32.dll!UnmapViewOfFile [7C80BA14]
+  call type: CALL
+  address: 004b4426
+  patch: ff1508d45600
+120. Import patch [enhanced standard]
+  import: KERNEL32.dll!WriteFile [7C8112FF]
+  call type: CALL
+  address: 004b6cf1
+  patch: ff1558d45600
+121. Import patch [enhanced standard]
+  import: KERNEL32.dll!FlushFileBuffers [7C812BB9]
+  call type: CALL
+  address: 004b6cfe
+  patch: ff1598d45600
+122. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThread [7C80998B]
+  call type: CALL
+  address: 004b71bb
+  patch: ff1524d45600
+123. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThread [7C80998B]
+  call type: CALL
+  address: 004b78d0
+  patch: ff1524d45600
+124. Import patch [enhanced standard]
+  import: KERNEL32.dll!MapViewOfFile [7C80B9A5]
+  call type: CALL
+  address: 004b7e01
+  patch: ff1510d45600
+125. Import patch [enhanced standard]
+  import: KERNEL32.dll!WriteFile [7C8112FF]
+  call type: CALL
+  address: 004b8435
+  patch: ff1558d45600
+126. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetStdHandle [7C810C89]
+  call type: CALL
+  address: 004b8500
+  patch: ff157cd45600
+127. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileSize [7C810FEF]
+  call type: CALL
+  address: 004b85dc
+  patch: ff15bcd35600
+128. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetSystemTime [7C80176F]
+  call type: CALL
+  address: 004b9e32
+  patch: ff15f8d35600
+129. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetACP [7C8099B5]
+  call type: CALL
+  address: 004bbc46
+  patch: ff1548d35600
+130. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 004ca6f6
+  patch: ff1580d05600
+131. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 004cfc1c
+  patch: ff158cd35600
+132. Import patch [enhanced standard]
+  import: KERNEL32.dll!ResumeThread [7C8332F7]
+  call type: CALL
+  address: 004d010d
+  patch: ff15a4d45600
+133. Import patch [enhanced standard]
+  import: KERNEL32.dll!ResumeThread [7C8332F7]
+  call type: CALL
+  address: 004d019e
+  patch: ff15a4d45600
+134. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 004d03bf
+  patch: ff158cd35600
+135. Import patch [enhanced standard]
+  import: KERNEL32.dll!ResumeThread [7C8332F7]
+  call type: CALL
+  address: 004d0e06
+  patch: ff15a4d45600
+136. Import patch [enhanced standard]
+  import: KERNEL32.dll!WaitForSingleObject [7C802530]
+  call type: CALL
+  address: 004d1195
+  patch: ff1560d35600
+137. Import patch [enhanced standard]
+  import: KERNEL32.dll!SuspendThread [7C83973A]
+  call type: CALL
+  address: 004d1db0
+  patch: ff15a8d45600
+138. Import patch [enhanced standard]
+  import: KERNEL32.dll!ResumeThread [7C8332F7]
+  call type: CALL
+  address: 004d1f5b
+  patch: ff15a4d45600
+139. Import patch [enhanced standard]
+  import: KERNEL32.dll!ResumeThread [7C8332F7]
+  call type: CALL
+  address: 004d1fdb
+  patch: ff15a4d45600
+140. Import patch [enhanced standard]
+  import: KERNEL32.dll!ResumeThread [7C8332F7]
+  call type: CALL
+  address: 004d2066
+  patch: ff15a4d45600
+141. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThread [7C80998B]
+  call type: CALL
+  address: 004d2580
+  patch: ff1524d45600
+142. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 004d34ed
+  patch: ff15dcd35600
+143. Import patch [enhanced standard]
+  import: USER32.dll!CloseClipboard [7E430265]
+  call type: JMP
+  address: 004d8489
+  patch: ff2528d75600
+144. Import patch [enhanced standard]
+  import: SHELL32.dll!SHGetDesktopFolder [7C9EBC58]
+  call type: CALL
+  address: 004dc25e
+  patch: ff1500d65600
+145. Import patch [enhanced standard]
+  import: SHELL32.dll!SHGetMalloc [7CA2B445]
+  call type: CALL
+  address: 004dc5a1
+  patch: ff150cd65600
+146. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 004dd784
+  patch: ff1580d05600
+147. Import patch [enhanced standard]
+  import: SHELL32.dll!SHGetSpecialFolderLocation [7C9EF7D3]
+  call type: CALL
+  address: 004ddc8c
+  patch: ff1504d65600
+148. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 004decf3
+  patch: ff15dcd35600
+149. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 004df4da
+  patch: ff15dcd35600
+150. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 004ed9ad
+  patch: ff158cd35600
+151. Import patch [enhanced standard]
+  import: USER32.dll!DestroyIcon [7E42D312]
+  call type: CALL
+  address: 004ee142
+  patch: ff1574d85600
+152. Import patch [enhanced standard]
+  import: USER32.dll!DestroyIcon [7E42D312]
+  call type: CALL
+  address: 004efeab
+  patch: ff1574d85600
+153. Import patch [enhanced standard]
+  import: USER32.dll!DestroyIcon [7E42D312]
+  call type: CALL
+  address: 004f0ece
+  patch: ff1574d85600
+154. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 004f2532
+  patch: ff15dcd35600
+155. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 004f57b8
+  patch: ff1580d05600
+156. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegOpenKeyExA [77DD7852]
+  call type: CALL
+  address: 004fe51f
+  patch: ff1510d05600
+157. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegQueryValueExA [77DD7ABB]
+  call type: CALL
+  address: 004fe560
+  patch: ff1514d05600
+158. Import patch [enhanced standard]
+  import: KERNEL32.dll!ExpandEnvironmentStringsA [7C8333D9]
+  call type: CALL
+  address: 004fe584
+  patch: ff15b0d45600
+159. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 004fe5b1
+  patch: ff1580d05600
+160. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 004ffdff
+  patch: ff158cd35600
+161. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 005039bd
+  patch: ff158cd35600
+162. Import patch [enhanced standard]
+  import: KERNEL32.dll!GlobalDeleteAtom [7C813673]
+  call type: CALL
+  address: 00503fea
+  patch: ff15c0d45600
+163. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThreadId [7C8097D0]
+  call type: CALL
+  address: 005042d6
+  patch: ff1518d45600
+164. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetModuleHandleA [7C80B741]
+  call type: CALL
+  address: 0050875a
+  patch: ff15ccd45600
+165. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetModuleHandleA [7C80B741]
+  call type: CALL
+  address: 00508796
+  patch: ff15ccd45600
+166. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 00509d99
+  patch: ff158cd35600
+167. Import patch [enhanced standard]
+  import: KERNEL32.dll!lstrlenA [7C80BE56]
+  call type: CALL
+  address: 0050adb1
+  patch: ff150cd45600
+168. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentProcessId [7C8099C0]
+  call type: CALL
+  address: 0050b1c4
+  patch: ff1540d45600
+169. Import patch [enhanced standard]
+  import: USER32.dll!BringWindowToTop [7E4303A8]
+  call type: CALL
+  address: 0050ba9d
+  patch: ff15d4d95600
+170. Import patch [enhanced standard]
+  import: USER32.dll!BringWindowToTop [7E4303A8]
+  call type: CALL
+  address: 0050bdb8
+  patch: ff15d4d95600
+171. Import patch [enhanced standard]
+  import: USER32.dll!BringWindowToTop [7E4303A8]
+  call type: CALL
+  address: 0050ca93
+  patch: ff15d4d95600
+172. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentProcessId [7C8099C0]
+  call type: CALL
+  address: 0050e7af
+  patch: ff1540d45600
+173. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetThreadPriority [7C80C1A8]
+  call type: CALL
+  address: 0051193a
+  patch: ff15d4d45600
+174. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThreadId [7C8097D0]
+  call type: CALL
+  address: 00511d8d
+  patch: ff1518d45600
+175. Import patch [enhanced standard]
+  import: KERNEL32.dll!WaitForSingleObject [7C802530]
+  call type: CALL
+  address: 00511f6b
+  patch: ff1560d35600
+176. Import patch [enhanced standard]
+  import: KERNEL32.dll!ResumeThread [7C8332F7]
+  call type: CALL
+  address: 00512066
+  patch: ff15a4d45600
+177. Import patch [enhanced standard]
+  import: KERNEL32.dll!WaitForSingleObject [7C802530]
+  call type: CALL
+  address: 00512071
+  patch: ff1560d35600
+178. Import patch [enhanced standard]
+  import: KERNEL32.dll!SuspendThread [7C83973A]
+  call type: CALL
+  address: 0051208b
+  patch: ff15a8d45600
+179. Import patch [enhanced standard]
+  import: KERNEL32.dll!WaitForSingleObject [7C802530]
+  call type: CALL
+  address: 0051209b
+  patch: ff1560d35600
+180. Import patch [enhanced standard]
+  import: KERNEL32.dll!ResumeThread [7C8332F7]
+  call type: CALL
+  address: 00512138
+  patch: ff15a4d45600
+181. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 005133bb
+  patch: ff1580d05600
+182. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 0051353a
+  patch: ff158cd35600
+183. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThread [7C80998B]
+  call type: CALL
+  address: 00513e07
+  patch: ff1524d45600
+184. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThreadId [7C8097D0]
+  call type: CALL
+  address: 00513e10
+  patch: ff1518d45600
+185. Import patch [enhanced standard]
+  import: KERNEL32.dll!GlobalDeleteAtom [7C813673]
+  call type: CALL
+  address: 00514050
+  patch: ff15c0d45600
+186. Import patch [enhanced standard]
+  import: KERNEL32.dll!GlobalDeleteAtom [7C813673]
+  call type: CALL
+  address: 00514063
+  patch: ff15c0d45600
+187. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 00514376
+  patch: ff1580d05600
+188. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 005143c9
+  patch: ff1580d05600
+189. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 00514434
+  patch: ff1580d05600
+190. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 005144ed
+  patch: ff1580d05600
+191. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 0051454d
+  patch: ff1580d05600
+192. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 005146d4
+  patch: ff1580d05600
+193. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 00515b6d
+  patch: ff1580d05600
+194. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 00515d6a
+  patch: ff1580d05600
+195. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetThreadLocale [7C80A4B5]
+  call type: CALL
+  address: 005160f7
+  patch: ff15a8d35600
+196. Import patch [enhanced standard]
+  import: KERNEL32.dll!WriteFile [7C8112FF]
+  call type: CALL
+  address: 0051621b
+  patch: ff1558d45600
+197. Import patch [enhanced standard]
+  import: KERNEL32.dll!FlushFileBuffers [7C812BB9]
+  call type: CALL
+  address: 005162f8
+  patch: ff1598d45600
+198. Import patch [enhanced standard]
+  import: KERNEL32.dll!LockFile [7C832D61]
+  call type: CALL
+  address: 0051632a
+  patch: ff1500d55600
+199. Import patch [enhanced standard]
+  import: KERNEL32.dll!UnlockFile [7C832CBC]
+  call type: CALL
+  address: 0051635f
+  patch: ff1504d55600
+200. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetEndOfFile [7C832A46]
+  call type: CALL
+  address: 00516395
+  patch: ff1528d45600
+201. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileSize [7C810FEF]
+  call type: CALL
+  address: 005163c4
+  patch: ff15bcd35600
+202. Import patch [enhanced standard]
+  import: KERNEL32.dll!DuplicateHandle [7C80DE9E]
+  call type: CALL
+  address: 00516524
+  patch: ff1508d55600
+203. Import patch [enhanced standard]
+  import: KERNEL32.dll!FindClose [7C80EE9C]
+  call type: CALL
+  address: 0051691b
+  patch: ff15dcd35600
+204. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileTime [7C83261D]
+  call type: CALL
+  address: 00518cc5
+  patch: ff1530d45600
+205. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetFileTime [7C832690]
+  call type: CALL
+  address: 00518cfc
+  patch: ff150cd55600
+206. Import patch [enhanced standard]
+  import: KERNEL32.dll!GlobalFlags [7C83677A]
+  call type: CALL
+  address: 0051d754
+  patch: ff1514d55600
+207. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThreadId [7C8097D0]
+  call type: CALL
+  address: 005208eb
+  patch: ff1518d45600
+208. Import patch [enhanced standard]
+  import: KERNEL32.dll!FreeLibrary [7C80AC7E]
+  call type: CALL
+  address: 005284f7
+  patch: ff158cd35600
+209. Import patch [enhanced standard]
+  import: ADVAPI32.dll!RegCloseKey [77DD6C27]
+  call type: CALL
+  address: 0052c813
+  patch: ff1580d05600
+210. Import patch [enhanced standard]
+  import: USER32.dll!DestroyIcon [7E42D312]
+  call type: CALL
+  address: 0052cfed
+  patch: ff1574d85600
+211. Import patch [enhanced standard]
+  import: KERNEL32.dll!FileTimeToLocalFileTime [7C80E906]
+  call type: CALL
+  address: 0052e19b
+  patch: ff1588d45600
+212. Import patch [enhanced standard]
+  import: KERNEL32.dll!FileTimeToSystemTime [7C80E88C]
+  call type: CALL
+  address: 0052e1ad
+  patch: ff1584d45600
+213. Import patch [enhanced standard]
+  import: KERNEL32.dll!FileTimeToLocalFileTime [7C80E906]
+  call type: CALL
+  address: 0052e2c1
+  patch: ff1588d45600
+214. Import patch [enhanced standard]
+  import: KERNEL32.dll!FileTimeToSystemTime [7C80E88C]
+  call type: CALL
+  address: 0052e2e4
+  patch: ff1584d45600
+215. Import patch [enhanced standard]
+  import: KERNEL32.dll!SystemTimeToFileTime [7C811094]
+  call type: CALL
+  address: 0052e5ad
+  patch: ff1520d45600
+216. Import patch [enhanced standard]
+  import: KERNEL32.dll!LocalFileTimeToFileTime [7C814604]
+  call type: CALL
+  address: 0052e5ce
+  patch: ff1518d35600
+217. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileTime [7C83261D]
+  call type: CALL
+  address: 0052e632
+  patch: ff1530d45600
+218. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThreadId [7C8097D0]
+  call type: CALL
+  address: 0052ef5d
+  patch: ff1518d45600
+219. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetThreadLocale [7C80A4B5]
+  call type: CALL
+  address: 00537de3
+  patch: ff15a8d35600
+220. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThreadId [7C8097D0]
+  call type: CALL
+  address: 00539e40
+  patch: ff1518d45600
+221. Import patch [enhanced standard]
+  import: KERNEL32.dll!lstrlenA [7C80BE56]
+  call type: CALL
+  address: 0053b979
+  patch: ff150cd45600
+222. Import patch [enhanced standard]
+  import: KERNEL32.dll!lstrlenA [7C80BE56]
+  call type: CALL
+  address: 0053d8ab
+  patch: ff150cd45600
+223. Import patch [enhanced standard]
+  import: KERNEL32.dll!IsDebuggerPresent [7C81F424]
+  call type: CALL
+  address: 0053fec0
+  patch: ff15f8d25600
+224. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentProcess [7C80DE95]
+  call type: CALL
+  address: 0053fef2
+  patch: ff153cd45600
+225. Import patch [enhanced standard]
+  import: KERNEL32.dll!TerminateProcess [7C801E1A]
+  call type: CALL
+  address: 0053fef9
+  patch: ff1500d35600
+226. Import patch [enhanced standard]
+  import: KERNEL32.dll!ExitThread [7C80C0F8]
+  call type: CALL
+  address: 005443a7
+  patch: ff15dcd25600
+227. Import patch [enhanced standard]
+  import: KERNEL32.dll!ExitThread [7C80C0F8]
+  call type: CALL
+  address: 00544423
+  patch: ff15dcd25600
+228. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThreadId [7C8097D0]
+  call type: CALL
+  address: 00544429
+  patch: ff1518d45600
+229. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetModuleFileNameA [7C80B56F]
+  call type: CALL
+  address: 0054516f
+  patch: ff15c0d25600
+230. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetStdHandle [7C810C89]
+  call type: CALL
+  address: 00545242
+  patch: ff157cd45600
+231. Import patch [enhanced standard]
+  import: KERNEL32.dll!WriteFile [7C8112FF]
+  call type: CALL
+  address: 0054526c
+  patch: ff1558d45600
+232. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetStartupInfoA [7C801EF2]
+  call type: CALL
+  address: 005457a5
+  patch: ff15a8d25600
+233. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileType [7C8113C9]
+  call type: CALL
+  address: 005458cf
+  patch: ff15acd25600
+234. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetStdHandle [7C810C89]
+  call type: CALL
+  address: 00545959
+  patch: ff157cd45600
+235. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileType [7C8113C9]
+  call type: CALL
+  address: 0054596b
+  patch: ff15acd25600
+236. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetHandleCount [7C80CD37]
+  call type: CALL
+  address: 005459c3
+  patch: ff15b0d25600
+237. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThreadId [7C8097D0]
+  call type: CALL
+  address: 00545d11
+  patch: ff1518d45600
+238. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThreadId [7C8097D0]
+  call type: CALL
+  address: 0054605d
+  patch: ff1518d45600
+239. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetSystemTimeAsFileTime [7C8017E9]
+  call type: CALL
+  address: 005460df
+  patch: ff1598d25600
+240. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentProcessId [7C8099C0]
+  call type: CALL
+  address: 005460eb
+  patch: ff1540d45600
+241. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentThreadId [7C8097D0]
+  call type: CALL
+  address: 005460f3
+  patch: ff1518d45600
+242. Import patch [enhanced standard]
+  import: KERNEL32.dll!QueryPerformanceCounter [7C80A4C7]
+  call type: CALL
+  address: 00546107
+  patch: ff159cd25600
+243. Import patch [enhanced standard]
+  import: KERNEL32.dll!IsDebuggerPresent [7C81F424]
+  call type: CALL
+  address: 00547097
+  patch: ff15f8d25600
+244. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCurrentProcess [7C80DE95]
+  call type: CALL
+  address: 005470d3
+  patch: ff153cd45600
+245. Import patch [enhanced standard]
+  import: KERNEL32.dll!TerminateProcess [7C801E1A]
+  call type: CALL
+  address: 005470da
+  patch: ff1500d35600
+246. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetModuleHandleA [7C80B741]
+  call type: CALL
+  address: 00549ba7
+  patch: ff15ccd45600
+247. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCPInfo [7C810BC6]
+  call type: CALL
+  address: 00549e24
+  patch: ff15c8d35600
+248. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetOEMCP [7C812D1F]
+  call type: CALL
+  address: 0054a063
+  patch: ff1594d25600
+249. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetACP [7C8099B5]
+  call type: CALL
+  address: 0054a086
+  patch: ff1548d35600
+250. Import patch [enhanced standard]
+  import: KERNEL32.dll!IsValidCodePage [7C811643]
+  call type: CALL
+  address: 0054a129
+  patch: ff1590d25600
+251. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCPInfo [7C810BC6]
+  call type: CALL
+  address: 0054a13c
+  patch: ff15c8d35600
+252. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetTimeZoneInformation [7C81419F]
+  call type: CALL
+  address: 0054f708
+  patch: ff1588d25600
+253. Import patch [enhanced standard]
+  import: KERNEL32.dll!LCMapStringA [7C838DF0]
+  call type: CALL
+  address: 005512c1
+  patch: ff1580d25600
+254. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetStdHandle [7C81DA73]
+  call type: CALL
+  address: 005513a6
+  patch: ff157cd25600
+255. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetStdHandle [7C81DA73]
+  call type: CALL
+  address: 0055142c
+  patch: ff157cd25600
+256. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetConsoleMode [7C81B348]
+  call type: CALL
+  address: 00551855
+  patch: ff1574d25600
+257. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetConsoleCP [7C87528B]
+  call type: CALL
+  address: 00551875
+  patch: ff1578d25600
+258. Import patch [enhanced standard]
+  import: KERNEL32.dll!WriteFile [7C8112FF]
+  call type: CALL
+  address: 0055198e
+  patch: ff1558d45600
+259. Import patch [enhanced standard]
+  import: KERNEL32.dll!WriteFile [7C8112FF]
+  call type: CALL
+  address: 005519e7
+  patch: ff1558d45600
+260. Import patch [enhanced standard]
+  import: KERNEL32.dll!WriteFile [7C8112FF]
+  call type: CALL
+  address: 00551b75
+  patch: ff1558d45600
+261. Import patch [enhanced standard]
+  import: KERNEL32.dll!WriteFile [7C8112FF]
+  call type: CALL
+  address: 00551c55
+  patch: ff1558d45600
+262. Import patch [enhanced standard]
+  import: KERNEL32.dll!WriteFile [7C8112FF]
+  call type: CALL
+  address: 00551d4f
+  patch: ff1558d45600
+263. Import patch [enhanced standard]
+  import: KERNEL32.dll!WriteFile [7C8112FF]
+  call type: CALL
+  address: 00551da6
+  patch: ff1558d45600
+264. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetStringTypeA [7C838A14]
+  call type: CALL
+  address: 005542f7
+  patch: ff1570d25600
+265. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCPInfo [7C810BC6]
+  call type: CALL
+  address: 00554ffe
+  patch: ff15c8d35600
+266. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetACP [7C8099B5]
+  call type: CALL
+  address: 0055546c
+  patch: ff1548d35600
+267. Import patch [enhanced standard]
+  import: KERNEL32.dll!EnumSystemLocalesA [7C837CE9]
+  call type: CALL
+  address: 005558cd
+  patch: ff155cd25600
+268. Import patch [enhanced standard]
+  import: KERNEL32.dll!EnumSystemLocalesA [7C837CE9]
+  call type: CALL
+  address: 00555918
+  patch: ff155cd25600
+269. Import patch [enhanced standard]
+  import: KERNEL32.dll!EnumSystemLocalesA [7C837CE9]
+  call type: CALL
+  address: 005559f5
+  patch: ff155cd25600
+270. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetUserDefaultLCID [7C809FB0]
+  call type: CALL
+  address: 00555a0e
+  patch: ff1554d25600
+271. Import patch [enhanced standard]
+  import: KERNEL32.dll!IsValidCodePage [7C811643]
+  call type: CALL
+  address: 00555a5f
+  patch: ff1590d25600
+272. Import patch [enhanced standard]
+  import: KERNEL32.dll!IsValidLocale [7C81C8BB]
+  call type: CALL
+  address: 00555a72
+  patch: ff1560d25600
+273. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetConsoleOutputCP [7C81B5BF]
+  call type: CALL
+  address: 00557528
+  patch: ff1568d25600
+274. Import patch [enhanced standard]
+  import: KERNEL32.dll!WriteConsoleA [7C81D355]
+  call type: CALL
+  address: 0055754b
+  patch: ff1564d25600
+275. Import patch [enhanced standard]
+  import: KERNEL32.dll!FlushFileBuffers [7C812BB9]
+  call type: CALL
+  address: 005575fe
+  patch: ff1598d45600
+276. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetFileType [7C8113C9]
+  call type: CALL
+  address: 0055805a
+  patch: ff15acd25600
+277. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetEndOfFile [7C832A46]
+  call type: CALL
+  address: 00559e2f
+  patch: ff1528d45600
+278. Import patch [enhanced standard]
+  import: KERNEL32.dll!GetCPInfo [7C810BC6]
+  call type: CALL
+  address: 0055a11d
+  patch: ff15c8d35600
+279. Import patch [enhanced standard]
+  import: KERNEL32.dll!SetEnvironmentVariableA [7C833E78]
+  call type: CALL
+  address: 0055a76f
+  patch: ff15ecd25600

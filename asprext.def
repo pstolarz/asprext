@@ -1,0 +1,10 @@
+EXPORTS
+    DebugExtensionInitialize
+    aspr_vmctx_dump
+    aspr_vmin_disasm
+    aspr_imports
+    aspr_ipatch
+    aspr_init
+    aspr_oep
+    aspr_poly_buf
+    help

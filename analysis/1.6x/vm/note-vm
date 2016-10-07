@@ -1,0 +1,598 @@
+ASProtect x86 VM (engine entrance)
+----------------------------------
+
+vm_ctx (0xBD length):
+                            vm's gp registers:
+    0020[dword]: eax
+    0024[dword]: ecx
+    0028[dword]: edx
+    002c[dword]: ebx
+    0030[dword]: esp
+    0034[dword]: ebp
+    0038[dword]: esi
+    003c[dword]: edi
+
+    0044[dword]: eip        vm's eip
+    0048[dword]: flags      vm's flags
+
+    0090[qword]: exec_cnt   executed opcodes counter (LE)
+
+    009c[byte]:  baddr_used simply copied from opc_desc.opc_bts[e]
+    009d[dword]: seh        original seh
+
+    00a1[byte]:  exec_cont: TRUE: execution of a opcode not finished, continuation required (eg. prefix following the opcode)
+
+    00b4[byte]:  opc        fetched opcode to run; the final opcode is calculated as: (byte)(vm_ctx.opc + vm_in.obfus)
+    00b5[dword]: opc_desc   *opc_desc_t - pointer to opc_desc to execute
+    00b9[dword]: opc_desc_next  *opc_desc_t - pointer to opc_desc to execute after opc_desc
+
+    00ac[dword]: jcc_dlen   jcc opcodes displacement length: 1 - for 7x (Jcc) opcodes, 4 - otherwise
+
+
+opc_desc_t (length of struct: 0x13):
+    0000[15 bytes]: opc_bts  opcode bytes (obfuscated; 0xff,0xff,0xff,0xff - not set):
+                             opc_bts[0]: opcode byte if prefix present (-vm_in.obfus)
+                             opc_bts[1]: opcode byte or prefix (-vm_in.obfus)
+                             opc_bts[2]: opcode byte for 2 bytes opcode (0x0f esc) (-vm_in.obfus)
+                             opc_bts[3..6]: opcode's imm oper (LE, obfuscated + event. base):
+                                actual imm = little_end(opc_bts[3..6]) + vm_in.obfus + opc_bts[1] + (opc_bts[14] ? vm_in.base_addr : 0)
+
+                                NOTE: if imm oper==0 then the oper is not obfuscated but vm_in.base_addr may still be used
+                             opc_bts[7]: seems to be not used (always 0)
+                             opc_bts[8]: mod/rm byte (plain)
+                             opc_bts[9]: sib byte (plain)
+                             opc_bts[10..13]: opcode's displ oper (LE, plain + event. base):
+                                actual displ = little_end(opc_bts[10..13]) + (opc_bts[14] ? vm_in.base_addr : 0)
+
+                                NOTE: this oper is always mod/rm displacement
+                                NOTE: jcc branch displ are obfuscated
+                                NOTE: other branch (call, jmp) displ are not obfuscated
+                             opc_bts[14]: TRUE: relative address (32 bit), the vm_in.base_addr shall be added to get the result
+
+    000f[dword]: addr        opcode's address (obfuscated):
+                                actual address = addr + vm_in.obfus + vm_in.base_addr
+
+vm_in_t:
+    0004[dword]: opc_descs  *opc_desc_t - pointer on the table of opc_desc elems
+    0008[dword]: n_opc_descs    number of opc_desc elems in the opc_descs table
+    000c[dword]: base_addr  base addr vm uses for calculations for addresses of emulated opcodes
+    0010[byte/dword]: obfus const used to obfuscate values in the vm structs (byte for obfuscate opcodes, dword for obfuscate addresses),
+                            in fact this is the const representing negative value of the obfuscated base_addr
+    0014[dword]: pid        current process id
+
+
+vm_run() --------
+vm_run(vm_in_t *vm_in, void *eip, void *to_free)
+
+vm_in - vm input
+eip - eip address as will be used for executed VM opcodes
+buf_to_free - if !=0: buf to be freed (used for chains of consecutive vm runs)
+
+
+00442ce0 60              pushad
+00442ce1 89e0            mov     eax,esp
+00442ce3 9c              pushfd
+00442ce4 5a              pop     edx
+00442ce5 55              push    ebp
+00442ce6 89e5            mov     ebp,esp
+00442ce8 83c524          add     ebp,24h                                            ; skip pushed gprs & ebp
+00442ceb 31c9            xor     ecx,ecx
+00442ced 648b09          mov     ecx,dword ptr fs:[ecx]
+00442cf0 81ecb80b0000    sub     esp,0BB8h
+00442cf6 ff7508          push    dword ptr [ebp+8]                                  ; eip
+00442cf9 ff750c          push    dword ptr [ebp+0Ch]                                ; buf_to_free
+00442cfc 52              push    edx                                                ; flags
+00442cfd 51              push    ecx                                                ; seh - fs:[0]
+00442cfe 50              push    eax                                                ; &gprs
+00442cff ff7504          push    dword ptr [ebp+4]                                  ; vm_in
+00442d02 e8f5feffff      call    image00400000+0x42bfc (00442bfc)                   ; vm_engine()
+00442d07 81c4dc0b0000    add     esp,0BDCh                                          ; 0xBB8+0x24
+00442d0d c20c00          ret     0Ch
+
+vm_engine() --------
+
+00442bfc 55              push    ebp
+00442bfd 8bec            mov     ebp,esp
+00442bff 81c440ffffff    add     esp,0FFFFFF40h                                     ; -0xC0
+00442c05 53              push    ebx
+00442c06 56              push    esi
+00442c07 57              push    edi
+00442c08 8b5d0c          mov     ebx,dword ptr [ebp+0Ch]                            ; &gprs
+00442c0b 837d1800        cmp     dword ptr [ebp+18h],0
+00442c0f 7408            je      image00400000+0x42c19 (00442c19)                   ; if (buf_to_free==0)
+00442c11 8d4518          lea     eax,[ebp+18h]
+00442c14 e89b410000      call    image00400000+0x46db4 (00446db4)                   ; free(buf_to_free)
+
+00442c19 33c9            xor     ecx,ecx
+00442c1b 55              push    ebp
+00442c1c 68972c4400      push    offset image00400000+0x42c97 (00442c97)
+00442c21 64ff31          push    dword ptr fs:[ecx]
+00442c24 648921          mov     dword ptr fs:[ecx],esp                             ; set SEH
+
+00442c27 eb01            jmp     image00400000+0x42c2a (00442c2a)
+00442c29 9a              ???
+00442c2a 8d8543ffffff    lea     eax,[ebp-0BDh]                                     ; vm_ctx (length: 0xBD)
+00442c30 babd000000      mov     edx,0BDh
+00442c35 e8729efeff      call    image00400000+0x2caac (0042caac)                   ; zeromem(vm_ctx, sizeof(vm_ctx))
+00442c3a 8b4514          mov     eax,dword ptr [ebp+14h]
+00442c3d 89458b          mov     dword ptr [ebp-75h],eax                            ; vm_ctx.flags = flags
+00442c40 8b4510          mov     eax,dword ptr [ebp+10h]
+00442c43 8945e0          mov     dword ptr [ebp-20h],eax                            ; vm_ctx.seh = seh
+00442c46 8b451c          mov     eax,dword ptr [ebp+1Ch]
+00442c49 894587          mov     dword ptr [ebp-79h],eax                            ; vm_ctx.eip = eip
+00442c4c eb01            jmp     image00400000+0x42c4f (00442c4f)
+00442c4e e9              ???
+00442c4f 33d2            xor     edx,edx                                            ; i=0
+00442c51 8d8563ffffff    lea     eax,[ebp-9Dh]
+
+; copy gprs to vm_ctx
+00442c57 8d4b20          lea     ecx,[ebx+20h]
+00442c5a 8bf2            mov     esi,edx
+00442c5c c1e602          shl     esi,2
+00442c5f 2bce            sub     ecx,esi
+00442c61 83e904          sub     ecx,4
+00442c64 8b09            mov     ecx,dword ptr [ecx]
+00442c66 8908            mov     dword ptr [eax],ecx                                ; vm_ctx[0x20+4*i] = gprs[0x20-4*(i+1)]
+00442c68 42              inc     edx
+00442c69 83c004          add     eax,4
+00442c6c 83fa08          cmp     edx,8
+00442c6f 75e6            jne     image00400000+0x42c57 (00442c57)                   ; if (++i < 8) next iter
+
+00442c71 838573ffffff10  add     dword ptr [ebp-8Dh],10h                            ; vm_ctx.esp += 0x10: esp point at the stack before calling the vm_run()
+                                                                                    ; that is points to the ret addr of vm_run() caller.
+00442c78 eb01            jmp     image00400000+0x42c7b (00442c7b)
+00442c7a 9a              ???
+
+00442c7b 8d9543ffffff    lea     edx,[ebp-0BDh]                                     ; vm_ctx
+00442c81 8b4508          mov     eax,dword ptr [ebp+8]                              ; vm_in
+00442c84 e8f3feffff      call    image00400000+0x42b7c (00442b7c)                   ; continue = vm_opc_exec(vm_in, vm_ctx)
+00442c89 84c0            test    al,al
+00442c8b 75ee            jne     image00400000+0x42c7b (00442c7b)                   ; seems to jmp forever
+00442c8d 33c0            xor     eax,eax
+00442c8f 5a              pop     edx
+00442c90 59              pop     ecx
+00442c91 59              pop     ecx
+00442c92 648910          mov     dword ptr fs:[eax],edx                             ; restore SEH
+00442c95 eb21            jmp     image00400000+0x42cb8 (00442cb8)
+00442c97 e9a871feff      jmp     image00400000+0x29e44 (00429e44)                   ; SEH excpetion proc
+
+; --- looks like not reached part of code
+00442c9c 6aff            push    0FFFFFFFFh
+00442c9e e84578ffff      call    image00400000+0x3a4e8 (0043a4e8)
+00442ca3 8b5508          mov     edx,dword ptr [ebp+8]
+00442ca6 014210          add     dword ptr [edx+10h],eax
+00442ca9 68d82c4400      push    offset image00400000+0x42cd8 (00442cd8)
+00442cae e8759affff      call    image00400000+0x3c728 (0043c728)
+00442cb3 e8e874feff      call    image00400000+0x2a1a0 (0042a1a0)
+; ---
+
+00442cb8 8d9543ffffff    lea     edx,[ebp-0BDh]
+00442cbe 8b4508          mov     eax,dword ptr [ebp+8]
+00442cc1 e8aafdffff      call    image00400000+0x42a70 (00442a70)                   ; vm_restore(vm_in, vm_ctx)
+00442cc6 5f              pop     edi
+00442cc7 5e              pop     esi
+00442cc8 5b              pop     ebx
+00442cc9 8be5            mov     esp,ebp
+00442ccb 5d              pop     ebp
+00442ccc c21800          ret     18h
+
+vm_opc_exec() --------
+Looks for opc from the eip and executes it
+
+00442b7c 53              push    ebx
+00442b7d 56              push    esi
+00442b7e 57              push    edi
+00442b7f 8bda            mov     ebx,edx                                            ; vm_ctx
+00442b81 8bf0            mov     esi,eax                                            ; vm_in
+00442b83 8bfb            mov     edi,ebx                                            ; vm_ctx
+00442b85 eb01            jmp     image00400000+0x42b88 (00442b88)
+00442b87 c7              ???
+00442b88 8b5744          mov     edx,dword ptr [edi+44h]                            ; vm_ctx.eip
+00442b8b 8b8bb9000000    mov     ecx,dword ptr [ebx+0B9h]                           ; vm_ctx.opc_desc_next
+00442b91 8bc6            mov     eax,esi                                            ; vm_in
+00442b93 e83cffffff      call    image00400000+0x42ad4 (00442ad4)                   ; cmp_eip_with_opc_desc(vm_in, vm_ctx.eip, vm_ctx.opc_desc_next)
+00442b98 84c0            test    al,al
+00442b9a 740e            je      image00400000+0x42baa (00442baa)                   ; check if we're on the proper opc_desc
+
+; ... if so, set opc_desc_next as the opcode to run
+00442b9c 8b83b9000000    mov     eax,dword ptr [ebx+0B9h]
+00442ba2 8983b5000000    mov     dword ptr [ebx+0B5h],eax                           ; vm_ctx.opc_desc = vm_ctx.opc_desc_next
+00442ba8 eb13            jmp     image00400000+0x42bbd (00442bbd)
+
+; ... if not, look eip in the table of opcodes
+00442baa 8b5744          mov     edx,dword ptr [edi+44h]                            ; vm_ctx.eip
+00442bad 8bc6            mov     eax,esi                                            ; vm_in
+00442baf e864ffffff      call    image00400000+0x42b18 (00442b18)
+00442bb4 8983b5000000    mov     dword ptr [ebx+0B5h],eax                           ; vm_ctx.opc_desc = get_opc_desc(vm_in, vm_ctx.eip)
+00442bba eb01            jmp     image00400000+0x42bbd (00442bbd)
+00442bbc 69              ???
+
+00442bbd 83bbb500000000  cmp     dword ptr [ebx+0B5h],0
+00442bc4 7412            je      image00400000+0x42bd8 (00442bd8)                   ; vm_ctx.opc_desc==NULL - last opcode; return 0
+
+; set vm_ctx.opc_desc_next to the next opc_desc after the vm_ctx.opc_desc
+00442bc6 8b83b5000000    mov     eax,dword ptr [ebx+0B5h]
+00442bcc 83c013          add     eax,13h
+00442bcf 8983b9000000    mov     dword ptr [ebx+0B9h],eax                           ; vm_ctx.opc_desc_next = vm_ctx.opc_desc + sizeof(opc_desc_t)
+00442bd5 eb01            jmp     image00400000+0x42bd8 (00442bd8)
+00442bd7 e8              ???
+
+00442bd8 83bbb500000000  cmp     dword ptr [ebx+0B5h],0
+00442bdf 740c            je      image00400000+0x42bed (00442bed)
+
+00442be1 8bd3            mov     edx,ebx                                            ; vm_ctx
+00442be3 8bc6            mov     eax,esi                                            ; vm_in
+00442be5 e85efcffff      call    image00400000+0x42848 (00442848)                   ; vm_opc_exec_engine(vm_in, vm_ctx)   @@@ "!aspr_vmctx_dump edx eax" @@@ - track VM execution
+00442bea 40              inc     eax
+00442beb 7504            jne     image00400000+0x42bf1 (00442bf1)                   ; !=-1
+
+; finished
+00442bed 33c0            xor     eax,eax
+00442bef eb05            jmp     image00400000+0x42bf6 (00442bf6)
+
+; continue
+00442bf1 b001            mov     al,1
+00442bf3 eb01            jmp     image00400000+0x42bf6 (00442bf6)
+00442bf5 9a              ???
+
+00442bf6 5f              pop     edi
+00442bf7 5e              pop     esi
+00442bf8 5b              pop     ebx
+00442bf9 c3              ret
+
+
+cmp_eip_with_opc_desc() --------
+bool cmp_eip_opc_desc(vm_in_t * vm_in, dword eip, opc_desc_t opc_desc)
+
+Checks if the opc_desc is poited by eip. Also checks some integrity of opc_desc.
+Returns TRUE if equal.
+
+00442ad4 53              push    ebx
+00442ad5 56              push    esi
+00442ad6 57              push    edi
+00442ad7 55              push    ebp
+00442ad8 8bf9            mov     edi,ecx                                            ; opc_desc
+00442ada 8bf2            mov     esi,edx                                            ; eip
+00442adc 8be8            mov     ebp,eax                                            ; vm_in
+00442ade 33db            xor     ebx,ebx
+00442ae0 eb01            jmp     image00400000+0x42ae3 (00442ae3)
+00442ae2 e9              ???
+00442ae3 a12c294500      mov     eax,dword ptr [image00400000+0x5292c (0045292c)]
+00442ae8 8b4034          mov     eax,dword ptr [eax+34h]
+00442aeb ffd0            call    eax                                                ; pid = exports.kernel32!GetCurrentProcessId
+00442aed 2b7510          sub     esi,dword ptr [ebp+10h]
+00442af0 03c6            add     eax,esi
+00442af2 8bf0            mov     esi,eax                                            ; eip + (pid - vm_in.obfus)
+00442af4 85ff            test    edi,edi
+00442af6 7418            je      image00400000+0x42b10 (00442b10)                   ; if (opc_desc==0) return 0
+00442af8 833fff          cmp     dword ptr [edi],0FFFFFFFFh
+00442afb 7413            je      image00400000+0x42b10 (00442b10)                   ; if (opc_desc.opc_bts is absent) return 0
+00442afd 8b5f0f          mov     ebx,dword ptr [edi+0Fh]
+00442b00 8bd3            mov     edx,ebx                                            ; opc_desc.addr
+00442b02 8bc5            mov     eax,ebp                                            ; vm_in
+00442b04 e8dbb1ffff      call    image00400000+0x3dce4 (0043dce4)                   ; opc_desc.addr + vm_in.base_addr + vm_in.pid
+00442b09 3bf0            cmp     esi,eax                                            ; cmp eip with opc_desc.addr after obfuscation
+00442b0b 0f94c0          sete    al                                                 ; TRUE if equal
+00442b0e 8bd8            mov     ebx,eax
+00442b10 8bc3            mov     eax,ebx
+00442b12 5d              pop     ebp
+00442b13 5f              pop     edi
+00442b14 5e              pop     esi
+00442b15 5b              pop     ebx
+00442b16 c3              ret
+
+
+get_opc_desc() --------
+opc_desc_t *get_opc_desc(vm_in_t * vm_in, dword eip)
+
+Gets opc_desc from vm_in. The function obfuscates eip to compare with values in the vm_in.
+Returns NULL if not found
+
+00442b18 53              push    ebx
+00442b19 56              push    esi
+00442b1a 57              push    edi
+00442b1b 55              push    ebp
+00442b1c 83c4f8          add     esp,0FFFFFFF8h                                     ; -8
+00442b1f 891424          mov     dword ptr [esp],edx                                ; eip
+00442b22 8bf8            mov     edi,eax                                            ; vm_in
+00442b24 8b5f04          mov     ebx,dword ptr [edi+4]                              ; opc_desc = &vm_in.opc_descs[0]
+00442b27 33c0            xor     eax,eax
+00442b29 89442404        mov     dword ptr [esp+4],eax                              ; ret_val
+00442b2d eb01            jmp     image00400000+0x42b30 (00442b30)
+00442b2f 9a              ???
+00442b30 a12c294500      mov     eax,dword ptr [image00400000+0x5292c (0045292c)]
+00442b35 8b4034          mov     eax,dword ptr [eax+34h]
+00442b38 ffd0            call    eax                                                ; pid = exports.kernel32!GetCurrentProcessId
+00442b3a 8b7708          mov     esi,dword ptr [edi+8]                              ; i = vm_in.n_opc_descs
+00442b3d 8b1424          mov     edx,dword ptr [esp]
+00442b40 2b5710          sub     edx,dword ptr [edi+10h]
+00442b43 03c2            add     eax,edx
+00442b45 890424          mov     dword ptr [esp],eax                                ; eip + (pid - vm_in.obfus)
+00442b48 85f6            test    esi,esi
+00442b4a 7622            jbe     image00400000+0x42b6e (00442b6e)
+00442b4c 8b6b0f          mov     ebp,dword ptr [ebx+0Fh]                            ; opc_desc.addr
+00442b4f eb01            jmp     image00400000+0x42b52 (00442b52)
+00442b51 9a              ???
+00442b52 8bd5            mov     edx,ebp
+00442b54 8bc7            mov     eax,edi
+00442b56 e889b1ffff      call    image00400000+0x3dce4 (0043dce4)                   ; opc_desc.addr + vm_in.base_addr + vm_in.pid
+00442b5b 3b0424          cmp     eax,dword ptr [esp]
+00442b5e 7506            jne     image00400000+0x42b66 (00442b66)
+00442b60 895c2404        mov     dword ptr [esp+4],ebx                              ; address found:  ret_val = opc_desc
+00442b64 eb08            jmp     image00400000+0x42b6e (00442b6e)
+00442b66 4e              dec     esi                                                ; i--
+00442b67 83c313          add     ebx,13h                                            ; set next opc_desc from the opc_descs table:  opc_desc = opc_desc + sizeof(opc_desc_t)
+00442b6a 85f6            test    esi,esi
+00442b6c 77de            ja      image00400000+0x42b4c (00442b4c)                   ; if (i>0) next iter
+00442b6e 8b442404        mov     eax,dword ptr [esp+4]                              ; return ret_val
+00442b72 59              pop     ecx
+00442b73 5a              pop     edx
+00442b74 5d              pop     ebp
+00442b75 5f              pop     edi
+00442b76 5e              pop     esi
+00442b77 5b              pop     ebx
+00442b78 c3              ret
+
+
+vm_opc_exec_engine() --------
+Executes the opcode alredy set in the vm context
+
+00442848 53              push    ebx
+00442849 56              push    esi
+0044284a 57              push    edi
+0044284b 55              push    ebp
+0044284c 83c4f8          add     esp,0FFFFFFF8h                                     ; -8
+0044284f 8bea            mov     ebp,edx                                            ; vm_ctx
+00442851 8bf0            mov     esi,eax                                            ; vm_in
+00442853 8bdd            mov     ebx,ebp                                            ; vm_ctx
+00442855 33c0            xor     eax,eax
+00442857 890424          mov     dword ptr [esp],eax                                ; ret_code=0
+0044285a 33ff            xor     edi,edi
+0044285c 8b4348          mov     eax,dword ptr [ebx+48h]                            ; vm_ctx.flags
+0044285f 2500010000      and     eax,100h
+00442864 89442404        mov     dword ptr [esp+4],eax                              ; trap_flag
+00442868 33c0            xor     eax,eax
+0044286a 8983b0000000    mov     dword ptr [ebx+0B0h],eax
+00442870 33c0            xor     eax,eax
+00442872 8983a7000000    mov     dword ptr [ebx+0A7h],eax
+00442878 33c0            xor     eax,eax
+0044287a 8983a2000000    mov     dword ptr [ebx+0A2h],eax
+00442880 8bd5            mov     edx,ebp
+00442882 8bc6            mov     eax,esi
+00442884 e8b3d2ffff      call    image00400000+0x3fb3c (0043fb3c)
+00442889 88839c000000    mov     byte ptr [ebx+9Ch],al                              ; vm.ctx.baddr_used = vm.ctx.opc_desc.opc_bts[e]
+0044288f c683a100000000  mov     byte ptr [ebx+0A1h],0                              ; vm_ctx.exec_cont=FALSE
+00442896 c683b400000000  mov     byte ptr [ebx+0B4h],0
+0044289d c783ac00000004000000 mov dword ptr [ebx+0ACh],4                            ; vm_ctx.jcc_dlen = 4
+004428a7 8bd5            mov     edx,ebp
+004428a9 8bc6            mov     eax,esi
+004428ab e8d0b5ffff      call    image00400000+0x3de80 (0043de80)
+004428b0 898398000000    mov     dword ptr [ebx+98h],eax
+004428b6 e984010000      jmp     image00400000+0x42a3f (00442a3f)
+
+004428bb b101            mov     cl,1
+004428bd 8bd5            mov     edx,ebp
+004428bf 8bc6            mov     eax,esi
+004428c1 e886d1ffff      call    image00400000+0x3fa4c (0043fa4c)
+004428c6 8883b4000000    mov     byte ptr [ebx+0B4h],al                             ; vm_ctx.opc = (vm_ctx.exec_cont ? vm_ctx.opc[1] : vm_ctx.opc[0]); vm_ctx.eip++;
+004428cc 33c0            xor     eax,eax
+004428ce 8a83b4000000    mov     al,byte ptr [ebx+0B4h]
+004428d4 33d2            xor     edx,edx
+004428d6 8a5610          mov     dl,byte ptr [esi+10h]
+004428d9 03c2            add     eax,edx
+004428db 25f0000000      and     eax,0F0h
+004428e0 83f870          cmp     eax,70h
+004428e3 750a            jne     image00400000+0x428ef (004428ef)
+004428e5 c783ac00000001000000 mov dword ptr [ebx+0ACh],1                            ; vm_ctx.jcc_dlen = 1 (short displacement for 7x Jcc jumps)
+004428ef 33c0            xor     eax,eax
+004428f1 8a83b4000000    mov     al,byte ptr [ebx+0B4h]
+004428f7 33d2            xor     edx,edx
+004428f9 8a5610          mov     dl,byte ptr [esi+10h]
+004428fc 03c2            add     eax,edx
+004428fe c1e804          shr     eax,4
+00442901 83e00f          and     eax,0Fh                                            ; ((vm_ctx.opc + vm_in.obfus) >> 4) & 0x0f
+00442904 83f80f          cmp     eax,0Fh
+00442907 0f8727010000    ja      image00400000+0x42a34 (00442a34)
+0044290d ff248514294400  jmp     dword ptr image00400000+0x42914 (00442914)[eax*4]
+
+; opcode Yx executors addresses
+00442914                 dd 00442954
+00442918                 dd 00442964
+0044291c                 dd 00442974
+00442920                 dd 00442984
+00442924                 dd 00442994
+00442928                 dd 004429a4
+0044292c                 dd 004429b4
+00442930                 dd 004429c1
+00442934                 dd 004429ce
+00442938                 dd 004429db
+0044293c                 dd 004429e8
+00442940                 dd 004429f5
+00442944                 dd 00442a02
+00442948                 dd 00442a0f
+0044294c                 dd 00442a1c
+00442950                 dd 00442a29
+
+00442951 2a4400          ???
+
+; opcode Yx executors calls
+; executor return 0 for a prefix, !=0 for a regular opcode
+00442954 8bd5            mov     edx,ebp
+00442956 8bc6            mov     eax,esi
+00442958 e8ebd1ffff      call    image00400000+0x3fb48 (0043fb48)                   ; 0x
+0044295d 8bf8            mov     edi,eax
+0044295f e9d0000000      jmp     image00400000+0x42a34 (00442a34)
+00442964 8bd5            mov     edx,ebp
+00442966 8bc6            mov     eax,esi
+00442968 e8c3d2ffff      call    image00400000+0x3fc30 (0043fc30)                   ; 1x
+0044296d 8bf8            mov     edi,eax
+0044296f e9c0000000      jmp     image00400000+0x42a34 (00442a34)
+00442974 8bd5            mov     edx,ebp
+00442976 8bc6            mov     eax,esi
+00442978 e89bd3ffff      call    image00400000+0x3fd18 (0043fd18)                   ; 2x
+0044297d 8bf8            mov     edi,eax
+0044297f e9b0000000      jmp     image00400000+0x42a34 (00442a34)
+00442984 8bd5            mov     edx,ebp
+00442986 8bc6            mov     eax,esi
+00442988 e803d6ffff      call    image00400000+0x3ff90 (0043ff90)                   ; 3x
+0044298d 8bf8            mov     edi,eax
+0044298f e9a0000000      jmp     image00400000+0x42a34 (00442a34)
+00442994 8bd5            mov     edx,ebp
+00442996 8bc6            mov     eax,esi
+00442998 e8a3d7ffff      call    image00400000+0x40140 (00440140)                   ; 4x
+0044299d 8bf8            mov     edi,eax
+0044299f e990000000      jmp     image00400000+0x42a34 (00442a34)
+004429a4 8bd5            mov     edx,ebp
+004429a6 8bc6            mov     eax,esi
+004429a8 e833d8ffff      call    image00400000+0x401e0 (004401e0)                   ; 5x
+004429ad 8bf8            mov     edi,eax
+004429af e980000000      jmp     image00400000+0x42a34 (00442a34)
+004429b4 8bd5            mov     edx,ebp
+004429b6 8bc6            mov     eax,esi
+004429b8 e823daffff      call    image00400000+0x403e0 (004403e0)                   ; 6x
+004429bd 8bf8            mov     edi,eax
+004429bf eb73            jmp     image00400000+0x42a34 (00442a34)
+004429c1 8bd5            mov     edx,ebp
+004429c3 8bc6            mov     eax,esi
+004429c5 e822ddffff      call    image00400000+0x406ec (004406ec)                   ; 7x
+004429ca 8bf8            mov     edi,eax
+004429cc eb66            jmp     image00400000+0x42a34 (00442a34)
+004429ce 8bd5            mov     edx,ebp
+004429d0 8bc6            mov     eax,esi
+004429d2 e8a9deffff      call    image00400000+0x40880 (00440880)                   ; 8x
+004429d7 8bf8            mov     edi,eax
+004429d9 eb59            jmp     image00400000+0x42a34 (00442a34)
+004429db 8bd5            mov     edx,ebp
+004429dd 8bc6            mov     eax,esi
+004429df e834e2ffff      call    image00400000+0x40c18 (00440c18)                   ; 9x
+004429e4 8bf8            mov     edi,eax
+004429e6 eb4c            jmp     image00400000+0x42a34 (00442a34)
+004429e8 8bd5            mov     edx,ebp
+004429ea 8bc6            mov     eax,esi
+004429ec e80fe8ffff      call    image00400000+0x41200 (00441200)                   ; Ax
+004429f1 8bf8            mov     edi,eax
+004429f3 eb3f            jmp     image00400000+0x42a34 (00442a34)
+004429f5 8bd5            mov     edx,ebp
+004429f7 8bc6            mov     eax,esi
+004429f9 e892eaffff      call    image00400000+0x41490 (00441490)                   ; Bx
+004429fe 8bf8            mov     edi,eax
+00442a00 eb32            jmp     image00400000+0x42a34 (00442a34)
+00442a02 8bd5            mov     edx,ebp
+00442a04 8bc6            mov     eax,esi
+00442a06 e8a9edffff      call    image00400000+0x417b4 (004417b4)                   ; Cx
+00442a0b 8bf8            mov     edi,eax
+00442a0d eb25            jmp     image00400000+0x42a34 (00442a34)
+00442a0f 8bd5            mov     edx,ebp
+00442a11 8bc6            mov     eax,esi
+00442a13 e83cf2ffff      call    image00400000+0x41c54 (00441c54)                   ; Dx
+00442a18 8bf8            mov     edi,eax
+00442a1a eb18            jmp     image00400000+0x42a34 (00442a34)
+00442a1c 8bd5            mov     edx,ebp
+00442a1e 8bc6            mov     eax,esi
+00442a20 e813f3ffff      call    image00400000+0x41d38 (00441d38)                   ; Ex
+00442a25 8bf8            mov     edi,eax
+00442a27 eb0b            jmp     image00400000+0x42a34 (00442a34)
+00442a29 8bd5            mov     edx,ebp
+00442a2b 8bc6            mov     eax,esi
+00442a2d e886f4ffff      call    image00400000+0x41eb8 (00441eb8)                   ; Fx
+00442a32 8bf8            mov     edi,eax
+
+00442a34 85ff            test    edi,edi
+00442a36 7507            jne     image00400000+0x42a3f (00442a3f)                   ; is continuation required?
+00442a38 c683a100000001  mov     byte ptr [ebx+0A1h],1                              ; yes: vm_ctx.exec_cont=TRUE
+
+00442a3f 85ff            test    edi,edi
+00442a41 0f8474feffff    je      image00400000+0x428bb (004428bb)                   ; ... and call execution proc again
+00442a47 83839000000001  add     dword ptr [ebx+90h],1
+00442a4e 83939400000000  adc     dword ptr [ebx+94h],0                              ; vm_ctx.exec_cnt++
+00442a55 837c240400      cmp     dword ptr [esp+4],0
+00442a5a 7407            je      image00400000+0x42a63 (00442a63)
+00442a5c 816348fffeffff  and     dword ptr [ebx+48h],0FFFFFEFFh                     ; if set clear TF flag in EFLAGS
+00442a63 8b0424          mov     eax,dword ptr [esp]                                ; ret_code (always 0)
+00442a66 59              pop     ecx
+00442a67 5a              pop     edx
+00442a68 5d              pop     ebp
+00442a69 5f              pop     edi
+00442a6a 5e              pop     esi
+00442a6b 5b              pop     ebx
+00442a6c c3              ret
+
+
+vm_restore() --------
+VM restore to the code pointed by vm_ctx.eip
+
+Steps:
+    1. Restore vm's gp regs, flags & original seh as in the vm context
+    2. Jump to vm_ctx.eip
+    3. If the restored code encounter 'ret' the vm_ctx.esp address will be used for the ret
+       as it will be pointed by the stack during the call of restored code.
+
+00442a70 55              push    ebp
+00442a71 8bec            mov     ebp,esp
+00442a73 83c4f4          add     esp,0FFFFFFF4h
+00442a76 53              push    ebx
+00442a77 8b4230          mov     eax,dword ptr [edx+30h]                            ; vm_ctx.esp
+00442a7a 83e820          sub     eax,20h
+00442a7d 83e804          sub     eax,4
+00442a80 8945f4          mov     dword ptr [ebp-0Ch],eax                            ; vm_ctx.esp-0x24
+00442a83 33c0            xor     eax,eax                                            ; i=0
+
+00442a85 8b4df4          mov     ecx,dword ptr [ebp-0Ch]
+00442a88 83c120          add     ecx,20h
+00442a8b 8bd8            mov     ebx,eax
+00442a8d c1e302          shl     ebx,2
+00442a90 2bcb            sub     ecx,ebx
+00442a92 83e904          sub     ecx,4
+00442a95 8b5c8220        mov     ebx,dword ptr [edx+eax*4+20h]
+00442a99 8919            mov     dword ptr [ecx],ebx                                ; *(vm_ctx.esp-4*i-8) = vm_ctx[0x20+4*i]
+00442a9b 40              inc     eax
+00442a9c 83f808          cmp     eax,8
+00442a9f 75e4            jne     image00400000+0x42a85 (00442a85)
+
+00442aa1 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+00442aa4 83c020          add     eax,20h
+00442aa7 8b4a44          mov     ecx,dword ptr [edx+44h]
+00442aaa 8908            mov     dword ptr [eax],ecx                                ; *(vm_ctx.esp-4) = vm_ctx.eip
+00442aac 8b4248          mov     eax,dword ptr [edx+48h]                            ; vm_ctx.flags
+00442aaf 8945f8          mov     dword ptr [ebp-8],eax
+00442ab2 8b829d000000    mov     eax,dword ptr [edx+9Dh]                            ; vm_ctx.seh
+00442ab8 8945fc          mov     dword ptr [ebp-4],eax
+00442abb 31c0            xor     eax,eax
+00442abd 8b55fc          mov     edx,dword ptr [ebp-4]
+00442ac0 648910          mov     dword ptr fs:[eax],edx                             ; restore seh
+00442ac3 ff75f8          push    dword ptr [ebp-8]
+00442ac6 9d              popfd                                                      ; restore flags
+00442ac7 8b65f4          mov     esp,dword ptr [ebp-0Ch]
+00442aca 61              popad                                                      ; restore gp regs
+00442acb c3              ret                                                        ; ret vm_ctx.eip
+
+decode_imm_oper() --------
+
+0043fa9c 53              push    ebx                                                ; eax=vm_in
+0043fa9d 56              push    esi
+0043fa9e 8bd9            mov     ebx,ecx                                            ; oper_len (1 or 4)
+0043faa0 8bf2            mov     esi,edx                                            ; vm_ctx
+0043faa2 8b8eb5000000    mov     ecx,dword ptr [esi+0B5h]
+0043faa8 8b5103          mov     edx,dword ptr [ecx+3]                              ; vm_ctx.opc_desc.opc_bts[3..6]    (imm oper)
+0043faab 85d2            test    edx,edx
+0043faad 7409            je      image00400000+0x3fab8 (0043fab8)
+; de-obfuscate only if oper imm != 0
+0043faaf 035010          add     edx,dword ptr [eax+10h]
+0043fab2 0fb64901        movzx   ecx,byte ptr [ecx+1]
+0043fab6 03d1            add     edx,ecx                                            ; add vm_in.obfus + vm_ctx.opc_desc.opc_bts[1]
+
+0043fab8 80fb01          cmp     bl,1
+0043fabb 740b            je      image00400000+0x3fac8 (0043fac8)
+; 32 imm oper
+0043fabd 8bca            mov     ecx,edx
+0043fabf 8bd6            mov     edx,esi
+0043fac1 e8c6ffffff      call    image00400000+0x3fa8c (0043fa8c)                   ; add vm_in.base_addr if required
+0043fac6 8bd0            mov     edx,eax
+
+0043fac8 33c0            xor     eax,eax
+0043faca 8ac3            mov     al,bl
+0043facc 014644          add     dword ptr [esi+44h],eax                            ; vm_ctx.eip += oper_len
+0043facf 8bc2            mov     eax,edx
+0043fad1 5e              pop     esi
+0043fad2 5b              pop     ebx
+0043fad3 c3              ret

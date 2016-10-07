@@ -1,0 +1,716 @@
+proc_ctx_t:
+Processor context
+    00[dword]: eax
+    04[dword]: ecx
+    08[dword]: edx
+    0c[dword]: ebx
+    10[dword]: esp
+    14[dword]: ebp
+    18[dword]: esi
+    1c[dword]: edi
+
+vm_entry() --------
+01d40004 57              push    edi                                            ; edi: work reg for this call
+01d40009 9c              pushfd
+01d40010 83ec20          sub     esp,20h                                        ; vm_call: ctx(0x20) + flags(4) + work_reg(4) + call_ret_addr(4; pushed by 'call' opcode)
+01d4002a 8d7c2441        lea     edi,[esp+41h]
+01d4002e 83ef41          sub     edi,41h                                        ; eax = &vm_call.ctx
+01d40031 50              push    eax
+01d40032 8f4700          pop     dword ptr [edi]                                ; vm_call.ctx.eax = eax
+01d4003b 896f14          mov     dword ptr [edi+14h],ebp                        ; vm_call.ctx.ebp = ebp
+01d40048 56              push    esi
+01d40049 8f4718          pop     dword ptr [edi+18h]                            ; vm_call.ctx.esi = esi
+01d40053 53              push    ebx
+01d40059 8f44270c        pop     dword ptr [edi+0Ch]                            ; vm_call.ctx.ebx = ebx
+01d40065 51              push    ecx
+01d40066 8f4704          pop     dword ptr [edi+4]                              ; vm_call.ctx.ecx = ecx
+01d4007e 52              push    edx
+01d4007f 8f4708          pop     dword ptr [edi+8]                              ; vm_call.ctx.edx = edx
+01d40098 8d442434        lea     eax,[esp+34h]
+01d4009c 8d4420cc        lea     eax,[eax-34h]
+01d400a0 83c02c          add     eax,2Ch
+01d400a3 50              push    eax                                            ; arg: (byte*)&aip_call+sizeof(aip_call) (call_esp)
+01d400a6 57              push    edi                                            ; arg: &aip_call.ctx
+01d400bf 8d472c          lea     eax,[edi+2Ch]
+01d400cb 8d4408d4        lea     eax,[eax+ecx-2Ch]
+01d400cf 2bc1            sub     eax,ecx
+01d400d1 8d4020          lea     eax,[eax+20h]
+01d400d7 ff30            push    dword ptr [eax]
+01d400e1 58              pop     eax
+01d400e2 50              push    eax                                            ; arg: aip_call.flags
+01d400f7 57              push    edi
+01d40100 58              pop     eax
+01d4010a 8d442828        lea     eax,[eax+ebp+28h]
+01d4010e 2bc5            sub     eax,ebp
+01d40114 ff30            push    dword ptr [eax]
+01d40123 58              pop     eax                                            ; call_ret_addr
+01d40124 8d40fb          lea     eax,[eax-5]
+01d4012b 8d8420cc0e0000  lea     eax,[eax+0ECCh]                                ; pid==0xECC
+01d40132 50              push    eax                                            ; arg: (call_ret_addr - 5 + pid) (call_eip)
+01d40142 682416cf00      push    0CF1624h
+01d40155 58              pop     eax
+01d40156 50              push    eax                                            ; arg: &env
+01d40166 687c58c900      push    0C9587Ch
+01d40177 5f              pop     edi
+01d40178 ffd7            call    edi                                            ; emul_search_and_run()
+
+
+pbuf_env_t
+    10[dword]: mod_base     module base addr
+    14[dword]: n_emuls      number of emulated opcodes in the table
+    18[dword]: exe_base     base addr of the poly buf code
+    1c[dword]: vm_entry     vm entry (almost identical to aip_entry())
+    20[dword]: vm_exit      vm exit (same as aip_exit())
+    24[byte[]]: permtab     permutation table for reading 'dt_acss' table
+    30[dword]:  emuls       pointer to the table of emulated opcodes (confidential data)
+    40[dt_acs_t[]]: dt_acss table of access handlers for the confidential data
+    68[dword]: obfus        obfuscating value
+    6c[dword]: conf_dt_sz   confidential data size
+    70[dword]: obfus2       2nd obfuscating value
+    74[byte]: use_obfus2
+    96[byte]: wr_i          offset (in dwords) of work_reg in the proc context
+
+dt_acs_t:
+    0000[dword]: hndl       Data handler addr
+
+Confidential patch data specification:
+    hndl_0: get_emul_addr()     [dword] addr of emulated opcode (obfuscated)
+    hndl_1: get_emul_id()       [byte]  emulated opcode id - 0,1: JMP; 2: Jcc/JMP, 3: CMP/Jcc/JMP
+    hndl_2: get_addr1_rel()     [dword] addr - relative to poly buf code (obfuscated)
+    hndl_3: get_addr2_rel()     [dword] addr - relative to the poly buf code or mod base (obfuscated)
+    hndl_4: get_cond_code()     [dword] enum{jo=0, jno, jb, jae, je, jne, jp, jnp, js, jns, jbe, ja, jl, jge, jle, jg}
+  for the CMP opcode
+    hndl_5: get_gpr_id()        [byte ] gpr id as an dword index in the ctx_t: enum{eax=0, ecx, edx, ebx, esp, ebp, esi, edi}
+    hndl_6: get_gpr2_id()       [byte ] gpr2 id
+    hndl_7: get_imm()           [dword] immediate operand
+    hndl_8: get_imm2()          [dword] 2nd immediate operand
+    hndl_9: get_args_tpy()      [byte ] types of args encoded in modr/m: enum{a1_mem_dw=2, a2_mem_dw, a1_mem_b, a1_mem_b, a12_nomem}
+
+emul_search_and_run() --------
+emul_search_and_run(pbuf_env_t *env, dword call_eip, dword flags, proc_ctx_t *ctx, void *call_esp)
+
+call_eip: points to the vm entry call in the poly buf. Encoded by adding current process id (pid)
+call_esp: points to the stack after vm entry call, has the following layout:
+    call_esp-08: work_reg
+    call_esp-04: points to the return of the vm entry call
+
+00c9587c 55              push    ebp
+00c9587d 8bec            mov     ebp,esp
+00c9587f 83c4f8          add     esp,0FFFFFFF8h
+00c95882 53              push    ebx
+00c95883 56              push    esi
+00c95884 57              push    edi
+00c95885 8b5d08          mov     ebx,dword ptr [ebp+8]                          ; ebx = env
+00c95888 eb01            jmp     00c9588b
+00c9588a 9a              ???
+00c9588b 8b4518          mov     eax,dword ptr [ebp+18h]
+00c9588e 83e808          sub     eax,8
+00c95891 8b00            mov     eax,dword ptr [eax]                            ; work_reg
+00c95893 50              push    eax
+00c95894 8a8b96000000    mov     cl,byte ptr [ebx+96h]
+00c9589a 8b5514          mov     edx,dword ptr [ebp+14h]
+00c9589d 8bc3            mov     eax,ebx
+00c9589f e8b4ffffff      call    00c95858                                       ; save work_reg in ctx
+00c958a4 8b4518          mov     eax,dword ptr [ebp+18h]
+00c958a7 50              push    eax
+00c958a8 b104            mov     cl,4
+00c958aa 8b5514          mov     edx,dword ptr [ebp+14h]
+00c958ad 8bc3            mov     eax,ebx
+00c958af e8a4ffffff      call    00c95858                                       ; save esp in ctx
+00c958b4 eb01            jmp     00c958b7
+00c958b6 69              ???
+00c958b7 8b7330          mov     esi,dword ptr [ebx+30h]                        ; emul = &emuls[0]
+00c958ba 8b7b14          mov     edi,dword ptr [ebx+14h]                        ; i = env->n_emuls
+00c958bd a1c02bcb00      mov     eax,dword ptr ds:[00CB2BC0h]
+00c958c2 8b4034          mov     eax,dword ptr [eax+34h]
+00c958c5 ffd0            call    eax                                            ; pid = kernel32!GetCurrentProcessId
+00c958c7 29450c          sub     dword ptr [ebp+0Ch],eax
+00c958ca 8b450c          mov     eax,dword ptr [ebp+0Ch]
+00c958cd 2b4318          sub     eax,dword ptr [ebx+18h]
+00c958d0 2b4368          sub     eax,dword ptr [ebx+68h]
+00c958d3 8945fc          mov     dword ptr [ebp-4],eax                          ; eip_obf = (call_eip-pid) - env->exe_base - env->obfus
+00c958d6 8d4324          lea     eax,[ebx+24h]
+00c958d9 8945f8          mov     dword ptr [ebp-8],eax                          ; perm_tab
+00c958dc 85ff            test    edi,edi
+00c958de 7663            jbe     00c95943                                       ; no emulated opcodes -> finish
+00c958e0 eb01            jmp     00c958e3
+00c958e2 c7              ???
+
+; working loop
+00c958e3 8b45f8          mov     eax,dword ptr [ebp-8]
+00c958e6 0fb600          movzx   eax,byte ptr [eax]
+00c958e9 8b548340        mov     edx,dword ptr [ebx+eax*4+40h]
+00c958ed 8bc6            mov     eax,esi
+00c958ef ffd2            call    edx                                            ; addr_obf_i = get_emul_addr()
+00c958f1 3b45fc          cmp     eax,dword ptr [ebp-4]
+00c958f4 7545            jne     00c9593b                                       ; if (eip_obf!=addr_obf_i) next iter
+
+; emul found
+00c958f6 eb01            jmp     00c958f9
+00c958f8 9a              ???
+00c958f9 807b7400        cmp     byte ptr [ebx+74h],0
+00c958fd 7422            je      00c95921
+00c958ff eb01            jmp     00c95902
+00c95901 9a              ???
+
+; env.use_obfus2!=0
+00c95902 8b4510          mov     eax,dword ptr [ebp+10h]
+00c95905 50              push    eax                                            ; arg: flags
+00c95906 8b4514          mov     eax,dword ptr [ebp+14h]
+00c95909 50              push    eax                                            ; arg: ctx
+00c9590a e869fcffff      call    00c95578                                       ; seh = get_seh()
+00c9590f 50              push    eax                                            ; arg: seh
+00c95910 8bce            mov     ecx,esi                                        ; arg: emul
+00c95912 8b5518          mov     edx,dword ptr [ebp+18h]                        ; arg: call_esp
+00c95915 8bc3            mov     eax,ebx                                        ; arg: env
+00c95917 e870f8ffff      call    00c9518c                                       ; emulate_opc2()
+00c9591c eb1d            jmp     00c9593b
+00c9591e eb01            jmp     00c95921
+00c95920 e9              ???
+
+; env.use_obfus2==0
+00c95921 8b4510          mov     eax,dword ptr [ebp+10h]
+00c95924 50              push    eax                                            ; arg: flags
+00c95925 8b4514          mov     eax,dword ptr [ebp+14h]
+00c95928 50              push    eax                                            ; arg: ctx
+00c95929 e84afcffff      call    00c95578                                       ; seh = get_seh()
+00c9592e 50              push    eax                                            ; arg: seh
+00c9592f 8bce            mov     ecx,esi                                        ; arg: emul
+00c95931 8b5518          mov     edx,dword ptr [ebp+18h]                        ; arg: call_esp
+00c95934 8bc3            mov     eax,ebx                                        ; arg: env
+00c95936 e8d5f9ffff      call    00c95310                                       ; emulate_opc()
+
+; next iter
+00c9593b 4f              dec     edi                                            ; i--
+00c9593c 03736c          add     esi,dword ptr [ebx+6Ch]                        ; emul = emul+env->conf_dt_sz     (next opcode)
+00c9593f 85ff            test    edi,edi
+00c95941 77a0            ja      00c958e3
+
+; finish
+00c95943 686059c900      push    0C95960h
+00c95948 e82b04ffff      call    00c85d78                                       ; error
+00c9594d 5f              pop     edi
+00c9594e 5e              pop     esi
+00c9594f 5b              pop     ebx
+00c95950 59              pop     ecx
+00c95951 59              pop     ecx
+00c95952 5d              pop     ebp
+00c95953 c21400          ret     14h
+
+
+emulate_opc() --------
+emulate_opc(pbuf_env_t *env (eax), void *call_esp (edx),
+    conf_dt_t *emul (ecx), void *seh, proc_ctx_t *ctx, dword flags)
+
+00c95310 55              push    ebp
+00c95311 8bec            mov     ebp,esp
+00c95313 83c4f4          add     esp,0FFFFFFF4h
+00c95316 53              push    ebx
+00c95317 56              push    esi
+00c95318 57              push    edi
+00c95319 8bf1            mov     esi,ecx                                        ; emul
+00c9531b 8955fc          mov     dword ptr [ebp-4],edx                          ; call_esp
+00c9531e 8945f8          mov     dword ptr [ebp-8],eax                          ; env
+00c95321 8b45f8          mov     eax,dword ptr [ebp-8]
+00c95324 8d5824          lea     ebx,[eax+24h]                                  ; perm_tab
+00c95327 33c0            xor     eax,eax
+00c95329 8a4302          mov     al,byte ptr [ebx+2]
+00c9532c 8b55f8          mov     edx,dword ptr [ebp-8]
+00c9532f 8b7c8240        mov     edi,dword ptr [edx+eax*4+40h]
+00c95333 8bc6            mov     eax,esi
+00c95335 ffd7            call    edi
+00c95337 8bf8            mov     edi,eax                                        ; addr1_rel_obf = get_addr1_rel()
+00c95339 33c0            xor     eax,eax
+00c9533b 8a4303          mov     al,byte ptr [ebx+3]
+00c9533e 8b55f8          mov     edx,dword ptr [ebp-8]
+00c95341 8b548240        mov     edx,dword ptr [edx+eax*4+40h]
+00c95345 8bc6            mov     eax,esi
+00c95347 ffd2            call    edx
+00c95349 8945f4          mov     dword ptr [ebp-0Ch],eax                        ; addr2_rel_obf = get_addr2_rel()
+00c9534c 33c0            xor     eax,eax
+00c9534e 8a4301          mov     al,byte ptr [ebx+1]
+00c95351 8b55f8          mov     edx,dword ptr [ebp-8]
+00c95354 8b548240        mov     edx,dword ptr [edx+eax*4+40h]
+00c95358 8bc6            mov     eax,esi
+00c9535a ffd2            call    edx                                            ; emul_id = get_emul_id()
+00c9535c 2c02            sub     al,2
+00c9535e 720b            jb      00c9536b
+00c95360 7433            je      00c95395
+00c95362 fec8            dec     al
+00c95364 7473            je      00c953d9
+00c95366 e9c2000000      jmp     00c9542d                                       ; emul_id>3: error
+
+; emul_id: 0,1 [CALL/JMP]
+00c9536b 8b45f8          mov     eax,dword ptr [ebp-8]
+00c9536e 8b5068          mov     edx,dword ptr [eax+68h]
+00c95371 8bc2            mov     eax,edx
+00c95373 03c7            add     eax,edi                                        ; addr_rel_buf = addr1_rel_obf + env->obfus
+00c95375 83f8ff          cmp     eax,0FFFFFFFFh
+00c95378 7510            jne     00c9538a                                       ; if (addr_rel_buf==-1) -> addr behind poly buf (in the target code)
+; addr_rel_buf==-1
+00c9537a 8bc2            mov     eax,edx
+00c9537c 0345f4          add     eax,dword ptr [ebp-0Ch]
+00c9537f 8b55f8          mov     edx,dword ptr [ebp-8]
+00c95382 034210          add     eax,dword ptr [edx+10h]                        ; addr = addr2_rel_obf + env->obfus + env->mod_base
+00c95385 e9a8000000      jmp     00c95432
+; addr_rel_buf!=-1
+00c9538a 8b55f8          mov     edx,dword ptr [ebp-8]
+00c9538d 034218          add     eax,dword ptr [edx+18h]                        ; addr = addr1_rel_obf + env->obfus + env->exe_base
+00c95390 e99d000000      jmp     00c95432
+
+; emul_id: 2 [Jcc;JMP]
+00c95395 33c0            xor     eax,eax
+00c95397 8a4304          mov     al,byte ptr [ebx+4]
+00c9539a 8b55f8          mov     edx,dword ptr [ebp-8]
+00c9539d 8b548240        mov     edx,dword ptr [edx+eax*4+40h]
+00c953a1 8bc6            mov     eax,esi
+00c953a3 ffd2            call    edx
+00c953a5 8bd8            mov     ebx,eax                                        ; cond = get_cond_code()
+00c953a7 8b4d10          mov     ecx,dword ptr [ebp+10h]
+00c953aa 8bd3            mov     edx,ebx
+00c953ac 8b45f8          mov     eax,dword ptr [ebp-8]
+00c953af e814020000      call    00c955c8                                       ; check_cond(env, cond, flags)    (returns 1 if match)
+00c953b4 84c0            test    al,al
+00c953b6 7411            je      00c953c9
+; Jcc matched
+00c953b8 8b45f8          mov     eax,dword ptr [ebp-8]
+00c953bb 8b4018          mov     eax,dword ptr [eax+18h]
+00c953be 0345f4          add     eax,dword ptr [ebp-0Ch]
+00c953c1 8b55f8          mov     edx,dword ptr [ebp-8]
+00c953c4 034268          add     eax,dword ptr [edx+68h]                        ; addr = addr2_rel_obf + env->obfus + env->exe_base (match jmp)
+00c953c7 eb69            jmp     00c95432
+; Jcc not matched -> JMP
+00c953c9 8b45f8          mov     eax,dword ptr [ebp-8]
+00c953cc 8b4018          mov     eax,dword ptr [eax+18h]
+00c953cf 03c7            add     eax,edi
+00c953d1 8b55f8          mov     edx,dword ptr [ebp-8]
+00c953d4 034268          add     eax,dword ptr [edx+68h]                        ; addr = addr1_rel_obf + env->obfus + env->exe_base (not match jmp)
+00c953d7 eb59            jmp     00c95432
+
+; emul_id: 3 [CMP;Jcc;JMP]
+00c953d9 8bce            mov     ecx,esi
+00c953db 8b550c          mov     edx,dword ptr [ebp+0Ch]
+00c953de 8b45f8          mov     eax,dword ptr [ebp-8]
+00c953e1 e882fcffff      call    00c95068
+00c953e6 894510          mov     dword ptr [ebp+10h],eax                        ; flags = cmp(env, ctx, emul)
+00c953e9 33c0            xor     eax,eax
+00c953eb 8a4304          mov     al,byte ptr [ebx+4]
+00c953ee 8b55f8          mov     edx,dword ptr [ebp-8]
+00c953f1 8b548240        mov     edx,dword ptr [edx+eax*4+40h]
+00c953f5 8bc6            mov     eax,esi
+00c953f7 ffd2            call    edx
+00c953f9 8bd8            mov     ebx,eax                                        ; cond = get_cond_code()
+00c953fb 8b4d10          mov     ecx,dword ptr [ebp+10h]
+00c953fe 8bd3            mov     edx,ebx
+00c95400 8b45f8          mov     eax,dword ptr [ebp-8]
+00c95403 e8c0010000      call    00c955c8                                       ; check_cond(env, cond, flags)    (returns 1 if match)
+00c95408 84c0            test    al,al
+00c9540a 7411            je      00c9541d
+; Jcc matches
+00c9540c 8b45f8          mov     eax,dword ptr [ebp-8]
+00c9540f 8b4018          mov     eax,dword ptr [eax+18h]
+00c95412 0345f4          add     eax,dword ptr [ebp-0Ch]
+00c95415 8b55f8          mov     edx,dword ptr [ebp-8]
+00c95418 034268          add     eax,dword ptr [edx+68h]                        ; addr = addr2_rel_obf + env->obfus + env->exe_base (match jmp)
+00c9541b eb15            jmp     00c95432
+; Jcc not matches
+00c9541d 8b45f8          mov     eax,dword ptr [ebp-8]
+00c95420 8b4018          mov     eax,dword ptr [eax+18h]
+00c95423 03c7            add     eax,edi
+00c95425 8b55f8          mov     edx,dword ptr [ebp-8]
+00c95428 034268          add     eax,dword ptr [edx+68h]                        ; addr = addr1_rel_obf + env->obfus + env->exe_base (not match jmp)
+00c9542b eb05            jmp     00c95432
+
+00c9542d b8785dc800      mov     eax,0C85D78h                                   ; -> error proc
+
+; finish
+00c95432 8b55fc          mov     edx,dword ptr [ebp-4]                          ; dest addr in eax
+00c95435 83ea04          sub     edx,4
+00c95438 8902            mov     dword ptr [edx],eax                            ; *(call_esp-4) = eax   (set ret addr for the vm exit)
+00c9543a 8b4508          mov     eax,dword ptr [ebp+8]
+00c9543d e82a010000      call    00c9556c                                       ; set_seh(seh)
+00c95442 ff75fc          push    dword ptr [ebp-4]                              ; arg: call_esp
+00c95445 ff7510          push    dword ptr [ebp+10h]                            ; arg: flags
+00c95448 ff750c          push    dword ptr [ebp+0Ch]                            ; arg: ctx
+00c9544b 8b45f8          mov     eax,dword ptr [ebp-8]
+00c9544e ff6020          jmp     dword ptr [eax+20h]                            ; jmp env->vm_exit
+
+00c95451 5f              pop     edi
+00c95452 5e              pop     esi
+00c95453 5b              pop     ebx
+00c95454 8be5            mov     esp,ebp
+00c95456 5d              pop     ebp
+00c95457 c20c00          ret     0Ch
+
+
+emulate_opc2() --------
+
+00c9518c 55              push    ebp
+00c9518d 8bec            mov     ebp,esp
+00c9518f 83c4f0          add     esp,0FFFFFFF0h
+00c95192 53              push    ebx
+00c95193 56              push    esi
+00c95194 57              push    edi
+00c95195 8bf1            mov     esi,ecx                                        ; emul
+00c95197 8955fc          mov     dword ptr [ebp-4],edx                          ; call_esp
+00c9519a 8945f8          mov     dword ptr [ebp-8],eax                          ; env
+00c9519d 8b45f8          mov     eax,dword ptr [ebp-8]
+00c951a0 8d7824          lea     edi,[eax+24h]                                  ; permtab
+00c951a3 33c0            xor     eax,eax
+00c951a5 8a4701          mov     al,byte ptr [edi+1]
+00c951a8 8b55f8          mov     edx,dword ptr [ebp-8]
+00c951ab 8b5c8240        mov     ebx,dword ptr [edx+eax*4+40h]
+00c951af 8bc6            mov     eax,esi
+00c951b1 ffd3            call    ebx
+00c951b3 8bd8            mov     ebx,eax                                        ; emul_id
+00c951b5 33c0            xor     eax,eax
+00c951b7 8a4702          mov     al,byte ptr [edi+2]
+00c951ba 8b55f8          mov     edx,dword ptr [ebp-8]
+00c951bd 8b548240        mov     edx,dword ptr [edx+eax*4+40h]
+00c951c1 8bc6            mov     eax,esi
+00c951c3 ffd2            call    edx
+00c951c5 8945f4          mov     dword ptr [ebp-0Ch],eax                        ; addr1_rel_obf
+00c951c8 33c0            xor     eax,eax
+00c951ca 8a4703          mov     al,byte ptr [edi+3]
+00c951cd 8b55f8          mov     edx,dword ptr [ebp-8]
+00c951d0 8b548240        mov     edx,dword ptr [edx+eax*4+40h]
+00c951d4 8bc6            mov     eax,esi
+00c951d6 ffd2            call    edx
+00c951d8 8945f0          mov     dword ptr [ebp-10h],eax                        ; addr2_rel_obf
+00c951db 80eb02          sub     bl,2
+00c951de 0f82ce000000    jb      00c952b2
+00c951e4 7475            je      00c9525b
+00c951e6 fecb            dec     bl
+00c951e8 0f85f3000000    jne     00c952e1                                       ; emul_id>3: error
+
+; emul_id: 3 [CMP;Jcc;JMP]
+00c951ee 8bce            mov     ecx,esi
+00c951f0 8b550c          mov     edx,dword ptr [ebp+0Ch]
+00c951f3 8b45f8          mov     eax,dword ptr [ebp-8]
+00c951f6 e845fdffff      call    00c94f40
+00c951fb 894510          mov     dword ptr [ebp+10h],eax                        ; flags = cmp2(env, ctx, emul)
+00c951fe 33c0            xor     eax,eax
+00c95200 8a4704          mov     al,byte ptr [edi+4]
+00c95203 8b55f8          mov     edx,dword ptr [ebp-8]
+00c95206 8b5c8240        mov     ebx,dword ptr [edx+eax*4+40h]
+00c9520a 8bc6            mov     eax,esi
+00c9520c ffd3            call    ebx
+00c9520e 8bd8            mov     ebx,eax                                        ; cond
+00c95210 8b45f8          mov     eax,dword ptr [ebp-8]
+00c95213 325870          xor     bl,byte ptr [eax+70h]                          ; cond ^= env->obfus2
+00c95216 8b4d10          mov     ecx,dword ptr [ebp+10h]
+00c95219 8bd3            mov     edx,ebx
+00c9521b 8b45f8          mov     eax,dword ptr [ebp-8]
+00c9521e e8a5030000      call    00c955c8                                       ; check_cond(env, cond, flags)    (returns 1 if match)
+00c95223 84c0            test    al,al
+00c95225 741a            je      00c95241
+; Jcc matched
+00c95227 8b45f8          mov     eax,dword ptr [ebp-8]
+00c9522a 8b4018          mov     eax,dword ptr [eax+18h]
+00c9522d 0345f0          add     eax,dword ptr [ebp-10h]
+00c95230 8b55f8          mov     edx,dword ptr [ebp-8]
+00c95233 034268          add     eax,dword ptr [edx+68h]
+00c95236 8b55f8          mov     edx,dword ptr [ebp-8]
+00c95239 034270          add     eax,dword ptr [edx+70h]                        ; addr = addr2_rel_obf + (env->obfus+env->obfus2) + env->exe_base
+00c9523c e9a5000000      jmp     00c952e6
+; Jcc not matched -> JMP
+00c95241 8b45f8          mov     eax,dword ptr [ebp-8]
+00c95244 8b4018          mov     eax,dword ptr [eax+18h]
+00c95247 0345f4          add     eax,dword ptr [ebp-0Ch]
+00c9524a 8b55f8          mov     edx,dword ptr [ebp-8]
+00c9524d 034268          add     eax,dword ptr [edx+68h]
+00c95250 8b55f8          mov     edx,dword ptr [ebp-8]
+00c95253 034270          add     eax,dword ptr [edx+70h]                        ; addr = addr1_rel_obf + (env->obfus+env->obfus2) + env->exe_base
+00c95256 e98b000000      jmp     00c952e6
+
+; emul_id: 2 [Jcc;JMP]
+00c9525b 33c0            xor     eax,eax
+00c9525d 8a4704          mov     al,byte ptr [edi+4]
+00c95260 8b55f8          mov     edx,dword ptr [ebp-8]
+00c95263 8b5c8240        mov     ebx,dword ptr [edx+eax*4+40h]
+00c95267 8bc6            mov     eax,esi
+00c95269 ffd3            call    ebx
+00c9526b 8bd8            mov     ebx,eax                                        ; cond
+00c9526d 8b45f8          mov     eax,dword ptr [ebp-8]
+00c95270 325870          xor     bl,byte ptr [eax+70h]                          ; cond ^= env->obfus2
+00c95273 8b4d10          mov     ecx,dword ptr [ebp+10h]
+00c95276 8bd3            mov     edx,ebx
+00c95278 8b45f8          mov     eax,dword ptr [ebp-8]
+00c9527b e848030000      call    00c955c8                                       ; check_cond(env, cond, flags)    (returns 1 if match)
+00c95280 84c0            test    al,al
+00c95282 7417            je      00c9529b
+; Jcc matched
+00c95284 8b45f8          mov     eax,dword ptr [ebp-8]
+00c95287 8b4018          mov     eax,dword ptr [eax+18h]
+00c9528a 0345f0          add     eax,dword ptr [ebp-10h]
+00c9528d 8b55f8          mov     edx,dword ptr [ebp-8]
+00c95290 034268          add     eax,dword ptr [edx+68h]
+00c95293 8b55f8          mov     edx,dword ptr [ebp-8]
+00c95296 034270          add     eax,dword ptr [edx+70h]                        ; addr = addr2_rel_obf + (env->obfus+env->obfus2) + env->exe_base
+00c95299 eb4b            jmp     00c952e6
+; Jcc not matched -> JMP
+00c9529b 8b45f8          mov     eax,dword ptr [ebp-8]
+00c9529e 8b4018          mov     eax,dword ptr [eax+18h]
+00c952a1 0345f4          add     eax,dword ptr [ebp-0Ch]
+00c952a4 8b55f8          mov     edx,dword ptr [ebp-8]
+00c952a7 034268          add     eax,dword ptr [edx+68h]
+00c952aa 8b55f8          mov     edx,dword ptr [ebp-8]
+00c952ad 034270          add     eax,dword ptr [edx+70h]                        ; addr = addr1_rel_obf + (env->obfus+env->obfus2) + env->exe_base
+00c952b0 eb34            jmp     00c952e6
+
+; emul_id: 0,1 [CALL/JMP]
+00c952b2 8b45f8          mov     eax,dword ptr [ebp-8]
+00c952b5 8b5068          mov     edx,dword ptr [eax+68h]
+00c952b8 8bc2            mov     eax,edx
+00c952ba 0345f4          add     eax,dword ptr [ebp-0Ch]
+00c952bd 8b4df8          mov     ecx,dword ptr [ebp-8]
+00c952c0 8b4970          mov     ecx,dword ptr [ecx+70h]
+00c952c3 03c1            add     eax,ecx                                        ; addr_rel_buf = addr1_rel_obf + (env->obfus+env->obfus2)
+00c952c5 83f8ff          cmp     eax,0FFFFFFFFh
+00c952c8 750f            jne     00c952d9                                       ; if (addr_rel_buf==-1) -> addr behind poly buf (in the target code)
+; addr_rel_buf==-1
+00c952ca 8bc2            mov     eax,edx
+00c952cc 0345f0          add     eax,dword ptr [ebp-10h]
+00c952cf 8b55f8          mov     edx,dword ptr [ebp-8]
+00c952d2 034210          add     eax,dword ptr [edx+10h]
+00c952d5 03c1            add     eax,ecx                                        ; addr = addr2_rel_obf + (env->obfus+env->obfus2) + env->mod_base
+00c952d7 eb0d            jmp     00c952e6
+; addr_rel_buf!=-1
+00c952d9 8b55f8          mov     edx,dword ptr [ebp-8]
+00c952dc 034218          add     eax,dword ptr [edx+18h]                        ; addr = addr1_rel_obf + (env->obfus+env->obfus2) + env->exe_base
+00c952df eb05            jmp     00c952e6
+
+00c952e1 b8785dc800      mov     eax,0C85D78h                                   ; -> error proc
+
+; finish
+00c952e6 8b55fc          mov     edx,dword ptr [ebp-4]                          ; dest addr in eax
+00c952e9 83ea04          sub     edx,4
+00c952ec 8902            mov     dword ptr [edx],eax                            ; *(call_esp-4) = eax   (set ret addr for the vm exit)
+00c952ee 8b4508          mov     eax,dword ptr [ebp+8]
+00c952f1 e876020000      call    00c9556c                                       ; set_seh()
+00c952f6 ff75fc          push    dword ptr [ebp-4]                              ; arg: call_esp
+00c952f9 ff7510          push    dword ptr [ebp+10h]                            ; arg: flags
+00c952fc ff750c          push    dword ptr [ebp+0Ch]                            ; arg: ctx
+00c952ff 8b45f8          mov     eax,dword ptr [ebp-8]
+00c95302 ff6020          jmp     dword ptr [eax+20h]                            ; jmp env->vm_exit
+00c95305 5f              pop     edi
+00c95306 5e              pop     esi
+00c95307 5b              pop     ebx
+00c95308 8be5            mov     esp,ebp
+00c9530a 5d              pop     ebp
+00c9530b c20c00          ret     0Ch
+
+
+-------- cmp()
+cmp(pbuf_env_t *env (eax), proc_ctx_t *ctx(edx), conf_dt *emul (ecx))
+
+00c95068 53              push    ebx
+00c95069 56              push    esi
+00c9506a 57              push    edi
+00c9506b 55              push    ebp
+00c9506c 83c4ec          add     esp,0FFFFFFECh
+00c9506f 8bf9            mov     edi,ecx                                        ; emul
+00c95071 891424          mov     dword ptr [esp],edx                            ; ctx
+00c95074 8bd8            mov     ebx,eax                                        ; env
+00c95076 8d7324          lea     esi,[ebx+24h]
+00c95079 33ed            xor     ebp,ebp
+00c9507b 33c0            xor     eax,eax
+00c9507d 8944240c        mov     dword ptr [esp+0Ch],eax
+00c95081 33c0            xor     eax,eax
+00c95083 8a4607          mov     al,byte ptr [esi+7]
+00c95086 8b548340        mov     edx,dword ptr [ebx+eax*4+40h]
+00c9508a 8bc7            mov     eax,edi
+00c9508c ffd2            call    edx
+00c9508e 89442404        mov     dword ptr [esp+4],eax                          ; imm
+00c95092 33c0            xor     eax,eax
+00c95094 8a4605          mov     al,byte ptr [esi+5]
+00c95097 8b548340        mov     edx,dword ptr [ebx+eax*4+40h]
+00c9509b 8bc7            mov     eax,edi
+00c9509d ffd2            call    edx
+00c9509f 8bd0            mov     edx,eax                                        ; gpr_id
+00c950a1 80ea08          sub     dl,8
+00c950a4 0f92c2          setb    dl
+00c950a7 80fa01          cmp     dl,1
+00c950aa 750e            jne     00c950ba
+00c950ac 8bc8            mov     ecx,eax
+00c950ae 8b1424          mov     edx,dword ptr [esp]
+00c950b1 8bc3            mov     eax,ebx
+00c950b3 e8b8070000      call    00c95870
+00c950b8 8be8            mov     ebp,eax                                        ; gpr_val = (gpr_id<8 ? read_gpr(env, ctx, gpr_id) : 0)0044db6a 33c0            xor     eax,eax
+00c950ba 33c0            xor     eax,eax
+00c950bc 8a4608          mov     al,byte ptr [esi+8]
+00c950bf 8b548340        mov     edx,dword ptr [ebx+eax*4+40h]
+00c950c3 8bc7            mov     eax,edi
+00c950c5 ffd2            call    edx
+00c950c7 89442408        mov     dword ptr [esp+8],eax                          ; imm2
+00c950cb 33c0            xor     eax,eax
+00c950cd 8a4606          mov     al,byte ptr [esi+6]
+00c950d0 8b548340        mov     edx,dword ptr [ebx+eax*4+40h]
+00c950d4 8bc7            mov     eax,edi
+00c950d6 ffd2            call    edx
+00c950d8 8bd0            mov     edx,eax                                        ; gpr2_id
+00c950da 80ea08          sub     dl,8
+00c950dd 0f92c2          setb    dl
+00c950e0 80fa01          cmp     dl,1
+00c950e3 7510            jne     00c950f5
+00c950e5 8bc8            mov     ecx,eax
+00c950e7 8b1424          mov     edx,dword ptr [esp]
+00c950ea 8bc3            mov     eax,ebx
+00c950ec e87f070000      call    00c95870
+00c950f1 8944240c        mov     dword ptr [esp+0Ch],eax                        ; gpr2_val = (gpr2_id<8 ? read_gpr(env, ctx, gpr2_id) : 0)
+00c950f5 036c2404        add     ebp,dword ptr [esp+4]                          ; arg1 = gpr_val+imm
+00c950f9 8b442408        mov     eax,dword ptr [esp+8]
+00c950fd 0344240c        add     eax,dword ptr [esp+0Ch]                        ; arg2 = gpr2_val+imm
+00c95101 89442410        mov     dword ptr [esp+10h],eax
+00c95105 33c0            xor     eax,eax
+00c95107 8a4609          mov     al,byte ptr [esi+9]
+00c9510a 8b548340        mov     edx,dword ptr [ebx+eax*4+40h]
+00c9510e 8bc7            mov     eax,edi
+00c95110 ffd2            call    edx
+00c95112 83e07f          and     eax,7Fh
+00c95115 83f804          cmp     eax,4
+00c95118 7742            ja      00c9515c                                       ; if (args_tpy>4) error
+00c9511a ff24852151c900  jmp     dword ptr [eax*4+0C95121h]
+00c95121                 dd 00c95135
+00c95125                 dd 00c9513a
+00c95129                 dd 00c95146
+00c9512d                 dd 00c9514f
+; a1_mem_dw (0)
+00c95135 8b6d00          mov     ebp,dword ptr [ebp]                            ; arg1 = *(dword*)arg1
+00c95138 eb2c            jmp     00c95166
+; a2_mem_dw (1)
+00c9513a 8b442410        mov     eax,dword ptr [esp+10h]
+00c9513e 8b00            mov     eax,dword ptr [eax]
+00c95140 89442410        mov     dword ptr [esp+10h],eax                        ; arg2 = *(dword*)arg2
+00c95144 eb20            jmp     00c95166
+; a1_mem_b (2)
+00c95146 33c0            xor     eax,eax
+00c95148 8a4500          mov     al,byte ptr [ebp]
+00c9514b 8be8            mov     ebp,eax                                        ; arg1 = *(byte*)arg1
+00c9514d eb17            jmp     00c95166
+; a2_mem_b (3)
+00c9514f 8b442410        mov     eax,dword ptr [esp+10h]
+00c95153 0fb600          movzx   eax,byte ptr [eax]
+00c95156 89442410        mov     dword ptr [esp+10h],eax                        ; arg2 = *(byte*)arg2
+00c9515a eb0a            jmp     00c95166
+
+00c9515c 688451c900      push    0C95184h
+00c95161 e8120cffff      call    00c85d78                                       ; error
+
+00c95166 8b542410        mov     edx,dword ptr [esp+10h]
+00c9516a 8bc5            mov     eax,ebp
+00c9516c e8d3060000      call    00c95844                                       ; compare arg1 and arg2 and return flags
+00c95171 83c414          add     esp,14h
+00c95174 5d              pop     ebp
+00c95175 5f              pop     edi
+00c95176 5e              pop     esi
+00c95177 5b              pop     ebx
+00c95178 c3              ret
+
+
+-------- cmp2()
+
+00c94f40 53              push    ebx
+00c94f41 56              push    esi
+00c94f42 57              push    edi
+00c94f43 55              push    ebp
+00c94f44 83c4ec          add     esp,0FFFFFFECh
+00c94f47 8bf9            mov     edi,ecx
+00c94f49 891424          mov     dword ptr [esp],edx
+00c94f4c 8bd8            mov     ebx,eax
+00c94f4e 8d7324          lea     esi,[ebx+24h]
+00c94f51 33ed            xor     ebp,ebp
+00c94f53 33c0            xor     eax,eax
+00c94f55 89442408        mov     dword ptr [esp+8],eax
+00c94f59 33c0            xor     eax,eax
+00c94f5b 8a4608          mov     al,byte ptr [esi+8]
+00c94f5e 8b548340        mov     edx,dword ptr [ebx+eax*4+40h]
+00c94f62 8bc7            mov     eax,edi
+00c94f64 ffd2            call    edx
+00c94f66 2b4370          sub     eax,dword ptr [ebx+70h]
+00c94f69 89442410        mov     dword ptr [esp+10h],eax                        ; imm2 = imm2 - env->obfus2
+00c94f6d 33c0            xor     eax,eax
+00c94f6f 8a4606          mov     al,byte ptr [esi+6]
+00c94f72 8b548340        mov     edx,dword ptr [ebx+eax*4+40h]
+00c94f76 8bc7            mov     eax,edi
+00c94f78 ffd2            call    edx
+00c94f7a 8bd0            mov     edx,eax                                        ; gpr2_id
+00c94f7c 80ea08          sub     dl,8
+00c94f7f 0f92c2          setb    dl
+00c94f82 80fa01          cmp     dl,1
+00c94f85 7510            jne     00c94f97
+00c94f87 8bc8            mov     ecx,eax
+00c94f89 8b1424          mov     edx,dword ptr [esp]
+00c94f8c 8bc3            mov     eax,ebx
+00c94f8e e8dd080000      call    00c95870
+00c94f93 89442408        mov     dword ptr [esp+8],eax                          ; gpr2_val = (gpr2_id<8 ? read_gpr(env, ctx, gpr2_id) : 0)
+00c94f97 33c0            xor     eax,eax
+00c94f99 8a4607          mov     al,byte ptr [esi+7]
+00c94f9c 8b548340        mov     edx,dword ptr [ebx+eax*4+40h]
+00c94fa0 8bc7            mov     eax,edi
+00c94fa2 ffd2            call    edx
+00c94fa4 2b4370          sub     eax,dword ptr [ebx+70h]
+00c94fa7 8944240c        mov     dword ptr [esp+0Ch],eax                        ; imm = imm - env->obfus2
+00c94fab 33c0            xor     eax,eax
+00c94fad 8a4605          mov     al,byte ptr [esi+5]
+00c94fb0 8b548340        mov     edx,dword ptr [ebx+eax*4+40h]
+00c94fb4 8bc7            mov     eax,edi
+00c94fb6 ffd2            call    edx
+00c94fb8 8bd0            mov     edx,eax                                        ; grp_id
+00c94fba 80ea08          sub     dl,8
+00c94fbd 0f92c2          setb    dl
+00c94fc0 80fa01          cmp     dl,1
+00c94fc3 750e            jne     00c94fd3
+00c94fc5 8bc8            mov     ecx,eax
+00c94fc7 8b1424          mov     edx,dword ptr [esp]
+00c94fca 8bc3            mov     eax,ebx
+00c94fcc e89f080000      call    00c95870
+00c94fd1 8be8            mov     ebp,eax                                        ; gpr_val = (gpr_id<8 ? read_gpr(env, ctx, gpr_id) : 0)
+00c94fd3 036c240c        add     ebp,dword ptr [esp+0Ch]                        ; arg1 = gpr_val+imm
+00c94fd7 8b442410        mov     eax,dword ptr [esp+10h]
+00c94fdb 03442408        add     eax,dword ptr [esp+8]
+00c94fdf 89442404        mov     dword ptr [esp+4],eax                          ; arg2 = gpr2_val+imm2
+00c94fe3 33c0            xor     eax,eax
+00c94fe5 8a4609          mov     al,byte ptr [esi+9]
+00c94fe8 8b548340        mov     edx,dword ptr [ebx+eax*4+40h]
+00c94fec 8bc7            mov     eax,edi
+00c94fee ffd2            call    edx
+00c94ff0 83e07f          and     eax,7Fh
+00c94ff3 83f804          cmp     eax,4
+00c94ff6 7742            ja      00c9503a                                       ; if (args_tpy>4) error
+00c94ff8 ff2485ff4fc900  jmp     dword ptr [eax*4+0C94FFFh]
+00c94fff                 dd 00c95029
+00c95003                 dd 00c9502e
+00c95007                 dd 00c95013
+00c9500b                 dd 00c9501c
+; a1_mem_b (0)
+00c95013 33c0            xor     eax,eax
+00c95015 8a4500          mov     al,byte ptr [ebp]
+00c95018 8be8            mov     ebp,eax                                        ; arg1 = *(byte*)arg1
+00c9501a eb28            jmp     00c95044
+; a2_mem_b (1)
+00c9501c 8b442404        mov     eax,dword ptr [esp+4]
+00c95020 0fb600          movzx   eax,byte ptr [eax]
+00c95023 89442404        mov     dword ptr [esp+4],eax                          ; arg2 = *(byte*)arg2
+00c95027 eb1b            jmp     00c95044
+; a1_mem_dw (2)
+00c95029 8b6d00          mov     ebp,dword ptr [ebp]                            ; arg1 = *(dword*)arg1
+00c9502c eb16            jmp     00c95044
+; a2_mem_dw (3)
+00c9502e 8b442404        mov     eax,dword ptr [esp+4]
+00c95032 8b00            mov     eax,dword ptr [eax]
+00c95034 89442404        mov     dword ptr [esp+4],eax                          ; arg2 = *(dword*)arg2
+00c95038 eb0a            jmp     00c95044
+
+00c9503a 686050c900      push    0C95060h
+00c9503f e8340dffff      call    00c85d78                                       ; error
+
+00c95044 8b542404        mov     edx,dword ptr [esp+4]
+00c95048 8bc5            mov     eax,ebp
+00c9504a e8f5070000      call    00c95844                                       ; compare arg1 and arg2 and return flags
+00c9504f 83c414          add     esp,14h
+00c95052 5d              pop     ebp
+00c95053 5f              pop     edi
+00c95054 5e              pop     esi
+00c95055 5b              pop     ebx
+00c95056 c3              ret

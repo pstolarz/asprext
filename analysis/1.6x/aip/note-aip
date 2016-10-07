@@ -1,0 +1,945 @@
+proc_ctx_t:
+Processor context
+    00[dword]: eax
+    04[dword]: ecx
+    08[dword]: edx
+    0c[dword]: ebx
+    10[dword]: esp
+    14[dword]: ebp
+    18[dword]: esi
+    1c[dword]: edi
+
+env_t:
+    10[dword]: mem_indxs   Indexes table used to comupte the import seed
+    14[dword]: mod_base
+    18[dword]: n_ptchs     number of patches in the code
+    1c[dword]: n_emuls     number of opcode emulations (executed after an AIP call)
+    20[byte ]: prot_tpy    Type of protection:
+                           0: SIP/AIP protection
+                           1: eSIP/AIP protection - eSIP (enhanced SIP) patch is applied
+                              during 1st call of the import rather than during the target
+                              start-up
+    24[dword]: exe_base    executed code base addr
+    28[dword]: exe_end_rva executed code end rva
+    2C[dword]: aip_stol_code
+                           Address of aip stolen code (common for all AIP patches)
+    30[dword]: aip_exit    address of aip_exit()
+    3c[dword]: imports     pointer to imports_t struct
+    40[byte[]]: permtab    permutation table for reading 'dt_acss' table. Each element is
+                           an index in 'dt_acss' table. The table contains 10 indexes.
+    4A[byte ]: opc_call    CALL AIP/SIP type id, CALL emulated opcode id
+    4B[byte ]: opc_jmp     JMP AIP/SIP type id, JMP emulated opcode id
+    4C[byte ]: opc_cmp_jcc
+    4D[byte ]: opc_cmp
+    4F[byte ]: opc_add     ADD reg, imm
+    50[byte ]: opc_mov_rr  MOV reg, reg
+    51[byte ]: opc_mov_mr  MOV [mem], reg
+    52[byte ]: opc_mov_rdr MOV [reg+displ], reg
+    54[dword]: ptchs       pointer to the table of patches data (elems of conf_dt_t)
+    58[dword]: emuls       pointer to the table of emulated opcodes data (elems of conf_dt_t)
+    68[dt_acs_t[]]: dt_acss
+                           dt_acs_t[] table of access handlers for the confidential data. Each time
+                           ASPR starts it permutates the handlers in the table. To reach proper one
+                           there is a need to acces them via 'permtab' as follows:
+                           dt_acss[permtab[0]].hndl to reach hndl_0.
+    e0[dword]: obfus       obfuscating value (protection dependent)
+    e4[dword]: conf_dt_sz  sizeof(conf_dt_t) (protection dependent)
+   108[dword]: ptchs_list  pointer to ptchs_list_t struct
+   116[byte] : wr_i        offset (in dwords) of work_reg in the proc context
+
+dt_acs_t:
+Describes confidential data handler (12 bytes long)
+    00[dword]: hndl        confidential data access handler
+    04[dword]: ???
+    08[dword]: ???
+
+ptchs_list_t:
+    18[dword]: ptchs       This table seems to duplicate the patches data from env_t::ptchs.
+                           Size of the table 'n_ptchs', each elem is a pointer to the following struct:
+                           0[dword]: ???
+                           4[dword]: ptch_dt    pointer to the patch data (conf_dt_t)
+    1c[dword]: n_ptchs
+
+conf_dt_t (protection dependent):
+Confidential data struct. The specific data fields are reached only by means of special access
+handlers and are usuall obfuscated. The fields are byte aligned and their position in the struct
+may change from protection to protection (there exists spaces between the fields filled with
+random bytes). Therefore (for generality among various protections) the fields may be accessed
+only by the access handlers!
+
+Confidential patch data specification:
+    hndl_0: get_eip_obf()     [dword] eip of a patch (obfuscated)
+    hndl_1: get_ref_tpy()     [byte ] id of the patch reference type (env_t::opc_call or env_t::opc_jmp) (SIP, AIP)
+                                      for eSIP this value is additionaly obfuscated
+    hndl_2: get_emul_id_obf() [dword] id of emulated obcode as an index in 'emuls' table (obfuscated) (AIP)
+            get_imp_spec2b_obf()[dword] import spec. argument 2 for generating import seed (obfuscated) (SIP, eSIP)
+    hndl_3: get_imp_spec2_obf() [dword] import spec. argument 2 for generating import seed (obfuscated) (AIP)
+                                        import spec. input for lib/proc id calculation (SIP, eSIP) and the patch reference type (eSIP)
+    hndl_5: get_imp_spec1_obf() [byte ] import spec. argument 1 for generating import seed (obfuscated by 0xff substraction) (AIP)
+    hndl_6: get_imp_spec1b_obf()[byte ] import spec. argument 1 for generating import seed (obfuscated by 0xff substraction) (SIP, eSIP)
+    hndl_7: get_lib_id_obf()  [dword] imported library id (obfuscated by the import seed)
+    hndl_8: get_proc_id_obf() [dword] importoed proc id (obfuscated by the import seed)
+    hndl_9: is_sip_ptch()     [byte ] 1: SIP patch, otherwise AIP patch
+
+
+aip_entry() [CALL AIP] --------
+The proc saves the context to the proc_ctx_t struct and prepares args for aip_search_and_run()
+This is a polymorfic/obfuscated func. The version below is deobfuscated with eax as work_reg.
+The other versions use other gpr as wrok_reg but basically do the same
+
+00860005 50              push    eax                                                    ; eax: work_reg for this call (may vary)
+0086000a 9c              pushfd
+00860017 83ec20          sub     esp,20h                                                ; aip_call: ctx(0x20) + flags(4) + work_reg(4) + call_ret_addr(4; pushed by 'call' opcode)
+00860029 8d44246e        lea     eax,[esp+6Eh]
+0086002d 8d4092          lea     eax,[eax-6Eh]                                          ; eax = &aip_call.ctx
+00860030 56              push    esi
+00860031 8f4018          pop     dword ptr [eax+18h]                                    ; aip_call.ctx.esi = esi
+00860039 89580c          mov     dword ptr [eax+0Ch],ebx                                ; aip_call.ctx.ebx = ebx
+0086004e 894804          mov     dword ptr [eax+4],ecx                                  ; aip_call.ctx.ecx = ecx
+0086005e 895008          mov     dword ptr [eax+8],edx                                  ; aip_call.ctx.edx = edx
+0086006b 57              push    edi
+00860071 8f44201c        pop     dword ptr [eax+1Ch]                                    ; aip_call.ctx.edi = edi
+00860081 55              push    ebp
+00860082 8f4014          pop     dword ptr [eax+14h]                                    ; aip_call.ctx.ebp = ebp
+0086009b 8d742403        lea     esi,[esp+3]
+0086009f 83ee03          sub     esi,3
+008600a2 8d762c          lea     esi,[esi+2Ch]
+008600a5 56              push    esi                                                    ; arg: (byte*)&aip_call+sizeof(aip_call) (call_esp)
+008600ac 50              push    eax                                                    ; arg: &aip_call.ctx
+008600c3 8d74200c        lea     esi,[eax+0Ch]
+008600c7 8d7426f4        lea     esi,[esi-0Ch]
+008600cb 83c620          add     esi,20h
+008600ce 8b36            mov     esi,dword ptr [esi]
+008600d0 56              push    esi                                                    ; arg: aip_call.flags
+008600dd 50              push    eax
+008600e7 5e              pop     esi
+008600e8 8d741e28        lea     esi,[esi+ebx+28h]
+008600f1 2bf3            sub     esi,ebx
+008600f3 ff36            push    dword ptr [esi]
+00860101 5e              pop     esi                                                    ; call_ret_addr
+00860102 8d741efb        lea     esi,[esi+ebx-5]
+00860106 2bf3            sub     esi,ebx
+00860108 8db6f4070000    lea     esi,[esi+7F4h]                                         ; pid==0x7F4
+0086010e 56              push    esi                                                    ; arg: (call_ret_addr - 5 + pid) (call_eip)
+00860115 6bf600          imul    esi,esi,0
+00860118 64ff36          push    dword ptr fs:[esi]                                     ; arg: dword ptr fs:[0] (call_seh)
+00860124 6838052d00      push    2D0538h
+0086012f 5e              pop     esi
+00860130 56              push    esi                                                    ; arg: &env (0x002D0538)
+0086014c 6884e94400      push    offset image00000000_00400000+0x4e984 (0044e984)
+00860160 58              pop     eax
+00860161 ffd0            call    eax {image00000000_00400000+0x4e984 (0044e984)}        ; aip_search_and_run()
+
+
+aip_exit() [for both JMP/CALL AIP] --------
+aip_exit(proc_ctx_t *ctx, DWORD flags, void *new_esp)
+
+Restores gpr and flags as in the context and passed arguments. Jump to new_eip.
+*(dword*)(new_esp-4) specifies new_eip
+
+00b50006 59              pop     ecx                                                    ; ecx = ctx
+00b5001f ff7108          push    dword ptr [ecx+8]
+00b5002b 5a              pop     edx                                                    ; edx = ctx->edx
+00b50032 ff711c          push    dword ptr [ecx+1Ch]
+00b5003c 5f              pop     edi                                                    ; edi = ctx->edi
+00b50043 ff742100        push    dword ptr [ecx]
+00b50049 58              pop     eax                                                    ; eax = ctx->eax
+00b50055 ff7114          push    dword ptr [ecx+14h]
+00b50062 5d              pop     ebp                                                    ; ebp = ctx->ebp
+00b50085 8d741118        lea     esi,[ecx+edx+18h]
+00b50089 2bf2            sub     esi,edx
+00b50090 8b36            mov     esi,dword ptr [esi]                                    ; esi = ctx->esi
+00b50094 ff710c          push    dword ptr [ecx+0Ch]
+00b5009f 5b              pop     ebx                                                    ; ebx = ctx->ebx
+00b500a5 ff7104          push    dword ptr [ecx+4]
+00b500b0 59              pop     ecx                                                    ; ecx = ctx->ecx
+00b500b1 9d              popfd                                                          ; eflags = flags
+00b500b2 5c              pop     esp                                                    ; esp = new_esp
+00b500b3 ff6424fc        jmp     dword ptr [esp-4]                                      ; jmp *(dword*)(new_esp-4) (new_eip)
+
+
+aip_search_and_run() --------
+aip_search_and_run(env_t *env, void *call_seh, dword call_eip, dword flags, proc_ctx_t *ctx, void *call_esp)
+
+call_eip: points to the AIP call. Encoded by adding current process id (pid)
+call_esp: points to the stack after the AIP call, has the following layout:
+    call_esp-08: work_reg
+  CALL AIP:
+    call_esp-04: points to the return addr after the AIP call is completed
+  JMP AIP
+    call_esp-04: points to the return addr of the AIP call (not used)
+    call_esp:    points to the jmp dest addr which (extra pushed on the stack by aip_entry() (JMP version)
+
+0044e984 55              push    ebp
+0044e985 8bec            mov     ebp,esp
+0044e987 83c4d8          add     esp,0FFFFFFD8h
+0044e98a 53              push    ebx
+0044e98b 56              push    esi
+0044e98c 57              push    edi
+0044e98d 33c0            xor     eax,eax
+0044e98f 8945dc          mov     dword ptr [ebp-24h],eax
+0044e992 8945d8          mov     dword ptr [ebp-28h],eax
+0044e995 8945e0          mov     dword ptr [ebp-20h],eax
+0044e998 8b5d08          mov     ebx,dword ptr [ebp+8]                                  ; ebx = env
+0044e99b 33c0            xor     eax,eax
+0044e99d 55              push    ebp
+0044e99e 6858ec4400      push    offset image00000000_00400000+0x4ec58 (0044ec58)
+0044e9a3 64ff30          push    dword ptr fs:[eax]
+0044e9a6 648920          mov     dword ptr fs:[eax],esp                                 ; set seh1
+0044e9a9 eb01            jmp     image00000000_00400000+0x4e9ac (0044e9ac)
+0044e9ab e9              ???
+0044e9ac a1a4284500      mov     eax,dword ptr [image00000000_00400000+0x528a4 (004528a4)]
+0044e9b1 c600c9          mov     byte ptr [eax],0C9h
+0044e9b4 a1f8284500      mov     eax,dword ptr [image00000000_00400000+0x528f8 (004528f8)]
+0044e9b9 c60072          mov     byte ptr [eax],72h
+0044e9bc 33d2            xor     edx,edx
+0044e9be 55              push    ebp
+0044e9bf 68ffeb4400      push    offset image00000000_00400000+0x4ebff (0044ebff)
+0044e9c4 64ff32          push    dword ptr fs:[edx]
+0044e9c7 648922          mov     dword ptr fs:[edx],esp                                 ; set seh2
+
+0044e9ca a170284500      mov     eax,dword ptr [image00000000_00400000+0x52870 (00452870)]
+0044e9cf 8b00            mov     eax,dword ptr [eax]
+0044e9d1 ffd0            call    eax
+0044e9d3 8945f0          mov     dword ptr [ebp-10h],eax                                ; TIB.last_err
+0044e9d6 eb01            jmp     image00000000_00400000+0x4e9d9 (0044e9d9)
+0044e9d8 9a              ???
+0044e9d9 8b451c          mov     eax,dword ptr [ebp+1Ch]
+0044e9dc 83e808          sub     eax,8
+0044e9df 8b00            mov     eax,dword ptr [eax]                                    ; work_reg
+0044e9e1 50              push    eax
+0044e9e2 8a8b16010000    mov     cl,byte ptr [ebx+116h]
+0044e9e8 8b5518          mov     edx,dword ptr [ebp+18h]
+0044e9eb 8bc3            mov     eax,ebx
+0044e9ed e87efaffff      call    image00000000_00400000+0x4e470 (0044e470)              ; ctx[4*env->wr_i]=work_reg   (set work_reg in ctx)
+0044e9f2 8b451c          mov     eax,dword ptr [ebp+1Ch]
+0044e9f5 50              push    eax
+0044e9f6 b104            mov     cl,4
+0044e9f8 8b5518          mov     edx,dword ptr [ebp+18h]
+0044e9fb 8bc3            mov     eax,ebx
+0044e9fd e86efaffff      call    image00000000_00400000+0x4e470 (0044e470)              ; ctx->esp = call_esp
+0044ea02 a12c294500      mov     eax,dword ptr [image00000000_00400000+0x5292c (0045292c)]
+0044ea07 8b4034          mov     eax,dword ptr [eax+34h]
+0044ea0a ffd0            call    eax                                                    ; kernel32!GetCurrentProcessId
+0044ea0c 294510          sub     dword ptr [ebp+10h],eax                                ; decode eip: call_eip -= pid
+0044ea0f 8b4510          mov     eax,dword ptr [ebp+10h]
+0044ea12 2b4314          sub     eax,dword ptr [ebx+14h]                                ; eip_rva = call_eip - env->mod_base
+0044ea15 8b5510          mov     edx,dword ptr [ebp+10h]
+0044ea18 2b5324          sub     edx,dword ptr [ebx+24h]
+0044ea1b 2b93e0000000    sub     edx,dword ptr [ebx+0E0h]
+0044ea21 8955f8          mov     dword ptr [ebp-8],edx                                  ; obfus eip: eip_obf = call_eip - env->exe_base - env->obfus
+0044ea24 3b4328          cmp     eax,dword ptr [ebx+28h]                                ; env->exe_end_rva
+0044ea27 0f83b2010000    jae     image00000000_00400000+0x4ebdf (0044ebdf)              ; if (eip_rva >= env->exe_end_rva) goto error
+0044ea2d 8d5340          lea     edx,[ebx+40h]
+0044ea30 8955e8          mov     dword ptr [ebp-18h],edx                                ; permtab
+0044ea33 eb01            jmp     image00000000_00400000+0x4ea36 (0044ea36)
+0044ea35 69              ???
+0044ea36 8b5318          mov     edx,dword ptr [ebx+18h]
+0044ea39 8955f4          mov     dword ptr [ebp-0Ch],edx                                ; n_ptchs
+0044ea3c 8b5510          mov     edx,dword ptr [ebp+10h]
+0044ea3f 83c205          add     edx,5
+0044ea42 8a12            mov     dl,byte ptr [edx]                                      ; call_eip+5: address after the AIP 'call' opcode
+0044ea44 3293e0000000    xor     dl,byte ptr [ebx+0E0h]
+0044ea4a 8bfa            mov     edi,edx
+0044ea4c 81e7ff000000    and     edi,0FFh
+0044ea52 25ff000000      and     eax,0FFh
+0044ea57 33f8            xor     edi,eax                                                ; ptch_id = (byte)*(call_eip+5) ^ (byte)env->obfus ^ (byte)eip_rva
+0044ea59 3b7df4          cmp     edi,dword ptr [ebp-0Ch]
+0044ea5c 0f879f000000    ja      image00000000_00400000+0x4eb01 (0044eb01)              ; check if ptch_id may be used as an index (ptch_id <= n_ptchs)
+
+; ptch_id may be used as index in env->ptchs table
+0044ea62 8b83e4000000    mov     eax,dword ptr [ebx+0E4h]                               ; env->conf_dt_sz (36, 3e ...)
+0044ea68 f7ef            imul    edi
+0044ea6a 034354          add     eax,dword ptr [ebx+54h]
+0044ea6d 8945fc          mov     dword ptr [ebp-4],eax                                  ; ptch_dt = &env->ptchs[ptch_id * env->conf_dt_sz]
+0044ea70 eb01            jmp     image00000000_00400000+0x4ea73 (0044ea73)
+0044ea72 c7              ???
+0044ea73 8b45e8          mov     eax,dword ptr [ebp-18h]
+0044ea76 0fb600          movzx   eax,byte ptr [eax]
+0044ea79 8d0440          lea     eax,[eax+eax*2]
+0044ea7c 8b748368        mov     esi,dword ptr [ebx+eax*4+68h]
+0044ea80 8b45fc          mov     eax,dword ptr [ebp-4]
+0044ea83 ffd6            call    esi                                                    ; ptch_eip_obf = get_eip_obf(ptch_dt)
+0044ea85 8bf0            mov     esi,eax
+0044ea87 3b75f8          cmp     esi,dword ptr [ebp-8]
+0044ea8a 7563            jne     image00000000_00400000+0x4eaef (0044eaef)              ; eip_obf != ptch_eip_obf
+0044ea8c 807b2000        cmp     byte ptr [ebx+20h],0
+0044ea90 743c            je      image00000000_00400000+0x4eace (0044eace)              ; env->prot_tpy==0 (only AIP may occur)
+; eSIP/AIP protection
+0044ea92 8b45e8          mov     eax,dword ptr [ebp-18h]
+0044ea95 0fb64009        movzx   eax,byte ptr [eax+9]
+0044ea99 8d0440          lea     eax,[eax+eax*2]
+0044ea9c 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044eaa0 8b45fc          mov     eax,dword ptr [ebp-4]
+0044eaa3 ffd2            call    edx
+0044eaa5 3c01            cmp     al,1
+0044eaa7 7525            jne     image00000000_00400000+0x4eace (0044eace)              ; is_sip_ptch(ptch_dt)!=1  (is AIP patch?)
+; eSIP patch
+0044eaa9 56              push    esi
+0044eaaa 8d45fc          lea     eax,[ebp-4]
+0044eaad 50              push    eax
+0044eaae 8b4514          mov     eax,dword ptr [ebp+14h]
+0044eab1 50              push    eax
+0044eab2 8b4518          mov     eax,dword ptr [ebp+18h]
+0044eab5 50              push    eax
+0044eab6 8b450c          mov     eax,dword ptr [ebp+0Ch]
+0044eab9 50              push    eax
+0044eaba 8b45f0          mov     eax,dword ptr [ebp-10h]
+0044eabd 50              push    eax
+0044eabe 8b4d1c          mov     ecx,dword ptr [ebp+1Ch]
+0044eac1 8b5510          mov     edx,dword ptr [ebp+10h]
+0044eac4 8bc3            mov     eax,ebx
+0044eac6 e8bd010000      call    image00000000_00400000+0x4ec88 (0044ec88)              ; write_esip_and_run()
+0044eacb eb01            jmp     image00000000_00400000+0x4eace (0044eace)
+0044eacd e8              ???
+; AIP patch
+0044eace 8d45fc          lea     eax,[ebp-4]
+0044ead1 50              push    eax                                                    ; arg: &ptch_dt
+0044ead2 8b4514          mov     eax,dword ptr [ebp+14h]
+0044ead5 50              push    eax                                                    ; arg: flags
+0044ead6 8b4518          mov     eax,dword ptr [ebp+18h]
+0044ead9 50              push    eax                                                    ; arg: ctx
+0044eada 8b450c          mov     eax,dword ptr [ebp+0Ch]
+0044eadd 50              push    eax                                                    ; arg: call_seh
+0044eade 8b45f0          mov     eax,dword ptr [ebp-10h]
+0044eae1 50              push    eax                                                    ; arg: TIB.last_err
+0044eae2 8b4d1c          mov     ecx,dword ptr [ebp+1Ch]                                ; arg: call_esp
+0044eae5 8b5510          mov     edx,dword ptr [ebp+10h]                                ; arg: call_eip
+0044eae8 8bc3            mov     eax,ebx                                                ; arg: env
+0044eaea e8a5f2ffff      call    image00000000_00400000+0x4dd94 (0044dd94)              ; aip_run()
+0044eaef 81c7ff000000    add     edi,0FFh                                               ; patch_i+=255 (practically means go beyoud patches list)
+0044eaf5 3b7df4          cmp     edi,dword ptr [ebp-0Ch]
+0044eaf8 0f8664ffffff    jbe     image00000000_00400000+0x4ea62 (0044ea62)              ; probably never jump
+0044eafe eb01            jmp     image00000000_00400000+0x4eb01 (0044eb01)              ; search patch through env->ptchs_list->ptchs
+0044eb00 c7              ???
+
+; patch is searched through env->ptchs_list->ptchs
+0044eb01 a1a4284500      mov     eax,dword ptr [image00000000_00400000+0x528a4 (004528a4)]
+0044eb06 c600ca          mov     byte ptr [eax],0CAh
+0044eb09 8b8308010000    mov     eax,dword ptr [ebx+108h]
+0044eb0f 8b401c          mov     eax,dword ptr [eax+1Ch]
+0044eb12 48              dec     eax
+0044eb13 8945f4          mov     dword ptr [ebp-0Ch],eax
+0044eb16 8b4318          mov     eax,dword ptr [ebx+18h]
+0044eb19 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044eb1c 42              inc     edx
+0044eb1d 3bc2            cmp     eax,edx
+0044eb1f 740a            je      image00000000_00400000+0x4eb2b (0044eb2b)              ; assert()
+0044eb21 6870ec4400      push    offset image00000000_00400000+0x4ec70 (0044ec70)
+0044eb26 e8fddbfeff      call    image00000000_00400000+0x3c728 (0043c728)              ; error "160"
+0044eb2b 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044eb2e 85c0            test    eax,eax
+0044eb30 0f8ca9000000    jl      image00000000_00400000+0x4ebdf (0044ebdf)
+0044eb36 40              inc     eax
+0044eb37 8945e4          mov     dword ptr [ebp-1Ch],eax
+0044eb3a c745ec00000000  mov     dword ptr [ebp-14h],0                                  ; i=0
+; loop
+0044eb41 8b8308010000    mov     eax,dword ptr [ebx+108h]
+0044eb47 8b55ec          mov     edx,dword ptr [ebp-14h]
+0044eb4a e815dffeff      call    image00000000_00400000+0x3ca64 (0043ca64)
+0044eb4f 8bf8            mov     edi,eax                                                ; env->ptchs_list->ptchs[i]
+0044eb51 eb01            jmp     image00000000_00400000+0x4eb54 (0044eb54)
+0044eb53 c7              ???
+0044eb54 8b45e8          mov     eax,dword ptr [ebp-18h]
+0044eb57 0fb600          movzx   eax,byte ptr [eax]
+0044eb5a 8d0440          lea     eax,[eax+eax*2]
+0044eb5d 8b748368        mov     esi,dword ptr [ebx+eax*4+68h]
+0044eb61 8b4704          mov     eax,dword ptr [edi+4]                                  ; ptch_dt = env->ptchs_list->ptchs[i]->ptch_dt
+0044eb64 ffd6            call    esi                                                    ; ptch_eip_obf = get_eip_obf(ptch_dt)
+0044eb66 8bf0            mov     esi,eax
+0044eb68 3b75f8          cmp     esi,dword ptr [ebp-8]
+0044eb6b 7566            jne     image00000000_00400000+0x4ebd3 (0044ebd3)              ; ptch_eip_obf == eip_obf   (is i-th patch?)
+0044eb6d 807b2000        cmp     byte ptr [ebx+20h],0
+0044eb71 743c            je      image00000000_00400000+0x4ebaf (0044ebaf)              ; env->prot_tpy==0 (only AIP may occure)
+; eSIP/AIP protection
+0044eb73 8b45e8          mov     eax,dword ptr [ebp-18h]
+0044eb76 0fb64009        movzx   eax,byte ptr [eax+9]
+0044eb7a 8d0440          lea     eax,[eax+eax*2]
+0044eb7d 8b548368        mov     edx,dword ptr [ebx+eax*4+68h]
+0044eb81 8b4704          mov     eax,dword ptr [edi+4]
+0044eb84 ffd2            call    edx
+0044eb86 3c01            cmp     al,1
+0044eb88 7525            jne     image00000000_00400000+0x4ebaf (0044ebaf)              ; is_sip_ptch(ptch_dt)!=1  (is AIP patch?)
+; eSIP patch
+0044eb8a 56              push    esi
+0044eb8b 8d4704          lea     eax,[edi+4]
+0044eb8e 50              push    eax
+0044eb8f 8b4514          mov     eax,dword ptr [ebp+14h]
+0044eb92 50              push    eax
+0044eb93 8b4518          mov     eax,dword ptr [ebp+18h]
+0044eb96 50              push    eax
+0044eb97 8b450c          mov     eax,dword ptr [ebp+0Ch]
+0044eb9a 50              push    eax
+0044eb9b 8b45f0          mov     eax,dword ptr [ebp-10h]
+0044eb9e 50              push    eax
+0044eb9f 8b4d1c          mov     ecx,dword ptr [ebp+1Ch]
+0044eba2 8b5510          mov     edx,dword ptr [ebp+10h]
+0044eba5 8bc3            mov     eax,ebx
+0044eba7 e8dc000000      call    image00000000_00400000+0x4ec88 (0044ec88)              ; write_esip_and_run()
+0044ebac eb01            jmp     image00000000_00400000+0x4ebaf (0044ebaf)
+0044ebae e8              ???
+; AIP patch
+0044ebaf 8d4704          lea     eax,[edi+4]
+0044ebb2 50              push    eax                                                    ; arg: &ptch_dt
+0044ebb3 8b4514          mov     eax,dword ptr [ebp+14h]
+0044ebb6 50              push    eax                                                    ; arg: flags
+0044ebb7 8b4518          mov     eax,dword ptr [ebp+18h]
+0044ebba 50              push    eax                                                    ; arg: ctx
+0044ebbb 8b450c          mov     eax,dword ptr [ebp+0Ch]
+0044ebbe 50              push    eax                                                    ; arg: call_seh
+0044ebbf 8b45f0          mov     eax,dword ptr [ebp-10h]
+0044ebc2 50              push    eax                                                    ; arg: TIB.last_err
+0044ebc3 8b4d1c          mov     ecx,dword ptr [ebp+1Ch]                                ; arg: call_esp
+0044ebc6 8b5510          mov     edx,dword ptr [ebp+10h]                                ; arg: call_eip
+0044ebc9 8bc3            mov     eax,ebx                                                ; arg: env
+0044ebcb e8c4f1ffff      call    image00000000_00400000+0x4dd94 (0044dd94)              ; aip_run()
+0044ebd0 eb01            jmp     image00000000_00400000+0x4ebd3 (0044ebd3)              ; we should not reach this code
+0044ebd2 9a              ???
+0044ebd3 ff45ec          inc     dword ptr [ebp-14h]                                    ; i++
+0044ebd6 ff4de4          dec     dword ptr [ebp-1Ch]
+0044ebd9 0f8562ffffff    jne     image00000000_00400000+0x4eb41 (0044eb41)
+
+; error (shall not be reached)
+0044ebdf 8d55e0          lea     edx,[ebp-20h]
+0044ebe2 b86f000000      mov     eax,6Fh
+0044ebe7 e8d8d7ffff      call    image00000000_00400000+0x4c3c4 (0044c3c4)
+0044ebec 8b45e0          mov     eax,dword ptr [ebp-20h]
+0044ebef 50              push    eax
+0044ebf0 e833dbfeff      call    image00000000_00400000+0x3c728 (0043c728)              ; error "111"
+0044ebf5 33c0            xor     eax,eax
+0044ebf7 5a              pop     edx
+0044ebf8 59              pop     ecx
+0044ebf9 59              pop     ecx
+0044ebfa 648910          mov     dword ptr fs:[eax],edx
+0044ebfd eb3e            jmp     image00000000_00400000+0x4ec3d (0044ec3d)
+0044ebff e940b2fdff      jmp     image00000000_00400000+0x29e44 (00429e44)              ; seh2
+0044ec04 e853d6ffff      call    image00000000_00400000+0x4c25c (0044c25c)
+0044ec09 84c0            test    al,al
+0044ec0b 7526            jne     image00000000_00400000+0x4ec33 (0044ec33)
+0044ec0d 8d55d8          lea     edx,[ebp-28h]
+0044ec10 b86f000000      mov     eax,6Fh
+0044ec15 e8aad7ffff      call    image00000000_00400000+0x4c3c4 (0044c3c4)
+0044ec1a 8b4dd8          mov     ecx,dword ptr [ebp-28h]
+0044ec1d 8d45dc          lea     eax,[ebp-24h]
+0044ec20 ba80ec4400      mov     edx,offset image00000000_00400000+0x4ec80 (0044ec80)
+0044ec25 e852bdfdff      call    image00000000_00400000+0x2a97c (0042a97c)
+0044ec2a 8b45dc          mov     eax,dword ptr [ebp-24h]
+0044ec2d 50              push    eax
+0044ec2e e8f5dafeff      call    image00000000_00400000+0x3c728 (0043c728)              ; error "111"
+0044ec33 e8c4e3feff      call    image00000000_00400000+0x3cffc (0043cffc)
+0044ec38 e863b5fdff      call    image00000000_00400000+0x2a1a0 (0042a1a0)
+0044ec3d 33c0            xor     eax,eax
+0044ec3f 5a              pop     edx
+0044ec40 59              pop     ecx
+0044ec41 59              pop     ecx
+0044ec42 648910          mov     dword ptr fs:[eax],edx
+0044ec45 685fec4400      push    offset image00000000_00400000+0x4ec5f (0044ec5f)
+0044ec4a 8d45d8          lea     eax,[ebp-28h]
+0044ec4d ba03000000      mov     edx,3
+0044ec52 e8a1bafdff      call    image00000000_00400000+0x2a6f8 (0042a6f8)
+0044ec57 c3              ret
+0044ec58 e99bb4fdff      jmp     image00000000_00400000+0x2a0f8 (0042a0f8)              ; seh1
+0044ec5d ebeb            jmp     image00000000_00400000+0x4ec4a (0044ec4a)
+0044ec5f 5f              pop     edi
+0044ec60 5e              pop     esi
+0044ec61 5b              pop     ebx
+0044ec62 8be5            mov     esp,ebp
+0044ec64 5d              pop     ebp
+0044ec65 c21800          ret     18h
+
+
+aip_run() --------
+aip_run(env_t *env (eax), void *call_eip (edx), void *call_esp (ecx),
+    dword last_err, void *call_seh, proc_ctx_t *ctx, dword flags, conf_dt_t **pptch_dt)
+
+call_eip: as for aip_search_and_run()
+call_esp: as for aip_search_and_run()
+The func not exit; at the end it jumps to the dest code
+
+0044dd94 55              push    ebp
+0044dd95 8bec            mov     ebp,esp
+0044dd97 83c4cc          add     esp,0FFFFFFCCh
+0044dd9a 53              push    ebx
+0044dd9b 56              push    esi
+0044dd9c 57              push    edi
+0044dd9d 894df8          mov     dword ptr [ebp-8],ecx                                  ; call_esp
+0044dda0 8955f0          mov     dword ptr [ebp-10h],edx                                ; call_eip
+0044dda3 8945f4          mov     dword ptr [ebp-0Ch],eax                                ; env
+0044dda6 8b7518          mov     esi,dword ptr [ebp+18h]                                ; ptch_dt = *pptch_dt
+0044dda9 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044ddac 8d5840          lea     ebx,[eax+40h]
+0044ddaf eb01            jmp     image00000000_00400000+0x4ddb2 (0044ddb2)
+0044ddb1 e8              ???
+0044ddb2 a1a4284500      mov     eax,dword ptr [image00400000+0x528a4 (004528a4)]
+0044ddb7 c600cb          mov     byte ptr [eax],0CBh
+0044ddba 33c0            xor     eax,eax
+0044ddbc 8a4302          mov     al,byte ptr [ebx+2]
+0044ddbf 8d0440          lea     eax,[eax+eax*2]
+0044ddc2 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044ddc5 8b7c8268        mov     edi,dword ptr [edx+eax*4+68h]
+0044ddc9 8b06            mov     eax,dword ptr [esi]
+0044ddcb ffd7            call    edi
+0044ddcd 8945e8          mov     dword ptr [ebp-18h],eax                                ; ptch_emul_id_obf = get_emul_id_obf(ptch_dt)
+0044ddd0 33c0            xor     eax,eax
+0044ddd2 8a4303          mov     al,byte ptr [ebx+3]
+0044ddd5 8d0440          lea     eax,[eax+eax*2]
+0044ddd8 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044dddb 8b7c8268        mov     edi,dword ptr [edx+eax*4+68h]
+0044dddf 8b06            mov     eax,dword ptr [esi]
+0044dde1 ffd7            call    edi
+0044dde3 8bf8            mov     edi,eax                                                ; imp_spec2_obf = get_imp_spec2_obf(ptch_dt)
+0044dde5 33c0            xor     eax,eax
+0044dde7 8a4305          mov     al,byte ptr [ebx+5]
+0044ddea 8d0440          lea     eax,[eax+eax*2]
+0044dded 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044ddf0 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044ddf4 8b06            mov     eax,dword ptr [esi]
+0044ddf6 ffd2            call    edx
+0044ddf8 8845e7          mov     byte ptr [ebp-19h],al                                  ; imp_spec1_obf = get_imp_spec1_obf(ptch_dt)
+0044ddfb eb01            jmp     image00000000_00400000+0x4ddfe (0044ddfe)
+0044ddfd e9              ???
+0044ddfe 33c0            xor     eax,eax
+0044de00 8a4301          mov     al,byte ptr [ebx+1]
+0044de03 8d0440          lea     eax,[eax+eax*2]
+0044de06 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044de09 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044de0d 8b06            mov     eax,dword ptr [esi]
+0044de0f ffd2            call    edx
+0044de11 8845ef          mov     byte ptr [ebp-11h],al                                  ; ptch_ref_tpy = get_ref_tpy(ptch_dt)
+0044de14 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044de17 8b80e0000000    mov     eax,dword ptr [eax+0E0h]
+0044de1d 0345e8          add     eax,dword ptr [ebp-18h]
+0044de20 8945d4          mov     dword ptr [ebp-2Ch],eax                                ; ptch_emul_id = ptch_emul_id_obf + env->obfus
+0044de23 eb01            jmp     image00000000_00400000+0x4de26 (0044de26)
+0044de25 9a              ???
+0044de26 33c0            xor     eax,eax
+0044de28 8a4307          mov     al,byte ptr [ebx+7]
+0044de2b 8d0440          lea     eax,[eax+eax*2]
+0044de2e 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044de31 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044de35 8b06            mov     eax,dword ptr [esi]
+0044de37 ffd2            call    edx
+0044de39 8945e0          mov     dword ptr [ebp-20h],eax                                ; lib_id_obf = get_lib_id_obf(ptch_dt)
+0044de3c 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044de3f 03b8e0000000    add     edi,dword ptr [eax+0E0h]
+0044de45 eb01            jmp     image00000000_00400000+0x4de48 (0044de48)
+0044de47 e8              ???
+0044de48 57              push    edi
+0044de49 33c0            xor     eax,eax
+0044de4b 8a45e7          mov     al,byte ptr [ebp-19h]
+0044de4e 05ff000000      add     eax,0FFh
+0044de53 50              push    eax
+0044de54 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044de57 e8180b0000      call    image00000000_00400000+0x4e974 (0044e974)              ; chk_mem = get_chk_mem()
+0044de5c 8bc8            mov     ecx,eax
+0044de5e 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044de61 8b5010          mov     edx,dword ptr [eax+10h]
+0044de64 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044de67 e83cf9ffff      call    image00000000_00400000+0x4d7a8 (0044d7a8)              ; imp_seed = gen_imp_seed(env, env->mem_indxs, chk_mem, imp_spec1_obf+0xff, imp_spec2_obf+env->obfus)
+0044de6c 8945d0          mov     dword ptr [ebp-30h],eax
+0044de6f 33c0            xor     eax,eax
+0044de71 8a4308          mov     al,byte ptr [ebx+8]
+0044de74 8d0440          lea     eax,[eax+eax*2]
+0044de77 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044de7a 8b7c8268        mov     edi,dword ptr [edx+eax*4+68h]
+0044de7e 8b06            mov     eax,dword ptr [esi]
+0044de80 ffd7            call    edi
+0044de82 8bf8            mov     edi,eax                                                ; proc_id_obf = get_proc_id_obf(ptch_dt)
+0044de84 8b45d0          mov     eax,dword ptr [ebp-30h]
+0044de87 0145e0          add     dword ptr [ebp-20h],eax
+0044de8a 8b45f0          mov     eax,dword ptr [ebp-10h]
+0044de8d 40              inc     eax
+0044de8e 2b38            sub     edi,dword ptr [eax]
+0044de90 2b7dd0          sub     edi,dword ptr [ebp-30h]                                ; proc_id_obf - imp_seed - call_rel_addr
+0044de93 8b45f0          mov     eax,dword ptr [ebp-10h]
+0044de96 0fb600          movzx   eax,byte ptr [eax]
+0044de99 03f8            add     edi,eax                                                ; proc_id_obf - imp_seed - call_rel_addr + e8  (e8: AIP 'call' opcode)
+0044de9b 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044de9e 8b402c          mov     eax,dword ptr [eax+2Ch]
+0044dea1 2b45f0          sub     eax,dword ptr [ebp-10h]
+0044dea4 83e805          sub     eax,5                                                  ; call_rel_addr = env->aip_stol_code - (call_eip+5)  (5: AIP 'call' opcode size)
+0044dea7 03f8            add     edi,eax
+0044dea9 8d45fc          lea     eax,[ebp-4]                                            ; arg: &imp_addr_obf
+0044deac 50              push    eax
+0044dead 668b4de0        mov     cx,word ptr [ebp-20h]                                  ; arg: (word)(lib_id_obf + imp_seed)         (import library id)
+0044deb1 8bd7            mov     edx,edi                                                ; arg: (word)(proc_id_obf - imp_seed + 0xe8) (imported proc id; low word is only important)
+0044deb3 8b45f4          mov     eax,dword ptr [ebp-0Ch]                                ; arg: env
+0044deb6 e8e5050000      call    image00000000_00400000+0x4e4a0 (0044e4a0)              ; get_imp_addr_obf()
+0044debb 84c0            test    al,al
+0044debd 8b4508          mov     eax,dword ptr [ebp+8]
+0044dec0 50              push    eax
+0044dec1 a184294500      mov     eax,dword ptr [image00000000_00400000+0x52984 (00452984)]
+0044dec6 8b00            mov     eax,dword ptr [eax]
+0044dec8 ffd0            call    eax
+0044deca 33c0            xor     eax,eax
+0044decc 8a4306          mov     al,byte ptr [ebx+6]
+0044decf 8d0440          lea     eax,[eax+eax*2]
+0044ded2 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044ded5 8b7c8268        mov     edi,dword ptr [edx+eax*4+68h]
+0044ded9 8b06            mov     eax,dword ptr [esi]
+0044dedb ffd7            call    edi                                                    ; get_imp_spec1b_obf(ptch_dt)      - not used
+0044dedd 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044dee0 8a404a          mov     al,byte ptr [eax+4Ah]
+0044dee3 3a45ef          cmp     al,byte ptr [ebp-11h]                                  ; ptch_ref_tpy != env->opc_call
+0044dee6 0f859c000000    jne     image00000000_00400000+0x4df88 (0044df88)
+
+; CALL AIP (call_esp-4 points to the ret addr)
+0044deec eb01            jmp     image00000000_00400000+0x4deef (0044deef)
+0044deee 9a              ???
+0044deef 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044def2 8b80e0000000    mov     eax,dword ptr [eax+0E0h]
+0044def8 0145fc          add     dword ptr [ebp-4],eax                                  ; imp_addr = imp_addr_obf + env->obfus
+0044defb eb01            jmp     image00400000+0x4defe (0044defe)
+0044defd c7              ???
+0044defe a1a4284500      mov     eax,dword ptr [image00400000+0x528a4 (004528a4)]
+0044df03 c600cf          mov     byte ptr [eax],0CFh
+0044df06 8d450c          lea     eax,[ebp+0Ch]                                          ; arg: &call_seh
+0044df09 50              push    eax
+0044df0a 8d45cc          lea     eax,[ebp-34h]                                          ; arg: &call_ret_ebp
+0044df0d 50              push    eax
+0044df0e 8d45dc          lea     eax,[ebp-24h]                                          ; arg: &esp_delta (number of bytes taken from the stack on an imp func exit)
+0044df11 50              push    eax
+0044df12 8b45fc          mov     eax,dword ptr [ebp-4]                                  ; arg: imp_addr
+0044df15 50              push    eax
+0044df16 8b45f8          mov     eax,dword ptr [ebp-8]                                  ; arg: call_esp
+0044df19 50              push    eax
+0044df1a 8b4510          mov     eax,dword ptr [ebp+10h]                                ; arg: ctx
+0044df1d 50              push    eax
+0044df1e 8b45f4          mov     eax,dword ptr [ebp-0Ch]                                ; arg: env
+0044df21 50              push    eax
+0044df22 e871fdffff      call    image00000000_00400000+0x4dc98 (0044dc98)              ; call_ret_eax = call_import()
+0044df27 8bf8            mov     edi,eax
+0044df29 a170284500      mov     eax,dword ptr [image00000000_00400000+0x52870 (00452870)]
+0044df2e 8b00            mov     eax,dword ptr [eax]
+0044df30 ffd0            call    eax
+0044df32 894508          mov     dword ptr [ebp+8],eax                                  ; TIB.last_err
+0044df35 57              push    edi
+0044df36 33c9            xor     ecx,ecx
+0044df38 8b5510          mov     edx,dword ptr [ebp+10h]
+0044df3b 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044df3e e82d050000      call    image00000000_00400000+0x4e470 (0044e470)              ; ctx->eax = call_ret_eax
+0044df43 eb01            jmp     image00000000_00400000+0x4df46 (0044df46)
+0044df45 c7              ???
+0044df46 8b45dc          mov     eax,dword ptr [ebp-24h]
+0044df49 0145f8          add     dword ptr [ebp-8],eax                                  ; call_esp += esp_delta
+0044df4c 33c0            xor     eax,eax
+0044df4e 8a03            mov     al,byte ptr [ebx]
+0044df50 8d0440          lea     eax,[eax+eax*2]
+0044df53 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044df56 8b5c8268        mov     ebx,dword ptr [edx+eax*4+68h]
+0044df5a 8b06            mov     eax,dword ptr [esi]
+0044df5c ffd3            call    ebx                                                    ; patch_eip_obf = get_eip_obf(ptch_dt)
+0044df5e 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044df61 034224          add     eax,dword ptr [edx+24h]
+0044df64 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044df67 0382e0000000    add     eax,dword ptr [edx+0E0h]                               ; deobfus eip: ptch_eip = env->exe_base + patch_eip_obf + env->obfus
+0044df6d 83c006          add     eax,6
+0044df70 8bd8            mov     ebx,eax                                                ; go to the next instruction after the AIP call: new_eip = ptch_eip+6 (6: size of an AIP patch)
+0044df72 8b45cc          mov     eax,dword ptr [ebp-34h]
+0044df75 50              push    eax
+0044df76 b105            mov     cl,5
+0044df78 8b5510          mov     edx,dword ptr [ebp+10h]
+0044df7b 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044df7e e8ed040000      call    image00000000_00400000+0x4e470 (0044e470)              ; ctx->ebp = call_ret_ebp
+0044df83 e9a6000000      jmp     image00000000_00400000+0x4e02e (0044e02e)
+
+0044df88 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044df8b 8a404b          mov     al,byte ptr [eax+4Bh]
+0044df8e 3a45ef          cmp     al,byte ptr [ebp-11h]                                  ; ptch_ref_tpy != env->opc_jmp
+0044df91 757e            jne     image00000000_00400000+0x4e011 (0044e011)
+
+; JMP AIP (call_esp points to jmp dest addr)
+0044df93 eb01            jmp     image00000000_00400000+0x4df96 (0044df96)
+0044df95 e8              ???
+0044df96 a1a4284500      mov     eax,dword ptr [image00000000_00400000+0x528a4 (004528a4)]
+0044df9b c600d0          mov     byte ptr [eax],0D0h
+0044df9e eb01            jmp     image00000000_00400000+0x4dfa1 (0044dfa1)
+0044dfa0 e9              ???
+0044dfa1 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044dfa4 8b80e0000000    mov     eax,dword ptr [eax+0E0h]
+0044dfaa 0145fc          add     dword ptr [ebp-4],eax                                  ; imp_addr = imp_addr_obf + env->obfus
+0044dfad 8d450c          lea     eax,[ebp+0Ch]                                          ; arg: &call_seh
+0044dfb0 50              push    eax
+0044dfb1 8d45cc          lea     eax,[ebp-34h]                                          ; arg: &call_ret_ebp
+0044dfb4 50              push    eax
+0044dfb5 8d45dc          lea     eax,[ebp-24h]                                          ; arg: &esp_delta
+0044dfb8 50              push    eax
+0044dfb9 8b45fc          mov     eax,dword ptr [ebp-4]                                  ; arg: imp_addr
+0044dfbc 50              push    eax
+0044dfbd 8b45f8          mov     eax,dword ptr [ebp-8]
+0044dfc0 83c004          add     eax,4                                                  ; arg: call_esp+4  (move esp after jmp dest addr for the import call)
+0044dfc3 50              push    eax
+0044dfc4 8b4510          mov     eax,dword ptr [ebp+10h]                                ; arg: ctx
+0044dfc7 50              push    eax
+0044dfc8 8b45f4          mov     eax,dword ptr [ebp-0Ch]                                ; arg: env
+0044dfcb 50              push    eax
+0044dfcc e8c7fcffff      call    image00000000_00400000+0x4dc98 (0044dc98)              ; call_ret_eax = call_import()
+0044dfd1 8bf8            mov     edi,eax
+0044dfd3 a170284500      mov     eax,dword ptr [image00000000_00400000+0x52870 (00452870)]
+0044dfd8 8b00            mov     eax,dword ptr [eax]
+0044dfda ffd0            call    eax
+0044dfdc 894508          mov     dword ptr [ebp+8],eax                                  ; TIB.last_err
+0044dfdf 8b45cc          mov     eax,dword ptr [ebp-34h]
+0044dfe2 50              push    eax
+0044dfe3 b105            mov     cl,5
+0044dfe5 8b5510          mov     edx,dword ptr [ebp+10h]
+0044dfe8 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044dfeb e880040000      call    image00000000_00400000+0x4e470 (0044e470)              ; ctx->ebp = call_ret_ebp
+0044dff0 eb01            jmp     image00000000_00400000+0x4dff3 (0044dff3)
+0044dff2 e8              ???
+0044dff3 8b45f8          mov     eax,dword ptr [ebp-8]
+0044dff6 8b18            mov     ebx,dword ptr [eax]                                    ; set new eip as jmp dest addr: new_eip = *call_esp
+0044dff8 8b45dc          mov     eax,dword ptr [ebp-24h]
+0044dffb 83c004          add     eax,4
+0044dffe 0145f8          add     dword ptr [ebp-8],eax                                  ; move new stack pointer after removed args (by the import call)
+                                                                                        ; plus extra jmp dest addr: call_esp += esp_delta+4 (4: size of jump dest addr)
+0044e001 57              push    edi
+0044e002 33c9            xor     ecx,ecx
+0044e004 8b5510          mov     edx,dword ptr [ebp+10h]
+0044e007 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044e00a e861040000      call    image00000000_00400000+0x4e470 (0044e470)              ; ctx->eax = call_ret_eax
+0044e00f eb1d            jmp     image00000000_00400000+0x4e02e (0044e02e)
+
+; error: set set new_eip (ebx) to some crash notification proc
+0044e011 bb70c44400      mov     ebx,offset image00000000_00400000+0x4c470 (0044c470)
+0044e016 eb01            jmp     image00000000_00400000+0x4e019 (0044e019)
+0044e018 e9              ???
+0044e019 a1bc284500      mov     eax,dword ptr [image00400000+0x528bc (004528bc)]
+0044e01e c600ca          mov     byte ptr [eax],0CAh
+0044e021 b001            mov     al,1
+0044e023 e890130000      call    image00000000_00400000+0x4f3b8 (0044f3b8)
+0044e028 eb04            jmp     image00000000_00400000+0x4e02e (0044e02e)
+0044e02a c7              ???
+0044e02b eb01            jmp     image00000000_00400000+0x4e02e (0044e02e)
+0044e02d c7              ???
+
+; at this point: new_eip (in ebx) and new_esp (in call_esp)
+0044e02e 837dd4ff        cmp     dword ptr [ebp-2Ch],0FFFFFFFFh
+0044e032 7433            je      image00400000+0x4e067 (0044e067)
+
+; emulate opcode after protected call
+0044e034 8b55d4          mov     edx,dword ptr [ebp-2Ch]                                ; ptch_emul_id
+0044e037 8b45f4          mov     eax,dword ptr [ebp-0Ch]                                ; env
+0044e03a e821fdffff      call    image00400000+0x4dd60 (0044dd60)                       ; ptch_dt = &env->emuls[emul_id * env->env->conf_dt_sz]  (emulated patch)
+0044e03f 8945d8          mov     dword ptr [ebp-28h],eax
+0044e042 8d45d8          lea     eax,[ebp-28h]                                          ; arg: &ptch_dt
+0044e045 50              push    eax
+0044e046 8b4514          mov     eax,dword ptr [ebp+14h]                                ; arg: flags
+0044e049 50              push    eax
+0044e04a 8b4510          mov     eax,dword ptr [ebp+10h]                                ; arg: ctx
+0044e04d 50              push    eax
+0044e04e 8b450c          mov     eax,dword ptr [ebp+0Ch]                                ; arg: call_seh
+0044e051 50              push    eax
+0044e052 8b4508          mov     eax,dword ptr [ebp+8]                                  ; arg: last_err
+0044e055 50              push    eax
+0044e056 8b4df8          mov     ecx,dword ptr [ebp-8]                                  ; arg: new_esp
+0044e059 8b55f0          mov     edx,dword ptr [ebp-10h]                                ; arg: call_eip (points to AIP patch, not the new_eip)
+0044e05c 8b45f4          mov     eax,dword ptr [ebp-0Ch]                                ; arg: env
+0044e05f e848000000      call    image00000000_00400000+0x4e0ac (0044e0ac)              ; aip_emul_opc()
+0044e064 eb01            jmp     image00000000_00400000+0x4e067 (0044e067)
+0044e066 e8              ???
+
+; restore context and jump to new_eip
+0044e067 a1a4284500      mov     eax,dword ptr [image00400000+0x528a4 (004528a4)]
+0044e06c c600d2          mov     byte ptr [eax],0D2h
+0044e06f 8b45f8          mov     eax,dword ptr [ebp-8]
+0044e072 83e804          sub     eax,4
+0044e075 8918            mov     dword ptr [eax],ebx                                    ; *(call_esp-4) = new_eip
+0044e077 8b450c          mov     eax,dword ptr [ebp+0Ch]
+0044e07a e849f5ffff      call    image00000000_00400000+0x4d5c8 (0044d5c8)              ; restore call_seh
+0044e07f 8b4508          mov     eax,dword ptr [ebp+8]
+0044e082 50              push    eax
+0044e083 a184294500      mov     eax,dword ptr [image00000000_00400000+0x52984 (00452984)]
+0044e088 8b00            mov     eax,dword ptr [eax]
+0044e08a ffd0            call    eax                                                    ; set last_err in TIB
+0044e08c 8965fc          mov     dword ptr [ebp-4],esp
+0044e08f ff75f8          push    dword ptr [ebp-8]                                      ; arg: call_esp (new_esp)
+0044e092 ff7514          push    dword ptr [ebp+14h]                                    ; arg: flags
+0044e095 ff7510          push    dword ptr [ebp+10h]                                    ; arg: ctx
+0044e098 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044e09b ff6030          jmp     dword ptr [eax+30h]                                    ; jmp to aip_exit()
+; should not reach this point
+0044e09e eb01            jmp     image00000000_00400000+0x4e0a1 (0044e0a1)
+0044e0a0 9a              ???
+0044e0a1 5f              pop     edi
+0044e0a2 5e              pop     esi
+0044e0a3 5b              pop     ebx
+0044e0a4 8be5            mov     esp,ebp
+0044e0a6 5d              pop     ebp
+0044e0a7 c21400          ret     14h
+
+
+write_esip_and_run() --------
+write_esip_and_run(env_t *env (eax), void *call_eip (edx), void *call_esp (ecx),
+    dword last_err, void *call_seh, proc_ctx_t *ctx, dword flags, conf_dt_t **pptch_dt, dword eip_obf)
+
+call_eip: as for aip_search_and_run()
+call_esp: as for aip_search_and_run()
+The func not exit; at the end it jumps to the dest code
+
+0044ec88 55              push    ebp
+0044ec89 8bec            mov     ebp,esp
+0044ec8b 83c4d8          add     esp,0FFFFFFD8h
+0044ec8e 53              push    ebx
+0044ec8f 56              push    esi
+0044ec90 57              push    edi
+0044ec91 894df8          mov     dword ptr [ebp-8],ecx                                  ; call_esp
+0044ec94 8955f0          mov     dword ptr [ebp-10h],edx                                ; call_eip
+0044ec97 8945f4          mov     dword ptr [ebp-0Ch],eax                                ; env
+0044ec9a 8b7518          mov     esi,dword ptr [ebp+18h]                                ; ptch_dt = *pptch_dt
+0044ec9d 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044eca0 8d5840          lea     ebx,[eax+40h]
+0044eca3 eb01            jmp     image00000000_00400000+0x4eca6 (0044eca6)
+0044eca5 69              ???
+0044eca6 a1a4284500      mov     eax,dword ptr [image00400000+0x528a4 (004528a4)]
+0044ecab c600dd          mov     byte ptr [eax],0DDh
+0044ecae 33c0            xor     eax,eax
+0044ecb0 8a4307          mov     al,byte ptr [ebx+7]
+0044ecb3 8d0440          lea     eax,[eax+eax*2]
+0044ecb6 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044ecb9 8b7c8268        mov     edi,dword ptr [edx+eax*4+68h]
+0044ecbd 8b06            mov     eax,dword ptr [esi]
+0044ecbf ffd7            call    edi
+0044ecc1 8945ec          mov     dword ptr [ebp-14h],eax                                ; lib_id_obf = get_lib_id_obf(ptch_dt)
+0044ecc4 33c0            xor     eax,eax
+0044ecc6 8a4308          mov     al,byte ptr [ebx+8]
+0044ecc9 8d0440          lea     eax,[eax+eax*2]
+0044eccc 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044eccf 8b7c8268        mov     edi,dword ptr [edx+eax*4+68h]
+0044ecd3 8b06            mov     eax,dword ptr [esi]
+0044ecd5 ffd7            call    edi
+0044ecd7 8945e8          mov     dword ptr [ebp-18h],eax                                ; proc_id_obf = get_proc_id_obf(ptch_dt)
+0044ecda eb01            jmp     image00000000_00400000+0x4ecdd (0044ecdd)
+0044ecdc e8              ???
+0044ecdd 33c0            xor     eax,eax
+0044ecdf 8a4302          mov     al,byte ptr [ebx+2]
+0044ece2 8d0440          lea     eax,[eax+eax*2]
+0044ece5 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044ece8 8b7c8268        mov     edi,dword ptr [edx+eax*4+68h]
+0044ecec 8b06            mov     eax,dword ptr [esi]
+0044ecee ffd7            call    edi
+0044ecf0 8bf8            mov     edi,eax                                                ; imp_spec2b_obf = get_imp_spec2b_obf(ptch_dt)
+0044ecf2 33c0            xor     eax,eax
+0044ecf4 8a4306          mov     al,byte ptr [ebx+6]
+0044ecf7 8d0440          lea     eax,[eax+eax*2]
+0044ecfa 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044ecfd 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044ed01 8b06            mov     eax,dword ptr [esi]
+0044ed03 ffd2            call    edx
+0044ed05 8845df          mov     byte ptr [ebp-21h],al                                  ; imp_spec1b_obf = get_imp_spec1b_obf(ptch_dt)
+0044ed08 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044ed0b 03b8e0000000    add     edi,dword ptr [eax+0E0h]
+0044ed11 eb01            jmp     image00000000_00400000+0x4ed14 (0044ed14)
+0044ed13 e8              ???
+0044ed14 57              push    edi
+0044ed15 33c0            xor     eax,eax
+0044ed17 8a45df          mov     al,byte ptr [ebp-21h]
+0044ed1a 05ff000000      add     eax,0FFh
+0044ed1f 50              push    eax
+0044ed20 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044ed23 e84cfcffff      call    image00000000_00400000+0x4e974 (0044e974)              ; chk_mem = get_chk_mem()
+0044ed28 8bc8            mov     ecx,eax
+0044ed2a 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044ed2d 8b5010          mov     edx,dword ptr [eax+10h]
+0044ed30 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044ed33 e870eaffff      call    image00000000_00400000+0x4d7a8 (0044d7a8)              ; imp_seed = gen_imp_seed(env, env->mem_indxs, chk_mem, imp_spec1b_obf+0xff, imp_spec2b_obf+env->obfus)
+0044ed38 8945d8          mov     dword ptr [ebp-28h],eax
+0044ed3b eb01            jmp     image00000000_00400000+0x4ed3e (0044ed3e)
+0044ed3d c7              ???
+0044ed3e 33c0            xor     eax,eax
+0044ed40 8a4303          mov     al,byte ptr [ebx+3]
+0044ed43 8d0440          lea     eax,[eax+eax*2]
+0044ed46 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044ed49 8b7c8268        mov     edi,dword ptr [edx+eax*4+68h]
+0044ed4d 8b06            mov     eax,dword ptr [esi]
+0044ed4f ffd7            call    edi
+0044ed51 8bf8            mov     edi,eax                                                ; imp_spec2_obf = get_imp_spec2_obf(ptch_dt)
+0044ed53 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044ed56 03b8e0000000    add     edi,dword ptr [eax+0E0h]                               ; imp_spec2 = imp_spec2_obf + env->obfus
+0044ed5c 8b45ec          mov     eax,dword ptr [ebp-14h]
+0044ed5f 03c7            add     eax,edi
+0044ed61 0345d8          add     eax,dword ptr [ebp-28h]
+0044ed64 8945ec          mov     dword ptr [ebp-14h],eax                                ; lib_id_obf + imp_spec2 + imp_seed
+0044ed67 8b45e8          mov     eax,dword ptr [ebp-18h]
+0044ed6a 2bc7            sub     eax,edi
+0044ed6c 2b45d8          sub     eax,dword ptr [ebp-28h]
+0044ed6f 8945e8          mov     dword ptr [ebp-18h],eax                                ; proc_id_obf - imp_spec2 - imp_seed
+0044ed72 33c0            xor     eax,eax
+0044ed74 8a4301          mov     al,byte ptr [ebx+1]
+0044ed77 8d0440          lea     eax,[eax+eax*2]
+0044ed7a 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044ed7d 8b548268        mov     edx,dword ptr [edx+eax*4+68h]
+0044ed81 8b06            mov     eax,dword ptr [esi]
+0044ed83 ffd2            call    edx
+0044ed85 8bd8            mov     ebx,eax                                                ; ptch_ref_tpy = get_ref_tpy(ptch_dt)
+0044ed87 eb01            jmp     image00000000_00400000+0x4ed8a (0044ed8a)
+0044ed89 e8              ???
+0044ed8a 8d45e4          lea     eax,[ebp-1Ch]
+0044ed8d 50              push    eax                                                    ; arg: &imp_addr_obf
+0044ed8e 668b4dec        mov     cx,word ptr [ebp-14h]                                  ; arg: (word)(lib_id_obf + imp_spec2 + imp_seed)
+0044ed92 668b55e8        mov     dx,word ptr [ebp-18h]                                  ; arg: (word)(proc_id_obf - imp_spec2 - imp_seed)
+0044ed96 8b45f4          mov     eax,dword ptr [ebp-0Ch]                                ; arg: env
+0044ed99 e802f7ffff      call    image00000000_00400000+0x4e4a0 (0044e4a0)              ; get_imp_addr_obf()
+0044ed9e 84c0            test    al,al
+0044eda0 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044eda3 8b80e0000000    mov     eax,dword ptr [eax+0E0h]
+0044eda9 0345e4          add     eax,dword ptr [ebp-1Ch]
+0044edac 8945fc          mov     dword ptr [ebp-4],eax                                  ; imp_addr = imp_addr_obf + env->obfus
+; BEG prepare SIP patch
+0044edaf 57              push    edi                                                    ; arg: imp_spec2
+0044edb0 6a00            push    0                                                      ; arg: 0
+0044edb2 8d4de0          lea     ecx,[ebp-20h]                                          ; arg: &new_obfus   - crc will influence the new_obfus
+0044edb5 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044edb8 8b403c          mov     eax,dword ptr [eax+3Ch]                                ; arg: env->imports
+0044edbb 8b55fc          mov     edx,dword ptr [ebp-4]                                  ; arg: imp_addr
+0044edbe e881130000      call    image00000000_00400000+0x50144 (00450144)              ; returns pointer to a stolen beginnig of the import
+0044edc3 8945fc          mov     dword ptr [ebp-4],eax
+0044edc6 8b45e0          mov     eax,dword ptr [ebp-20h]
+0044edc9 8b00            mov     eax,dword ptr [eax]                                    ; new_obfus==imp_spec2   - if no crc problems
+0044edcb e8e8e7ffff      call    image00000000_00400000+0x4d5b8 (0044d5b8)              ; crc_imp_spec2=(imp_spec2>>16)+imp_spec2; crc_imp_spec2=(byte)(crc_imp_spec2&0xff - (crc_imp_spec2>>8)&0xff)
+0044edd0 8bd0            mov     edx,eax
+0044edd2 02d3            add     dl,bl                                                  ; arg: ref_tpy = (byte)(ptch_ref_tpy + crc_imp_spec2)
+0044edd4 8b4dfc          mov     ecx,dword ptr [ebp-4]                                  ; arg: stolen beginnig
+0044edd7 8b45f4          mov     eax,dword ptr [ebp-0Ch]                                ; arg: env
+0044edda e87d040000      call    image00000000_00400000+0x4f25c (0044f25c)              ; returns sip_stol_code
+; END
+0044eddf 8945fc          mov     dword ptr [ebp-4],eax
+0044ede2 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044ede5 8b4024          mov     eax,dword ptr [eax+24h]
+0044ede8 8b55f4          mov     edx,dword ptr [ebp-0Ch]
+0044edeb 0382e0000000    add     eax,dword ptr [edx+0E0h]
+0044edf1 01451c          add     dword ptr [ebp+1Ch],eax                                ; patch_eip = eip_obf+env->obfus
+0044edf4 8b45fc          mov     eax,dword ptr [ebp-4]
+0044edf7 2b451c          sub     eax,dword ptr [ebp+1Ch]
+0044edfa 83e805          sub     eax,5                                                  ; call_rel_addr = sip_stol_code - (patch_eip+5) (5: 'call' opcode size)
+0044edfd 8b551c          mov     edx,dword ptr [ebp+1Ch]
+0044ee00 42              inc     edx
+0044ee01 8902            mov     dword ptr [edx],eax                                    ; write patch: *(patch_eip+1) = call_rel_addr
+0044ee03 eb01            jmp     image00000000_00400000+0x4ee06 (0044ee06)
+0044ee05 e8              ???
+0044ee06 8b45f8          mov     eax,dword ptr [ebp-8]
+0044ee09 83e804          sub     eax,4
+0044ee0c 8b55f0          mov     edx,dword ptr [ebp-10h]
+0044ee0f 8910            mov     dword ptr [eax],edx                                    ; *(call_esp-4) = new_eip
+0044ee11 8b450c          mov     eax,dword ptr [ebp+0Ch]
+0044ee14 e8afe7ffff      call    image00000000_00400000+0x4d5c8 (0044d5c8)              ; restore call_seh
+0044ee19 8b4508          mov     eax,dword ptr [ebp+8]
+0044ee1c 50              push    eax
+0044ee1d a184294500      mov     eax,dword ptr [image00000000_00400000+0x52984 (00452984)]
+0044ee22 8b00            mov     eax,dword ptr [eax]
+0044ee24 ffd0            call    eax                                                    ; set last_err in TIB
+0044ee26 8965fc          mov     dword ptr [ebp-4],esp
+0044ee29 ff75f8          push    dword ptr [ebp-8]                                      ; arg: call_esp (new_esp)
+0044ee2c ff7514          push    dword ptr [ebp+14h]                                    ; arg: flags
+0044ee2f ff7510          push    dword ptr [ebp+10h]                                    ; arg: ctx
+0044ee32 8b45f4          mov     eax,dword ptr [ebp-0Ch]
+0044ee35 ff6030          jmp     dword ptr [eax+30h]                                    ; jmp to aip_exit()
+; should not reach this point
+0044ee38 eb01            jmp     image00000000_00400000+0x4ee3b (0044ee3b)
+0044ee3a 9a              ???
+0044ee3b 5f              pop     edi
+0044ee3c 5e              pop     esi
+0044ee3d 5b              pop     ebx
+0044ee3e 8be5            mov     esp,ebp
+0044ee40 5d              pop     ebp
+0044ee41 c21800          ret     18h

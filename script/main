@@ -1,0 +1,199 @@
+.load scriptext
+.load dumpext
+.load asprext
+
+.printf "INFO: "; .expr /s masm
+
+$$ config part
+.if (${/d:script_dir}==0) { aS ${/v:script_dir} "script" }
+.if (${/d:dmpcfg}==0) { aS ${/v:dmpcfg} "script/dumpext.conf" }
+.if (${/d:vercfg}==0) { aS ${/v:vercfg} "script/versions.conf" }
+.if (${/d:imgdmp}==0) { aS ${/v:imgdmp} "script/image.dump" }
+
+!sxtr -t 0 '${$arg1}'/-.*
+.if (@$t0==1) {
+  aS ${/v:__aspr_flags} ${$arg1}
+  aS ${/v:__aspr_maddr} ${$arg2}
+} .else {
+  aS ${/v:__aspr_maddr} ${$arg1}
+}
+
+.block
+{
+  r $t0 = 0;  $$ module base
+  aS /c ${/v:__aspr_lm} lm a ${__aspr_maddr}
+  .block
+  {
+    aS /c ${/v:__aspr_mbas} !sxtr [__aspr_lm]/^[^0-9]*([0-9A-Fa-f`]+)/0x\1
+    aS /c ${/v:__aspr_mend} !sxtr [__aspr_lm]/^[^0-9]*[0-9A-Fa-f`]+[\x20\t]+([0-9A-Fa-f`]+)/0x\1
+    .block { .if ($scmp("x${__aspr_mbas}", "x")!=0) { r $t0 = ${__aspr_mbas} } }
+  }
+  ad /q ${/v:__aspr_lm}
+  ad /q ${/v:__aspr_maddr}
+
+  .if (@$t0!=0)
+  {
+    .printf "INFO: Module base: 0x%p\n", @$t0
+
+    $$ detect WOW emulation of 32bit code
+    aS /c ${/v:__aspr_lm} lm m wow64
+    .block { !sxtr -t 2 [__aspr_lm]/wow64 }
+    ad /q ${/v:__aspr_lm}
+    .if (@$t2==1)
+    {
+      $$ PE type
+      r $t2 = wo(@$t0+dwo(@$t0+0x3c)+0x18)
+      .if (@$t2==0x010b) {
+        .echo "INFO: 32-bit PE under WOW64 emulation"
+        sxi wob
+      }
+    }
+
+    $$ search for bp addresses
+    $$>a< ${script_dir}/get_extargs ${vercfg} ${__aspr_mbas}
+    .if (@$t0==1)
+    {
+      $$ ASPR nag screen displayed via AV exception
+      sxi av
+
+      ba e1 ${__ld_imp_bp}
+      bp kernel32!IsDebuggerPresent; g
+
+      $$ anti-debug workaround
+      .if (@eip==kernel32!IsDebuggerPresent) { g poi(esp); r eax=0; g }
+
+      bc *
+      !aspr_imports unload
+      .echo "INFO: Loading ASPR imports..."
+      !aspr_imports load ${__ld_imp_arg}
+
+      ba e1 ${__ld_ptch_bp}; g; bc *
+      !aspr_ipatch unload
+      .echo "INFO: Loading ASPR patches..."
+      !aspr_ipatch load ${__ld_ptch_arg}
+
+      ba e1 ${__detect_oep_bp}; g; bc *
+      .echo "INFO: Detecting OEP..."
+      aS /c ${/v:__aspr_oep_cmd} !aspr_oep -x ${__detect_oep_arg}
+      .block {
+        aS /c ${/v:__aspr_oepadr} !sxtr [__aspr_oep_cmd]/AddressOfEntryPoint[^0-9]*([0-9A-Fa-fx]+)/\1
+        aS /c ${/v:__aspr_oep} !sxtr [__aspr_oep_cmd]/.*(AddressOfEntryPoint[^\n]+)/\1\n
+      }
+      ad /q ${/v:__aspr_oep_cmd}
+      ad /q ${/v:__ld_imp_arg}
+      ad /q ${/v:__ld_imp_bp}
+      ad /q ${/v:__ld_ptch_arg}
+      ad /q ${/v:__ld_ptch_bp}
+      ad /q ${/v:__detect_oep_arg}
+      ad /q ${/v:__detect_oep_bp}
+
+      $$>a< ${script_dir}/tls_search ${__aspr_mbas}
+
+      aS /c ${/v:__aspr_imports} !aspr_imports print -x
+
+      r $t0 = 0
+      .block { r $t0 = ${__aspr_oepadr} }
+      ad /q ${/v:__aspr_oepadr}
+
+      .if (@$t0!=0)
+      {
+        $$ goto OEP
+        r $t0 = ${__aspr_mbas}+@$t0
+        .printf "INFO: OEP at: 0x%p\n", @$t0
+        ba e1 @$t0; g; bc *
+
+        .echo "INFO: Applying ASPR import patches..."
+        !aspr_ipatch apply -i
+
+        .echo "INFO: Applying ASPR CRL patch..."
+        $$>a< ${script_dir}/ptch_apply ${__aspr_mbas} ${__aspr_mend} "0xb8 0x01 0x00 0x00 0x00 0xc7 0x45 0xfc 0xfe 0xff 0xff 0xff 0x8b 0x4d 0xf0 0x64 0x89 0x0d 0x00 0x00 0x00 0x00" "0xf7 0xd0 0x83 0xe0 0x01"
+
+        !fopn -m "w+" ${dmpcfg}
+        .if (@$t0!=0)
+        {
+          !dump_conf ${dmpcfg}
+
+          !sxtr -t 1 [__aspr_imports]/\[imports\]
+          .if (@$t1==1)
+          {
+            !fwrt @$t0 [__aspr_imports]
+
+            .echo "INFO: Searching IDT table..."
+            aS /c ${/v:__aspr_idts} !dump_serach idt -x ${__aspr_mbas}
+
+            .block {
+              aS /c ${/v:__aspr_idt} !sxtr [__aspr_idts]/\[directories\][\n]+(([\x20\t]*([\n]|([^[][^\n]*[\n])))+)/\1
+              aS /c ${/v:__aspr_ifix} !sxtr [__aspr_idts]/\[imports_fix\][\n]+(([\x20\t]*([\n]|([^[][^\n]*[\n])))+)/\1
+            }
+            ad /q ${/v:__aspr_idts}
+          }
+
+          .echo "INFO: Preparing dump config file..."
+          !fwrt @$t0 "\n[optional_header]\n"
+          !fwrt @$t0 [__aspr_oep]
+
+          .block { !sxtr -t 1 [__aspr_idt]/. }
+          !sxtr -t 2 [__tls]/.
+          .if ((@$t1==1) | (@$t2==1)) {
+            !fwrt @$t0 "\n[directories]\n"
+            .if (@$t1==1) { !fwrt @$t0 [__aspr_idt] }
+            .if (@$t2==1) { !fwrt @$t0 [__tls] }
+          }
+
+          .block { !sxtr -t 1 [__aspr_ifix]/. }
+          .if (@$t1==1) {
+            !fwrt @$t0 "\n[imports_fix]\n"
+            !fwrt @$t0 [__aspr_ifix]
+          }
+
+          aS /c ${/v:__rsrc_cap_cmd} !dump_pe_info rsrc -C ${__aspr_mbas}
+          .block {
+            aS /c ${/v:__rsrc_sect} !sxtr -t 1 [__rsrc_cap_cmd]/section\(s\): ([0-9]+)[,]/\1
+            .if (@$t1==1) { !fwrt @$t0 "\n[rsrc_fix]\nRecoverRsrc = yes\n" }
+          }
+          ad /q ${/v:__rsrc_cap_cmd}
+
+          !fwrt @$t0 "\n[dump_pe]\nOutFile = ${imgdmp}\n"
+
+          aS /c ${/v:__sects_chrt_cmd} !dump_sects_chrt -c ${__aspr_mbas}
+          .block {
+            aS /c ${/v:__sects_chrt} !sxtr [__sects_chrt_cmd]/\[sections\][\n]+(.*)/\1
+          }
+          ad /q ${/v:__sects_chrt_cmd}
+
+          !fwrt @$t0 "\n[sections]\nRemoveTrailingSections = 2\nSizeOfRawData = auto\n"
+          .block {
+            !fwrt @$t0 [__sects_chrt]
+            .if (@$t1==1) { !fwrt @$t0 "${__rsrc_sect}.SizeOfRawData = vsize" }
+          }
+
+          !sxtr -t 1 [__aspr_flags]/b
+          .if (@$t1==0) {
+            .echo "INFO: Dumping image..."
+            !dump_pe ${__aspr_mbas}
+          } .else {
+            .echo "INFO: Break before dump"
+          }
+
+          !fcls @$t0
+        }
+      } .else {
+        .echo "ERR: No OEP found\n"
+      }
+
+      ad /q ${/v:__rsrc_sect}
+      ad /q ${/v:__sects_chrt}
+      ad /q ${/v:__aspr_ifix}
+      ad /q ${/v:__aspr_idt}
+      ad /q ${/v:__aspr_imports}
+      ad /q ${/v:__tls}
+      ad /q ${/v:__aspr_oep}
+    }
+  } .else {
+    .echo "ERR: Module not found"
+  }
+}
+
+ad /q ${/v:__aspr_mend}
+ad /q ${/v:__aspr_mbas}
+ad /q ${/v:__aspr_flags}

@@ -1,0 +1,2951 @@
+kernel32.dll
+  Module base: 0x7c800000
+  ASPR id:     0x7C8B
+  IAT at:      0x0074b1b8
+ Imports:
+  DeleteCriticalSection
+   Address: 0x7c80906a
+   ASPR id: 0x77CA
+   Type:    Key 2 encrypted, IAT
+  LeaveCriticalSection
+   Address: 0x7c8091c9
+   ASPR id: 0xBB1A
+   Type:    Key 2 encrypted, IAT
+  EnterCriticalSection
+   Address: 0x7c8090bd
+   ASPR id: 0x7E4E
+   Type:    Key 2 encrypted, IAT
+  InitializeCriticalSection
+   Address: 0x7c809f91
+   ASPR id: 0x6777
+   Type:    Key 2 encrypted, IAT
+  VirtualFree
+   Address: 0x7c809b84
+   ASPR id: 0xFF5F
+   Type:    Key 2 encrypted, IAT
+  VirtualAlloc
+   Address: 0x7c809af1
+   ASPR id: 0x2701
+   Type:    Key 2 encrypted, IAT
+  LocalFree
+   Address: 0x7c8099cf
+   ASPR id: 0x1167
+   Type:    Key 2 encrypted, IAT
+  LocalAlloc
+   Address: 0x7c809a2d
+   ASPR id: 0x9DB7
+   Type:    Key 2 encrypted, IAT
+  WideCharToMultiByte
+   Address: 0x7c80a174
+   ASPR id: 0xC42F
+   Type:    Key 2 encrypted, IAT
+  TlsSetValue
+   Address: 0x7c809c65
+   ASPR id: 0x9D9A
+   Type:    Key 2 encrypted, IAT
+  TlsGetValue
+   Address: 0x7c8097e0
+   ASPR id: 0xD8D6
+   Type:    Key 2 encrypted, IAT
+  SetCurrentDirectoryA
+   Address: 0x7c8360e5
+   ASPR id: 0xA7D2
+   Type:    Key 1 encrypted, no IAT
+  MultiByteToWideChar
+   Address: 0x7c809c98
+   ASPR id: 0xD712
+   Type:    Key 2 encrypted, IAT
+  GetModuleHandleA
+   Address: 0x7c80b741
+   ASPR id: 0x2494
+   Type:    Key 1 encrypted, no IAT
+  GetModuleFileNameA
+   Address: 0x7c80b56f
+   ASPR id: 0x282B
+   Type:    Key 1 encrypted, no IAT
+  GetLastError
+   Address: 0x7c8090db
+   ASPR id: 0xFB7B
+   Type:    Key 2 encrypted, IAT
+  GetCommandLineA
+   Address: 0x7c810c6d
+   ASPR id: 0x683A
+   Type:    Key 1 encrypted, no IAT
+  ExitThread
+   Address: 0x7c80c0f8
+   ASPR id: 0xDF53
+   Type:    Key 1 encrypted, no IAT
+  CreateThread
+   Address: 0x7c810707
+   ASPR id: 0x6C8F
+   Type:    Key 1 encrypted, IAT
+  WriteFile
+   Address: 0x7c8112ff
+   ASPR id: 0x277E
+   Type:    Key 1 encrypted, no IAT
+  SetFilePointer
+   Address: 0x7c811106
+   ASPR id: 0x224B
+   Type:    Key 1 encrypted, IAT
+  SetEndOfFile
+   Address: 0x7c832a46
+   ASPR id: 0x4682
+   Type:    Key 1 encrypted, no IAT
+  RtlUnwind
+   Address: 0x7c8092a6
+   ASPR id: 0x7289
+   Type:    Key 2 encrypted, IAT
+  ReadFile
+   Address: 0x7c801812
+   ASPR id: 0x2067
+   Type:    Key 1 encrypted, IAT
+  RaiseException
+   Address: 0x7c812f81
+   ASPR id: 0x59BA
+   Type:    Stolen raise except. proc, IAT
+  GetStdHandle
+   Address: 0x7c810c89
+   ASPR id: 0x84DE
+   Type:    Key 1 encrypted, no IAT
+  GetFileSize
+   Address: 0x7c810fef
+   ASPR id: 0x65F5
+   Type:    Key 1 encrypted, no IAT
+  GetSystemTime
+   Address: 0x7c80176f
+   ASPR id: 0x3074
+   Type:    Key 1 encrypted, no IAT
+  GetFileType
+   Address: 0x7c8113c9
+   ASPR id: 0x6C6A
+   Type:    Key 1 encrypted, no IAT
+  ExitProcess
+   Address: 0x7c81d20a
+   ASPR id: 0xC53E
+   Type:    Key 1 encrypted, IAT
+  DeleteFileA
+   Address: 0x7c8328ad
+   ASPR id: 0x8842
+   Type:    Key 1 encrypted, no IAT
+  CreateFileA
+   Address: 0x7c801a28
+   ASPR id: 0x76BD
+   Type:    Key 1 encrypted, IAT
+  CloseHandle
+   Address: 0x7c809be7
+   ASPR id: 0xED85
+   Type:    Key 1 encrypted, IAT
+user32.dll
+  Module base: 0x7e360000
+  ASPR id:     0x8BCC
+  IAT at:      0x0074b240
+ Imports:
+  MessageBoxA
+   Address: 0x7e3a07ea
+   ASPR id: 0x7DE8
+   Type:    Key 1 encrypted, no IAT
+advapi32.dll
+  Module base: 0x77dc0000
+  ASPR id:     0x5141
+  IAT at:      0x0074b248
+ Imports:
+  SetSecurityDescriptorDacl
+   Address: 0x77dc79eb
+   ASPR id: 0xD8EC
+   Type:    Key 1 encrypted, no IAT
+  SetFileSecurityW
+   Address: 0x77dda3e1
+   ASPR id: 0x21A3
+   Type:    Key 1 encrypted, IAT
+  RevertToSelf
+   Address: 0x77dc7338
+   ASPR id: 0x799B
+   Type:    Key 1 encrypted, no IAT
+  RegSetValueExA
+   Address: 0x77dceae7
+   ASPR id: 0x0511
+   Type:    Key 1 encrypted, no IAT
+  RegSetValueW
+   Address: 0x77e26116
+   ASPR id: 0x2C3B
+   Type:    Key 1 encrypted, IAT
+  RegSetValueA
+   Address: 0x77dec79e
+   ASPR id: 0xD077
+   Type:    Key 1 encrypted, IAT
+  RegQueryValueExW
+   Address: 0x77dc6fff
+   ASPR id: 0x4EF8
+   Type:    Key 1 encrypted, IAT
+  RegQueryValueExA
+   Address: 0x77dc7abb
+   ASPR id: 0xFAB2
+   Type:    Key 1 encrypted, no IAT
+  RegQueryValueW
+   Address: 0x77dcd87a
+   ASPR id: 0x6C3B
+   Type:    Key 1 encrypted, IAT
+  RegQueryValueA
+   Address: 0x77debb8d
+   ASPR id: 0xC86C
+   Type:    Key 1 encrypted, IAT
+  RegOpenKeyExW
+   Address: 0x77dc6aaf
+   ASPR id: 0x0648
+   Type:    Key 1 encrypted, IAT
+  RegOpenKeyExA
+   Address: 0x77dc7852
+   ASPR id: 0x5394
+   Type:    Key 1 encrypted, no IAT
+  RegOpenKeyA
+   Address: 0x77dcefc8
+   ASPR id: 0xFFFC
+   Type:    Key 1 encrypted, IAT
+  RegEnumValueA
+   Address: 0x77de9bbf
+   ASPR id: 0xE8C0
+   Type:    Key 1 encrypted, IAT
+  RegEnumKeyW
+   Address: 0x77dcd5e4
+   ASPR id: 0x076E
+   Type:    Key 1 encrypted, IAT
+  RegEnumKeyA
+   Address: 0x77dd53b8
+   ASPR id: 0x1194
+   Type:    Key 1 encrypted, IAT
+  RegDeleteValueA
+   Address: 0x77dcece5
+   ASPR id: 0x950D
+   Type:    Key 1 encrypted, no IAT
+  RegDeleteKeyW
+   Address: 0x77dd559b
+   ASPR id: 0x8A28
+   Type:    Key 1 encrypted, IAT
+  RegDeleteKeyA
+   Address: 0x77dd42a0
+   ASPR id: 0x96A0
+   Type:    Key 1 encrypted, no IAT
+  RegCreateKeyExW
+   Address: 0x77dc776c
+   ASPR id: 0xF536
+   Type:    Key 1 encrypted, IAT
+  RegCreateKeyExA
+   Address: 0x77dce9f4
+   ASPR id: 0xC734
+   Type:    Key 1 encrypted, no IAT
+  RegCreateKeyA
+   Address: 0x77debcf3
+   ASPR id: 0xB57B
+   Type:    Key 1 encrypted, IAT
+  RegCloseKey
+   Address: 0x77dc6c27
+   ASPR id: 0x95C8
+   Type:    Key 1 encrypted, no IAT
+  OpenThreadToken
+   Address: 0x77dc72cc
+   ASPR id: 0xB473
+   Type:    Key 1 encrypted, no IAT
+  OpenProcessToken
+   Address: 0x77dc798b
+   ASPR id: 0x6271
+   Type:    Key 1 encrypted, no IAT
+  MapGenericMask
+   Address: 0x77dd484b
+   ASPR id: 0x5DA0
+   Type:    Key 1 encrypted, no IAT
+  LookupPrivilegeValueA
+   Address: 0x77dec238
+   ASPR id: 0x5619
+   Type:    Key 1 encrypted, no IAT
+  LookupAccountSidA
+   Address: 0x77dfd8ec
+   ASPR id: 0x82BD
+   Type:    Key 1 encrypted, no IAT
+  IsValidSid
+   Address: 0x77dcf219
+   ASPR id: 0x3B32
+   Type:    Key 1 encrypted, IAT
+  IsValidSecurityDescriptor
+   Address: 0x77dd4c11
+   ASPR id: 0x88BA
+   Type:    Key 1 encrypted, IAT
+  InitializeSecurityDescriptor
+   Address: 0x77dc79c6
+   ASPR id: 0x15EF
+   Type:    Key 1 encrypted, no IAT
+  ImpersonateSelf
+   Address: 0x77dd4ee0
+   ASPR id: 0xF650
+   Type:    Key 1 encrypted, no IAT
+  GetUserNameW
+   Address: 0x77dd496d
+   ASPR id: 0xD8D8
+   Type:    Key 1 encrypted, IAT
+  GetUserNameA
+   Address: 0x77dd54c4
+   ASPR id: 0x9492
+   Type:    Key 1 encrypted, no IAT
+  GetTokenInformation
+   Address: 0x77dc7305
+   ASPR id: 0x06EA
+   Type:    Key 1 encrypted, no IAT
+  GetSecurityDescriptorOwner
+   Address: 0x77dd4b55
+   ASPR id: 0x96BF
+   Type:    Key 1 encrypted, no IAT
+  GetSecurityDescriptorControl
+   Address: 0x77dd4bb9
+   ASPR id: 0x6E6C
+   Type:    Key 1 encrypted, no IAT
+  GetLengthSid
+   Address: 0x77dc7d5c
+   ASPR id: 0x0246
+   Type:    Key 1 encrypted, no IAT
+  GetFileSecurityW
+   Address: 0x77dec003
+   ASPR id: 0xF849
+   Type:    Key 1 encrypted, IAT
+  FreeSid
+   Address: 0x77dc7cb8
+   ASPR id: 0xA0BC
+   Type:    Key 1 encrypted, no IAT
+  EqualSid
+   Address: 0x77dcf07a
+   ASPR id: 0xDD9B
+   Type:    Key 1 encrypted, no IAT
+  AllocateAndInitializeSid
+   Address: 0x77dc7cc9
+   ASPR id: 0x7531
+   Type:    Key 1 encrypted, no IAT
+  AdjustTokenPrivileges
+   Address: 0x77dcf00c
+   ASPR id: 0x018E
+   Type:    Key 1 encrypted, no IAT
+  AccessCheck
+   Address: 0x77dc73a0
+   ASPR id: 0xCB28
+   Type:    Key 1 encrypted, no IAT
+kernel32.dll
+  Module base: 0x7c800000
+  ASPR id:     0x7C8B
+  IAT at:      0x0074b2fc
+ Imports:
+  WritePrivateProfileStringW
+   Address: 0x7c820574
+   ASPR id: 0xBFF9
+   Type:    Key 2 encrypted, IAT
+  WritePrivateProfileStringA
+   Address: 0x7c835d5c
+   ASPR id: 0xD11A
+   Type:    Key 1 encrypted, no IAT
+  WritePrivateProfileSectionW
+   Address: 0x7c85cb13
+   ASPR id: 0xC948
+   Type:    Key 2 encrypted, IAT
+  WritePrivateProfileSectionA
+   Address: 0x7c85cacc
+   ASPR id: 0x195C
+   Type:    Key 1 encrypted, no IAT
+  WriteFile
+   Address: 0x7c8112ff
+   ASPR id: 0x277E
+   Type:    Key 1 encrypted, no IAT
+  WinExec
+   Address: 0x7c862585
+   ASPR id: 0xB275
+   Type:    Key 1 encrypted, no IAT
+  WideCharToMultiByte
+   Address: 0x7c80a174
+   ASPR id: 0xC42F
+   Type:    Key 2 encrypted, IAT
+  WaitForSingleObject
+   Address: 0x7c802530
+   ASPR id: 0xA3A2
+   Type:    Key 1 encrypted, no IAT
+  WaitForMultipleObjects
+   Address: 0x7c80a0fd
+   ASPR id: 0x4445
+   Type:    Key 1 encrypted, no IAT
+  VirtualAlloc
+   Address: 0x7c809af1
+   ASPR id: 0x2701
+   Type:    Key 2 encrypted, IAT
+  UnmapViewOfFile
+   Address: 0x7c80ba14
+   ASPR id: 0x06B7
+   Type:    Key 1 encrypted, no IAT
+  TransactNamedPipe
+   Address: 0x7c831cc1
+   ASPR id: 0x5F18
+   Type:    Key 1 encrypted, no IAT
+  TerminateThread
+   Address: 0x7c81d233
+   ASPR id: 0x44EA
+   Type:    Key 1 encrypted, no IAT
+  SystemTimeToFileTime
+   Address: 0x7c811094
+   ASPR id: 0x08DD
+   Type:    Key 1 encrypted, no IAT
+  SuspendThread
+   Address: 0x7c83973a
+   ASPR id: 0x9768
+   Type:    Key 1 encrypted, no IAT
+  Sleep
+   Address: 0x7c802446
+   ASPR id: 0x0104
+   Type:    Key 2 encrypted, IAT
+  SizeofResource
+   Address: 0x7c80bd09
+   ASPR id: 0x5B82
+   Type:    Key 2 encrypted, IAT
+  SetVolumeLabelA
+   Address: 0x7c861acd
+   ASPR id: 0x9294
+   Type:    Key 1 encrypted, no IAT
+  SetThreadPriority
+   Address: 0x7c80c1a8
+   ASPR id: 0x1A7E
+   Type:    Key 1 encrypted, no IAT
+  SetNamedPipeHandleState
+   Address: 0x7c831dc4
+   ASPR id: 0x5EA9
+   Type:    Key 1 encrypted, no IAT
+  SetLastError
+   Address: 0x7c8092ef
+   ASPR id: 0xAF97
+   Type:    Key 2 encrypted, IAT
+  SetFileTime
+   Address: 0x7c832690
+   ASPR id: 0x11FB
+   Type:    Key 1 encrypted, no IAT
+  SetFilePointer
+   Address: 0x7c811106
+   ASPR id: 0x224B
+   Type:    Key 1 encrypted, IAT
+  SetFileAttributesW
+   Address: 0x7c831ead
+   ASPR id: 0xA92E
+   Type:    Key 2 encrypted, IAT
+  SetFileAttributesA
+   Address: 0x7c812cfa
+   ASPR id: 0x764A
+   Type:    Key 1 encrypted, no IAT
+  SetEvent
+   Address: 0x7c80a0b7
+   ASPR id: 0x795D
+   Type:    Key 2 encrypted, IAT
+  SetErrorMode
+   Address: 0x7c80acaf
+   ASPR id: 0xA4C2
+   Type:    Key 2 encrypted, IAT
+  SetEnvironmentVariableW
+   Address: 0x7c81028e
+   ASPR id: 0xAF66
+   Type:    Key 2 encrypted, IAT
+  SetEnvironmentVariableA
+   Address: 0x7c833e78
+   ASPR id: 0x58B1
+   Type:    Key 1 encrypted, no IAT
+  SetEndOfFile
+   Address: 0x7c832a46
+   ASPR id: 0x4682
+   Type:    Key 1 encrypted, no IAT
+  SetCurrentDirectoryW
+   Address: 0x7c80f3bf
+   ASPR id: 0x96BB
+   Type:    Key 2 encrypted, IAT
+  SetCurrentDirectoryA
+   Address: 0x7c8360e5
+   ASPR id: 0xA7D2
+   Type:    Key 1 encrypted, no IAT
+  ResumeThread
+   Address: 0x7c8332f7
+   ASPR id: 0x121E
+   Type:    Key 1 encrypted, no IAT
+  ResetEvent
+   Address: 0x7c80a0db
+   ASPR id: 0x0991
+   Type:    Key 2 encrypted, IAT
+  RemoveDirectoryW
+   Address: 0x7c836f63
+   ASPR id: 0xEE2F
+   Type:    Key 2 encrypted, IAT
+  RemoveDirectoryA
+   Address: 0x7c85c269
+   ASPR id: 0x5437
+   Type:    Key 1 encrypted, no IAT
+  ReleaseSemaphore
+   Address: 0x7c80c04d
+   ASPR id: 0x675C
+   Type:    Key 1 encrypted, no IAT
+  ReleaseMutex
+   Address: 0x7c8024b7
+   ASPR id: 0x83AA
+   Type:    Key 1 encrypted, no IAT
+  ReadProcessMemory
+   Address: 0x7c8021d0
+   ASPR id: 0xA1D8
+   Type:    Key 1 encrypted, no IAT
+  ReadFile
+   Address: 0x7c801812
+   ASPR id: 0x2067
+   Type:    Key 1 encrypted, IAT
+  QueryPerformanceCounter
+   Address: 0x7c80a4c7
+   ASPR id: 0xB521
+   Type:    Key 1 encrypted, no IAT
+  QueryDosDeviceW
+   Address: 0x7c8234b5
+   ASPR id: 0x10C4
+   Type:    Key 2 encrypted, IAT
+  PeekNamedPipe
+   Address: 0x7c8609ef
+   ASPR id: 0xC584
+   Type:    Key 1 encrypted, no IAT
+  OutputDebugStringA
+   Address: 0x7c85adc4
+   ASPR id: 0x2EFE
+   Type:    Key 1 encrypted, no IAT
+  OpenProcess
+   Address: 0x7c813499
+   ASPR id: 0x6705
+   Type:    Key 1 encrypted, no IAT
+  OpenMutexA
+   Address: 0x7c80eabb
+   ASPR id: 0x4AB1
+   Type:    Key 1 encrypted, no IAT
+  MultiByteToWideChar
+   Address: 0x7c809c98
+   ASPR id: 0xD712
+   Type:    Key 2 encrypted, IAT
+  MulDiv
+   Address: 0x7c809866
+   ASPR id: 0xF859
+   Type:    Key 2 encrypted, IAT
+  MoveFileW
+   Address: 0x7c822989
+   ASPR id: 0x0CED
+   Type:    Key 2 encrypted, IAT
+  MoveFileA
+   Address: 0x7c835e97
+   ASPR id: 0xCC4B
+   Type:    Key 1 encrypted, no IAT
+  MapViewOfFile
+   Address: 0x7c80b9a5
+   ASPR id: 0x06EF
+   Type:    Key 1 encrypted, no IAT
+  LockResource
+   Address: 0x7c80cd37
+   ASPR id: 0xB192
+   Type:    Key 2 encrypted, IAT
+  LocalFree
+   Address: 0x7c8099cf
+   ASPR id: 0x1167
+   Type:    Key 2 encrypted, IAT
+  LocalFileTimeToFileTime
+   Address: 0x7c814604
+   ASPR id: 0x34E6
+   Type:    Key 1 encrypted, no IAT
+  LoadResource
+   Address: 0x7c80a055
+   ASPR id: 0xCA31
+   Type:    Key 2 encrypted, IAT
+  LoadLibraryExW
+   Address: 0x7c801af5
+   ASPR id: 0xA254
+   Type:    Key 2 encrypted, IAT
+  LoadLibraryExA
+   Address: 0x7c801d53
+   ASPR id: 0xEED7
+   Type:    Key 1 encrypted, no IAT
+  LoadLibraryA
+   Address: 0x7c801d7b
+   ASPR id: 0x3E5F
+   Type:    Key 1 encrypted, IAT
+  LeaveCriticalSection
+   Address: 0x7c8091c9
+   ASPR id: 0xBB1A
+   Type:    Key 2 encrypted, IAT
+  IsValidCodePage
+   Address: 0x7c811643
+   ASPR id: 0x45EE
+   Type:    Key 1 encrypted, no IAT
+  IsDBCSLeadByteEx
+   Address: 0x7c87b686
+   ASPR id: 0x06A4
+   Type:    Key 1 encrypted, no IAT
+  IsDBCSLeadByte
+   Address: 0x7c80b87c
+   ASPR id: 0x2F59
+   Type:    Key 1 encrypted, no IAT
+  IsBadWritePtr
+   Address: 0x7c809f19
+   ASPR id: 0x0D79
+   Type:    Key 1 encrypted, no IAT
+  IsBadReadPtr
+   Address: 0x7c809ea1
+   ASPR id: 0x7D1C
+   Type:    Key 1 encrypted, no IAT
+  IsBadCodePtr
+   Address: 0x7c80bd6f
+   ASPR id: 0x149F
+   Type:    Key 1 encrypted, no IAT
+  InitializeCriticalSection
+   Address: 0x7c809f91
+   ASPR id: 0x6777
+   Type:    Key 2 encrypted, IAT
+  HeapFree
+   Address: 0x7c80910c
+   ASPR id: 0xF65B
+   Type:    Key 2 encrypted, IAT
+  HeapAlloc
+   Address: 0x7c8090f6
+   ASPR id: 0x8FC2
+   Type:    Key 2 encrypted, IAT
+  GlobalUnlock
+   Address: 0x7c80ff52
+   ASPR id: 0xA56F
+   Type:    Key 2 encrypted, IAT
+  GlobalSize
+   Address: 0x7c813e81
+   ASPR id: 0x726C
+   Type:    Key 2 encrypted, IAT
+  GlobalReAlloc
+   Address: 0x7c812931
+   ASPR id: 0x4308
+   Type:    Key 2 encrypted, IAT
+  GlobalMemoryStatus
+   Address: 0x7c813baa
+   ASPR id: 0x432F
+   Type:    Key 1 encrypted, no IAT
+  GlobalHandle
+   Address: 0x7c813d9d
+   ASPR id: 0x7F96
+   Type:    Key 2 encrypted, IAT
+  GlobalLock
+   Address: 0x7c80ffe9
+   ASPR id: 0x1A2C
+   Type:    Key 2 encrypted, IAT
+  GlobalFree
+   Address: 0x7c80fcff
+   ASPR id: 0xC971
+   Type:    Key 2 encrypted, IAT
+  GlobalDeleteAtom
+   Address: 0x7c813673
+   ASPR id: 0x8352
+   Type:    Key 1 encrypted, no IAT
+  GlobalAlloc
+   Address: 0x7c80fdfd
+   ASPR id: 0xC96D
+   Type:    Key 2 encrypted, IAT
+  GlobalAddAtomA
+   Address: 0x7c8360b1
+   ASPR id: 0x44D8
+   Type:    Key 2 encrypted, IAT
+  GetWindowsDirectoryW
+   Address: 0x7c80ae1b
+   ASPR id: 0xF8E5
+   Type:    Key 2 encrypted, IAT
+  GetWindowsDirectoryA
+   Address: 0x7c822a8b
+   ASPR id: 0xD8E1
+   Type:    Key 1 encrypted, no IAT
+  GetVolumeInformationW
+   Address: 0x7c80fab5
+   ASPR id: 0xBB66
+   Type:    Key 2 encrypted, IAT
+  GetVolumeInformationA
+   Address: 0x7c8232cd
+   ASPR id: 0x8D5C
+   Type:    Key 1 encrypted, no IAT
+  GetVersionExA
+   Address: 0x7c810830
+   ASPR id: 0x1B78
+   Type:    Key 2 encrypted, IAT
+  GetVersion
+   Address: 0x7c811752
+   ASPR id: 0xC769
+   Type:    Key 2 encrypted, IAT
+  GetUserDefaultLangID
+   Address: 0x7c80c004
+   ASPR id: 0xFD38
+   Type:    Key 1 encrypted, no IAT
+  GetUserDefaultLCID
+   Address: 0x7c809fb0
+   ASPR id: 0x67F7
+   Type:    Key 1 encrypted, no IAT
+  GetTimeZoneInformation
+   Address: 0x7c81419f
+   ASPR id: 0x1ACC
+   Type:    Key 1 encrypted, no IAT
+  GetTickCount
+   Address: 0x7c80934a
+   ASPR id: 0xD54F
+   Type:    Key 2 encrypted, IAT
+  GetTempPathA
+   Address: 0x7c835dd2
+   ASPR id: 0xBDC7
+   Type:    Key 1 encrypted, no IAT
+  GetTempFileNameW
+   Address: 0x7c8359bb
+   ASPR id: 0x49D2
+   Type:    Key 2 encrypted, IAT
+  GetTempFileNameA
+   Address: 0x7c8619df
+   ASPR id: 0xB622
+   Type:    Key 1 encrypted, no IAT
+  GetSystemTime
+   Address: 0x7c80176f
+   ASPR id: 0x3074
+   Type:    Key 1 encrypted, no IAT
+  GetSystemInfo
+   Address: 0x7c810aa6
+   ASPR id: 0xCA0A
+   Type:    Key 2 encrypted, IAT
+  GetSystemDirectoryW
+   Address: 0x7c8327bb
+   ASPR id: 0xDA54
+   Type:    Key 2 encrypted, IAT
+  GetSystemDirectoryA
+   Address: 0x7c81f006
+   ASPR id: 0x1CE0
+   Type:    Key 1 encrypted, no IAT
+  GetSystemDefaultLCID
+   Address: 0x7c80bfdd
+   ASPR id: 0x35A7
+   Type:    Key 1 encrypted, no IAT
+  GetStartupInfoA
+   Address: 0x7c801ef2
+   ASPR id: 0x5E9E
+   Type:    Key 1 encrypted, no IAT
+  GetShortPathNameW
+   Address: 0x7c820996
+   ASPR id: 0x40E7
+   Type:    Key 2 encrypted, IAT
+  GetShortPathNameA
+   Address: 0x7c835bb4
+   ASPR id: 0xDBF6
+   Type:    Key 1 encrypted, no IAT
+  GetProfileStringA
+   Address: 0x7c822bbd
+   ASPR id: 0xE6F8
+   Type:    Key 1 encrypted, no IAT
+  GetProfileIntA
+   Address: 0x7c8364b1
+   ASPR id: 0xDC58
+   Type:    Key 1 encrypted, no IAT
+  GetProcessHeap
+   Address: 0x7c80ac61
+   ASPR id: 0xF9FA
+   Type:    Key 2 encrypted, IAT
+  GetProcAddress
+   Address: 0x7c80ae40
+   ASPR id: 0x732D
+   Type:    Stolen addr. resolver, IAT
+  GetPrivateProfileStringW
+   Address: 0x7c80fa2d
+   ASPR id: 0xEEF8
+   Type:    Key 2 encrypted, IAT
+  GetPrivateProfileStringA
+   Address: 0x7c833556
+   ASPR id: 0x65D1
+   Type:    Key 1 encrypted, no IAT
+  GetPrivateProfileSectionW
+   Address: 0x7c8204e5
+   ASPR id: 0x8568
+   Type:    Key 2 encrypted, IAT
+  GetPrivateProfileSectionA
+   Address: 0x7c835f29
+   ASPR id: 0x4075
+   Type:    Key 1 encrypted, no IAT
+  GetPrivateProfileIntW
+   Address: 0x7c833130
+   ASPR id: 0x3CD6
+   Type:    Key 2 encrypted, IAT
+  GetPrivateProfileIntA
+   Address: 0x7c83643c
+   ASPR id: 0xE61E
+   Type:    Key 1 encrypted, no IAT
+  GetOverlappedResult
+   Address: 0x7c831f9c
+   ASPR id: 0x7696
+   Type:    Key 1 encrypted, no IAT
+  GetModuleHandleA
+   Address: 0x7c80b741
+   ASPR id: 0x2494
+   Type:    Key 1 encrypted, no IAT
+  GetModuleFileNameW
+   Address: 0x7c80b475
+   ASPR id: 0xD07B
+   Type:    Key 2 encrypted, IAT
+  GetModuleFileNameA
+   Address: 0x7c80b56f
+   ASPR id: 0x282B
+   Type:    Key 1 encrypted, no IAT
+  GetLocaleInfoW
+   Address: 0x7c811ada
+   ASPR id: 0xAA57
+   Type:    Key 2 encrypted, IAT
+  GetLocaleInfoA
+   Address: 0x7c80d302
+   ASPR id: 0xE255
+   Type:    Key 2 encrypted, IAT
+  GetLocalTime
+   Address: 0x7c80a874
+   ASPR id: 0x7BE0
+   Type:    Key 2 encrypted, IAT
+  GetLastError
+   Address: 0x7c8090db
+   ASPR id: 0xFB7B
+   Type:    Key 2 encrypted, IAT
+  GetFileTime
+   Address: 0x7c83261d
+   ASPR id: 0xB3BE
+   Type:    Key 1 encrypted, no IAT
+  GetFileAttributesW
+   Address: 0x7c80b7ec
+   ASPR id: 0x9569
+   Type:    Key 2 encrypted, IAT
+  GetFileAttributesA
+   Address: 0x7c811ab4
+   ASPR id: 0xA947
+   Type:    Key 2 encrypted, IAT
+  GetExitCodeThread
+   Address: 0x7c822b5d
+   ASPR id: 0x3D48
+   Type:    Key 1 encrypted, no IAT
+  GetExitCodeProcess
+   Address: 0x7c81b24b
+   ASPR id: 0x87ED
+   Type:    Key 1 encrypted, no IAT
+  GetEnvironmentVariableW
+   Address: 0x7c80f1c5
+   ASPR id: 0x7EEB
+   Type:    Key 2 encrypted, IAT
+  GetEnvironmentVariableA
+   Address: 0x7c81584a
+   ASPR id: 0x9D79
+   Type:    Key 1 encrypted, no IAT
+  GetDriveTypeA
+   Address: 0x7c822c0b
+   ASPR id: 0xBE5A
+   Type:    Key 1 encrypted, no IAT
+  GetDiskFreeSpaceA
+   Address: 0x7c831a11
+   ASPR id: 0x9184
+   Type:    Key 1 encrypted, no IAT
+  GetCurrentThreadId
+   Address: 0x7c8097d0
+   ASPR id: 0x7AB6
+   Type:    Key 1 encrypted, no IAT
+  GetCurrentThread
+   Address: 0x7c80998b
+   ASPR id: 0x9565
+   Type:    Key 1 encrypted, no IAT
+  GetCurrentProcessId
+   Address: 0x7c8099c0
+   ASPR id: 0x2F64
+   Type:    Key 1 encrypted, no IAT
+  GetCurrentProcess
+   Address: 0x7c80de95
+   ASPR id: 0x81A8
+   Type:    Key 1 encrypted, no IAT
+  GetCurrentDirectoryW
+   Address: 0x7c80b917
+   ASPR id: 0x7CF1
+   Type:    Key 2 encrypted, IAT
+  GetCurrentDirectoryA
+   Address: 0x7c8140de
+   ASPR id: 0x8DF0
+   Type:    Key 1 encrypted, no IAT
+  GetComputerNameW
+   Address: 0x7c83209f
+   ASPR id: 0x59D6
+   Type:    Key 2 encrypted, IAT
+  GetComputerNameA
+   Address: 0x7c822dcc
+   ASPR id: 0x4441
+   Type:    Key 1 encrypted, no IAT
+  GetCommandLineW
+   Address: 0x7c81771b
+   ASPR id: 0xD094
+   Type:    Key 2 encrypted, IAT
+  GetCommandLineA
+   Address: 0x7c810c6d
+   ASPR id: 0x683A
+   Type:    Key 1 encrypted, no IAT
+  GetACP
+   Address: 0x7c8099b5
+   ASPR id: 0x2B2C
+   Type:    Key 1 encrypted, no IAT
+  FreeResource
+   Address: 0x7c8277ea
+   ASPR id: 0x13F4
+   Type:    Key 2 encrypted, IAT
+  InterlockedDecrement
+   Address: 0x7c80981a
+   ASPR id: 0xF256
+   Type:    Key 2 encrypted, IAT
+  InterlockedIncrement
+   Address: 0x7c809806
+   ASPR id: 0x433C
+   Type:    Key 2 encrypted, IAT
+  FreeLibrary
+   Address: 0x7c80ac7e
+   ASPR id: 0xC34F
+   Type:    Key 1 encrypted, no IAT
+  FlushFileBuffers
+   Address: 0x7c812bb9
+   ASPR id: 0x67C3
+   Type:    Key 1 encrypted, no IAT
+  FindResourceA
+   Address: 0x7c80bf29
+   ASPR id: 0x44AF
+   Type:    Key 2 encrypted, IAT
+  FindNextFileW
+   Address: 0x7c80f015
+   ASPR id: 0xD22F
+   Type:    Key 2 encrypted, IAT
+  FindNextFileA
+   Address: 0x7c813f91
+   ASPR id: 0xEFF4
+   Type:    Key 2 encrypted, IAT
+  FindFirstFileW
+   Address: 0x7c80ee7d
+   ASPR id: 0x5933
+   Type:    Key 2 encrypted, IAT
+  FindFirstFileA
+   Address: 0x7c81f731
+   ASPR id: 0x22A7
+   Type:    Key 2 encrypted, IAT
+  FindClose
+   Address: 0x7c80ee9c
+   ASPR id: 0xE4B0
+   Type:    Key 1 encrypted, no IAT
+  FileTimeToSystemTime
+   Address: 0x7c80e88c
+   ASPR id: 0xE193
+   Type:    Key 1 encrypted, no IAT
+  FileTimeToLocalFileTime
+   Address: 0x7c80e906
+   ASPR id: 0x778A
+   Type:    Key 1 encrypted, no IAT
+  FileTimeToDosDateTime
+   Address: 0x7c813116
+   ASPR id: 0x294F
+   Type:    Key 1 encrypted, no IAT
+  ExpandEnvironmentStringsA
+   Address: 0x7c8333d9
+   ASPR id: 0x5F86
+   Type:    Key 1 encrypted, no IAT
+  EnumResourceNamesA
+   Address: 0x7c860309
+   ASPR id: 0xF13D
+   Type:    Key 2 encrypted, IAT
+  EnterCriticalSection
+   Address: 0x7c8090bd
+   ASPR id: 0x7E4E
+   Type:    Key 2 encrypted, IAT
+  DuplicateHandle
+   Address: 0x7c80de9e
+   ASPR id: 0xA612
+   Type:    Key 1 encrypted, no IAT
+  DeviceIoControl
+   Address: 0x7c801629
+   ASPR id: 0x46CA
+   Type:    Key 1 encrypted, IAT
+  DeleteFileW
+   Address: 0x7c832933
+   ASPR id: 0x1DC8
+   Type:    Key 2 encrypted, IAT
+  DeleteFileA
+   Address: 0x7c8328ad
+   ASPR id: 0x8842
+   Type:    Key 1 encrypted, no IAT
+  DeleteCriticalSection
+   Address: 0x7c80906a
+   ASPR id: 0x77CA
+   Type:    Key 2 encrypted, IAT
+  CreateThread
+   Address: 0x7c810707
+   ASPR id: 0x6C8F
+   Type:    Key 1 encrypted, IAT
+  CreateSemaphoreA
+   Address: 0x7c810b6d
+   ASPR id: 0x2C9B
+   Type:    Key 1 encrypted, no IAT
+  CreateProcessW
+   Address: 0x7c802336
+   ASPR id: 0xC804
+   Type:    Key 2 encrypted, IAT
+  CreateProcessA
+   Address: 0x7c80236b
+   ASPR id: 0xC5E4
+   Type:    Key 1 encrypted, no IAT
+  CreateMutexA
+   Address: 0x7c80e9df
+   ASPR id: 0x9AEC
+   Type:    Key 1 encrypted, no IAT
+  CreateFileMappingA
+   Address: 0x7c80950a
+   ASPR id: 0xD825
+   Type:    Key 1 encrypted, no IAT
+  CreateFileW
+   Address: 0x7c810cd9
+   ASPR id: 0x3BB5
+   Type:    Key 2 encrypted, IAT
+  CreateFileA
+   Address: 0x7c801a28
+   ASPR id: 0x76BD
+   Type:    Key 1 encrypted, IAT
+  CreateEventA
+   Address: 0x7c813366
+   ASPR id: 0xDA10
+   Type:    Key 1 encrypted, no IAT
+  CreateDirectoryW
+   Address: 0x7c832dd2
+   ASPR id: 0x23A8
+   Type:    Key 2 encrypted, IAT
+  CreateDirectoryA
+   Address: 0x7c822ed4
+   ASPR id: 0x5100
+   Type:    Key 1 encrypted, no IAT
+  CopyFileW
+   Address: 0x7c830f97
+   ASPR id: 0x5AF7
+   Type:    Key 2 encrypted, IAT
+  CopyFileA
+   Address: 0x7c829e16
+   ASPR id: 0xD688
+   Type:    Key 1 encrypted, no IAT
+  CompareStringW
+   Address: 0x7c80a3fe
+   ASPR id: 0x8CF3
+   Type:    Key 2 encrypted, IAT
+  CompareStringA
+   Address: 0x7c80d117
+   ASPR id: 0x26F5
+   Type:    Key 2 encrypted, IAT
+  CloseHandle
+   Address: 0x7c809be7
+   ASPR id: 0xED85
+   Type:    Key 1 encrypted, IAT
+mpr.dll
+  Module base: 0x71ac0000
+  ASPR id:     0xB25E
+  IAT at:      0x0074b5bc
+ Imports:
+  WNetOpenEnumW
+   Address: 0x71ac3910
+   ASPR id: 0x51E4
+   Type:    Key 1 encrypted, IAT
+  WNetOpenEnumA
+   Address: 0x71acb200
+   ASPR id: 0x09AA
+   Type:    Key 1 encrypted, IAT
+  WNetGetUserA
+   Address: 0x71acb3db
+   ASPR id: 0xACE1
+   Type:    Key 1 encrypted, IAT
+  WNetGetConnectionW
+   Address: 0x71ac1e09
+   ASPR id: 0x9CC0
+   Type:    Key 1 encrypted, IAT
+  WNetGetConnectionA
+   Address: 0x71ac659d
+   ASPR id: 0xD552
+   Type:    Key 1 encrypted, IAT
+  WNetEnumResourceW
+   Address: 0x71ac3c8a
+   ASPR id: 0xD1D6
+   Type:    Key 1 encrypted, IAT
+  WNetEnumResourceA
+   Address: 0x71acabb5
+   ASPR id: 0x6A8E
+   Type:    Key 1 encrypted, IAT
+  WNetDisconnectDialog
+   Address: 0x71acbde8
+   ASPR id: 0x41DD
+   Type:    Key 1 encrypted, IAT
+  WNetConnectionDialog
+   Address: 0x71acbdbf
+   ASPR id: 0xAE52
+   Type:    Key 1 encrypted, IAT
+  WNetCloseEnum
+   Address: 0x71ac3e4f
+   ASPR id: 0xC6CA
+   Type:    Key 1 encrypted, IAT
+  WNetCancelConnectionA
+   Address: 0x71acae39
+   ASPR id: 0xD0D3
+   Type:    Key 1 encrypted, IAT
+  WNetAddConnection3W
+   Address: 0x71ac9859
+   ASPR id: 0x717B
+   Type:    Key 1 encrypted, IAT
+  WNetAddConnection3A
+   Address: 0x71acb835
+   ASPR id: 0x1D87
+   Type:    Key 1 encrypted, IAT
+version.dll
+  Module base: 0x77bf0000
+  ASPR id:     0x3C16
+  IAT at:      0x0074b5f4
+ Imports:
+  VerQueryValueA
+   Address: 0x77bf18aa
+   ASPR id: 0x4727
+   Type:    Key 1 encrypted, IAT
+  GetFileVersionInfoSizeW
+   Address: 0x77bf138c
+   ASPR id: 0x0204
+   Type:    Key 1 encrypted, IAT
+  GetFileVersionInfoSizeA
+   Address: 0x77bf19ef
+   ASPR id: 0x052F
+   Type:    Key 1 encrypted, IAT
+  GetFileVersionInfoW
+   Address: 0x77bf166f
+   ASPR id: 0x0884
+   Type:    Key 1 encrypted, IAT
+  GetFileVersionInfoA
+   Address: 0x77bf1a40
+   ASPR id: 0xCB3C
+   Type:    Key 1 encrypted, IAT
+gdi32.dll
+  Module base: 0x77f10000
+  ASPR id:     0x84BA
+  IAT at:      0x0074b60c
+ Imports:
+  UnrealizeObject
+   Address: 0x77f1d837
+   ASPR id: 0x05EC
+   Type:    Key 1 encrypted, IAT
+  TextOutW
+   Address: 0x77f17eac
+   ASPR id: 0x4ADB
+   Type:    Key 1 encrypted, IAT
+  TextOutA
+   Address: 0x77f1ba4f
+   ASPR id: 0x7769
+   Type:    Key 1 encrypted, IAT
+  StretchDIBits
+   Address: 0x77f1b0ae
+   ASPR id: 0xC91A
+   Type:    Key 1 encrypted, IAT
+  StretchBlt
+   Address: 0x77f1b6d0
+   ASPR id: 0x6E05
+   Type:    Key 1 encrypted, IAT
+  StartPage
+   Address: 0x77f2f4ae
+   ASPR id: 0x29DF
+   Type:    Key 1 encrypted, IAT
+  StartDocA
+   Address: 0x77f461c9
+   ASPR id: 0xFEBD
+   Type:    Key 1 encrypted, IAT
+  SetWindowOrgEx
+   Address: 0x77f18e14
+   ASPR id: 0x35DB
+   Type:    Key 1 encrypted, IAT
+  SetWindowExtEx
+   Address: 0x77f272d4
+   ASPR id: 0x0BFD
+   Type:    Key 1 encrypted, IAT
+  SetViewportOrgEx
+   Address: 0x77f17b4c
+   ASPR id: 0xA37E
+   Type:    Key 1 encrypted, IAT
+  SetViewportExtEx
+   Address: 0x77f2737d
+   ASPR id: 0xF18F
+   Type:    Key 1 encrypted, IAT
+  SetTextColor
+   Address: 0x77f15d77
+   ASPR id: 0xF02B
+   Type:    Key 1 encrypted, IAT
+  SetTextAlign
+   Address: 0x77f18c8b
+   ASPR id: 0x3667
+   Type:    Key 1 encrypted, IAT
+  SetStretchBltMode
+   Address: 0x77f18597
+   ASPR id: 0x1A94
+   Type:    Key 1 encrypted, IAT
+  SetROP2
+   Address: 0x77f1d8d0
+   ASPR id: 0xA01A
+   Type:    Key 1 encrypted, IAT
+  SetPixel
+   Address: 0x77f1b84b
+   ASPR id: 0x57BF
+   Type:    Key 1 encrypted, IAT
+  SetMetaFileBitsEx
+   Address: 0x77f27788
+   ASPR id: 0x0E78
+   Type:    Key 1 encrypted, IAT
+  SetMapMode
+   Address: 0x77f1941f
+   ASPR id: 0xE4D6
+   Type:    Key 1 encrypted, IAT
+  SetEnhMetaFileBits
+   Address: 0x77f26d1f
+   ASPR id: 0xD823
+   Type:    Key 1 encrypted, IAT
+  SetDIBitsToDevice
+   Address: 0x77f19c0a
+   ASPR id: 0xC3A2
+   Type:    Key 1 encrypted, IAT
+  SetDIBits
+   Address: 0x77f1ab97
+   ASPR id: 0x352C
+   Type:    Key 1 encrypted, IAT
+  SetBrushOrgEx
+   Address: 0x77f187ec
+   ASPR id: 0xEA76
+   Type:    Key 1 encrypted, IAT
+  SetBkMode
+   Address: 0x77f15edb
+   ASPR id: 0x837D
+   Type:    Key 1 encrypted, IAT
+  SetBkColor
+   Address: 0x77f15e29
+   ASPR id: 0x0E4D
+   Type:    Key 1 encrypted, IAT
+  SetAbortProc
+   Address: 0x77f45141
+   ASPR id: 0x20CD
+   Type:    Key 1 encrypted, IAT
+  SelectPalette
+   Address: 0x77f18632
+   ASPR id: 0x83DE
+   Type:    Key 1 encrypted, IAT
+  SelectObject
+   Address: 0x77f15b70
+   ASPR id: 0xEDA1
+   Type:    Key 1 encrypted, IAT
+  SelectClipRgn
+   Address: 0x77f17aa0
+   ASPR id: 0x6253
+   Type:    Key 1 encrypted, IAT
+  SaveDC
+   Address: 0x77f18bee
+   ASPR id: 0xDC36
+   Type:    Key 1 encrypted, IAT
+  RestoreDC
+   Address: 0x77f18b28
+   ASPR id: 0xB514
+   Type:    Key 1 encrypted, IAT
+  Rectangle
+   Address: 0x77f1e9be
+   ASPR id: 0xEF1E
+   Type:    Key 1 encrypted, IAT
+  RectVisible
+   Address: 0x77f1821b
+   ASPR id: 0x90A3
+   Type:    Key 1 encrypted, IAT
+  RealizePalette
+   Address: 0x77f1ea5b
+   ASPR id: 0x2AF8
+   Type:    Key 1 encrypted, IAT
+  PtInRegion
+   Address: 0x77f46ad4
+   ASPR id: 0x7A8A
+   Type:    Key 1 encrypted, IAT
+  Polyline
+   Address: 0x77f1e083
+   ASPR id: 0x0B9B
+   Type:    Key 1 encrypted, IAT
+  Polygon
+   Address: 0x77f1edb0
+   ASPR id: 0xD6BB
+   Type:    Key 1 encrypted, IAT
+  PlayEnhMetaFile
+   Address: 0x77f39fd1
+   ASPR id: 0x5879
+   Type:    Key 1 encrypted, IAT
+  PatBlt
+   Address: 0x77f1869b
+   ASPR id: 0x84FB
+   Type:    Key 1 encrypted, IAT
+  MoveToEx
+   Address: 0x77f1a21a
+   ASPR id: 0x8D2B
+   Type:    Key 1 encrypted, IAT
+  LineTo
+   Address: 0x77f1d997
+   ASPR id: 0x9728
+   Type:    Key 1 encrypted, IAT
+  LPtoDP
+   Address: 0x77f1d4c7
+   ASPR id: 0xC268
+   Type:    Key 1 encrypted, IAT
+  IntersectClipRect
+   Address: 0x77f16a56
+   ASPR id: 0x9D83
+   Type:    Key 1 encrypted, IAT
+  GetWindowOrgEx
+   Address: 0x77f1da1e
+   ASPR id: 0xE8D5
+   Type:    Key 1 encrypted, IAT
+  GetWinMetaFileBits
+   Address: 0x77f4b23c
+   ASPR id: 0x8040
+   Type:    Key 1 encrypted, IAT
+  GetTextMetricsA
+   Address: 0x77f1df45
+   ASPR id: 0x8A6A
+   Type:    Key 1 encrypted, IAT
+  GetTextExtentPointW
+   Address: 0x77f16b0d
+   ASPR id: 0xCE02
+   Type:    Key 1 encrypted, IAT
+  GetTextExtentPointA
+   Address: 0x77f1dcff
+   ASPR id: 0xF864
+   Type:    Key 1 encrypted, IAT
+  GetTextExtentPoint32W
+   Address: 0x77f17f9d
+   ASPR id: 0xDD20
+   Type:    Key 1 encrypted, IAT
+  GetTextExtentPoint32A
+   Address: 0x77f1ef1c
+   ASPR id: 0x1B00
+   Type:    Key 1 encrypted, IAT
+  GetTextColor
+   Address: 0x77f18faf
+   ASPR id: 0xA9B4
+   Type:    Key 1 encrypted, IAT
+  GetTextAlign
+   Address: 0x77f1d427
+   ASPR id: 0xD56D
+   Type:    Key 1 encrypted, IAT
+  GetSystemPaletteEntries
+   Address: 0x77f1ba9e
+   ASPR id: 0x0CE9
+   Type:    Key 1 encrypted, IAT
+  GetStockObject
+   Address: 0x77f161c1
+   ASPR id: 0x6BB7
+   Type:    Key 1 encrypted, IAT
+  GetPixel
+   Address: 0x77f1b74c
+   ASPR id: 0x520A
+   Type:    Key 1 encrypted, IAT
+  GetPaletteEntries
+   Address: 0x77f1b61a
+   ASPR id: 0x61A0
+   Type:    Key 1 encrypted, IAT
+  GetObjectA
+   Address: 0x77f18d25
+   ASPR id: 0x5C37
+   Type:    Key 1 encrypted, IAT
+  GetEnhMetaFilePaletteEntries
+   Address: 0x77f4ad96
+   ASPR id: 0x3095
+   Type:    Key 1 encrypted, IAT
+  GetEnhMetaFileHeader
+   Address: 0x77f203d2
+   ASPR id: 0x13CD
+   Type:    Key 1 encrypted, IAT
+  GetEnhMetaFileBits
+   Address: 0x77f39b09
+   ASPR id: 0xC850
+   Type:    Key 1 encrypted, IAT
+  GetDeviceCaps
+   Address: 0x77f15a69
+   ASPR id: 0xBCE3
+   Type:    Key 1 encrypted, IAT
+  GetDIBits
+   Address: 0x77f19fa5
+   ASPR id: 0x60C1
+   Type:    Key 1 encrypted, IAT
+  GetCurrentPositionEx
+   Address: 0x77f2ee85
+   ASPR id: 0xB873
+   Type:    Key 1 encrypted, IAT
+  GetClipRgn
+   Address: 0x77f16ad6
+   ASPR id: 0x8547
+   Type:    Key 1 encrypted, IAT
+  GetClipBox
+   Address: 0x77f16aa1
+   ASPR id: 0x17FC
+   Type:    Key 1 encrypted, IAT
+  GetBkColor
+   Address: 0x77f18f5b
+   ASPR id: 0xC072
+   Type:    Key 1 encrypted, IAT
+  GetBitmapBits
+   Address: 0x77f1aaf4
+   ASPR id: 0xE7C1
+   Type:    Key 1 encrypted, IAT
+  GdiFlush
+   Address: 0x77f15985
+   ASPR id: 0xBCC4
+   Type:    Key 1 encrypted, IAT
+  ExtTextOutA
+   Address: 0x77f1d3fa
+   ASPR id: 0x3600
+   Type:    Key 1 encrypted, IAT
+  ExcludeClipRect
+   Address: 0x77f190ec
+   ASPR id: 0x5A1C
+   Type:    Key 1 encrypted, IAT
+  EnumMetaFile
+   Address: 0x77f25b5b
+   ASPR id: 0x35A4
+   Type:    Key 1 encrypted, IAT
+  EnumFontsA
+   Address: 0x77f3c7f5
+   ASPR id: 0xF0D6
+   Type:    Key 1 encrypted, IAT
+  EndPage
+   Address: 0x77f2dc71
+   ASPR id: 0x7960
+   Type:    Key 1 encrypted, IAT
+  EndDoc
+   Address: 0x77f2df01
+   ASPR id: 0x12D6
+   Type:    Key 1 encrypted, IAT
+  DeleteObject
+   Address: 0x77f16bfa
+   ASPR id: 0xB84A
+   Type:    Key 1 encrypted, IAT
+  DeleteEnhMetaFile
+   Address: 0x77f1fd44
+   ASPR id: 0x5FDF
+   Type:    Key 1 encrypted, IAT
+  DeleteDC
+   Address: 0x77f16e5f
+   ASPR id: 0xE734
+   Type:    Key 1 encrypted, IAT
+  DPtoLP
+   Address: 0x77f1e611
+   ASPR id: 0xC60F
+   Type:    Key 1 encrypted, IAT
+  CreateSolidBrush
+   Address: 0x77f161a5
+   ASPR id: 0x4285
+   Type:    Key 1 encrypted, IAT
+  CreateRectRgn
+   Address: 0x77f17786
+   ASPR id: 0x9861
+   Type:    Key 1 encrypted, IAT
+  CreatePenIndirect
+   Address: 0x77f2798b
+   ASPR id: 0x3A3D
+   Type:    Key 1 encrypted, IAT
+  CreatePen
+   Address: 0x77f1a155
+   ASPR id: 0x9472
+   Type:    Key 1 encrypted, IAT
+  CreatePatternBrush
+   Address: 0x77f1acc8
+   ASPR id: 0x9E62
+   Type:    Key 1 encrypted, IAT
+  CreatePalette
+   Address: 0x77f1b5ea
+   ASPR id: 0x0E0C
+   Type:    Key 1 encrypted, IAT
+  CreateICA
+   Address: 0x77f1ea89
+   ASPR id: 0xFC19
+   Type:    Key 1 encrypted, IAT
+  CreateFontIndirectA
+   Address: 0x77f1ecce
+   ASPR id: 0x5218
+   Type:    Key 1 encrypted, IAT
+  CreateFontA
+   Address: 0x77f3c08c
+   ASPR id: 0x6406
+   Type:    Key 1 encrypted, IAT
+  CreateDIBitmap
+   Address: 0x77f1ad23
+   ASPR id: 0xBC0A
+   Type:    Key 1 encrypted, IAT
+  CreateDIBSection
+   Address: 0x77f19e19
+   ASPR id: 0xE0CB
+   Type:    Key 1 encrypted, IAT
+  CreateDCA
+   Address: 0x77f1b7d2
+   ASPR id: 0x3FEE
+   Type:    Key 1 encrypted, IAT
+  CreateCompatibleDC
+   Address: 0x77f15fe0
+   ASPR id: 0x48CA
+   Type:    Key 1 encrypted, IAT
+  CreateCompatibleBitmap
+   Address: 0x77f1700a
+   ASPR id: 0x208B
+   Type:    Key 1 encrypted, IAT
+  CreateBrushIndirect
+   Address: 0x77f1d969
+   ASPR id: 0xE06B
+   Type:    Key 1 encrypted, IAT
+  CreateBitmap
+   Address: 0x77f161ef
+   ASPR id: 0x7C67
+   Type:    Key 1 encrypted, IAT
+  CopyEnhMetaFileA
+   Address: 0x77f27090
+   ASPR id: 0x0298
+   Type:    Key 1 encrypted, IAT
+  CombineRgn
+   Address: 0x77f195e7
+   ASPR id: 0x1D8E
+   Type:    Key 1 encrypted, IAT
+  BitBlt
+   Address: 0x77f16f79
+   ASPR id: 0xCB2A
+   Type:    Key 1 encrypted, IAT
+  AbortDoc
+   Address: 0x77f45021
+   ASPR id: 0xD763
+   Type:    Key 1 encrypted, IAT
+user32.dll
+  Module base: 0x7e360000
+  ASPR id:     0x8BCC
+  IAT at:      0x0074b794
+ Imports:
+  wvsprintfA
+   Address: 0x7e36a610
+   ASPR id: 0x1B85
+   Type:    Key 1 encrypted, IAT
+  mouse_event
+   Address: 0x7e3b673f
+   ASPR id: 0x8AEF
+   Type:    Key 1 encrypted, IAT
+  keybd_event
+   Address: 0x7e3b6783
+   ASPR id: 0x538C
+   Type:    Key 1 encrypted, IAT
+  WindowFromPoint
+   Address: 0x7e379766
+   ASPR id: 0xF55F
+   Type:    Key 1 encrypted, IAT
+  WindowFromDC
+   Address: 0x7e37fa3e
+   ASPR id: 0x51B0
+   Type:    Key 1 encrypted, IAT
+  WinHelpA
+   Address: 0x7e38ee5d
+   ASPR id: 0x85B7
+   Type:    Key 1 encrypted, no IAT
+  WaitMessage
+   Address: 0x7e36940c
+   ASPR id: 0xCADE
+   Type:    Key 1 encrypted, IAT
+  WaitForInputIdle
+   Address: 0x7e39faf5
+   ASPR id: 0xEDDF
+   Type:    Key 1 encrypted, IAT
+  ValidateRect
+   Address: 0x7e37fbbd
+   ASPR id: 0x5F5C
+   Type:    Key 1 encrypted, IAT
+  UpdateWindow
+   Address: 0x7e37aeab
+   ASPR id: 0xC89F
+   Type:    Key 1 encrypted, IAT
+  UnregisterClassA
+   Address: 0x7e3789a3
+   ASPR id: 0x0BFF
+   Type:    Key 1 encrypted, no IAT
+  UnhookWindowsHookEx
+   Address: 0x7e37d5f3
+   ASPR id: 0x474A
+   Type:    Key 1 encrypted, IAT
+  TranslateMessage
+   Address: 0x7e368bf6
+   ASPR id: 0x99E7
+   Type:    Key 1 encrypted, IAT
+  TranslateMDISysAccel
+   Address: 0x7e37fb2f
+   ASPR id: 0x504D
+   Type:    Key 1 encrypted, IAT
+  TrackPopupMenu
+   Address: 0x7e3b531e
+   ASPR id: 0xC0E7
+   Type:    Key 1 encrypted, IAT
+  ToUnicode
+   Address: 0x7e3b66a8
+   ASPR id: 0x8159
+   Type:    Key 1 encrypted, IAT
+  ToAsciiEx
+   Address: 0x7e3a577e
+   ASPR id: 0x1A59
+   Type:    Key 1 encrypted, IAT
+  ToAscii
+   Address: 0x7e3a5721
+   ASPR id: 0xEAED
+   Type:    Key 1 encrypted, IAT
+  TabbedTextOutW
+   Address: 0x7e3aa5b6
+   ASPR id: 0x88E5
+   Type:    Key 1 encrypted, IAT
+  TabbedTextOutA
+   Address: 0x7e3aa5e5
+   ASPR id: 0xA362
+   Type:    Key 1 encrypted, IAT
+  SystemParametersInfoA
+   Address: 0x7e37deb2
+   ASPR id: 0x0196
+   Type:    Key 1 encrypted, IAT
+  ShowWindow
+   Address: 0x7e37af56
+   ASPR id: 0x2641
+   Type:    Key 1 encrypted, IAT
+  ShowOwnedPopups
+   Address: 0x7e3a61e6
+   ASPR id: 0xE1EE
+   Type:    Key 1 encrypted, IAT
+  ShowCursor
+   Address: 0x7e37fa6e
+   ASPR id: 0x624E
+   Type:    Key 1 encrypted, IAT
+  ShowCaret
+   Address: 0x7e37b09a
+   ASPR id: 0x13A9
+   Type:    Key 1 encrypted, IAT
+  SetWindowRgn
+   Address: 0x7e37e528
+   ASPR id: 0xBFA4
+   Type:    Key 1 encrypted, IAT
+  SetWindowsHookExA
+   Address: 0x7e381211
+   ASPR id: 0xCCBE
+   Type:    Key 1 encrypted, IAT
+  SetWindowTextW
+   Address: 0x7e37960e
+   ASPR id: 0x077B
+   Type:    Key 1 encrypted, IAT
+  SetWindowTextA
+   Address: 0x7e37f56b
+   ASPR id: 0xDBCA
+   Type:    Key 1 encrypted, IAT
+  SetWindowPos
+   Address: 0x7e3799f3
+   ASPR id: 0xBD69
+   Type:    Key 1 encrypted, IAT
+  SetWindowPlacement
+   Address: 0x7e36de46
+   ASPR id: 0xAFE1
+   Type:    Key 1 encrypted, IAT
+  SetWindowLongW
+   Address: 0x7e37c2bb
+   ASPR id: 0xB64E
+   Type:    Key 1 encrypted, IAT
+  SetWindowLongA
+   Address: 0x7e37c29d
+   ASPR id: 0x7873
+   Type:    Key 1 encrypted, IAT
+  SetTimer
+   Address: 0x7e368c2e
+   ASPR id: 0x9B15
+   Type:    Key 1 encrypted, IAT
+  SetScrollRange
+   Address: 0x7e37f99b
+   ASPR id: 0x24DC
+   Type:    Key 1 encrypted, IAT
+  SetScrollPos
+   Address: 0x7e37f750
+   ASPR id: 0x1E1A
+   Type:    Key 1 encrypted, IAT
+  SetScrollInfo
+   Address: 0x7e369056
+   ASPR id: 0x84A3
+   Type:    Key 1 encrypted, IAT
+  SetRect
+   Address: 0x7e378fa6
+   ASPR id: 0x07DA
+   Type:    Key 1 encrypted, IAT
+  SetPropA
+   Address: 0x7e380000
+   ASPR id: 0xA09D
+   Type:    Key 1 encrypted, IAT
+  SetMenuItemInfoW
+   Address: 0x7e373281
+   ASPR id: 0x7431
+   Type:    Key 1 encrypted, IAT
+  SetMenuItemInfoA
+   Address: 0x7e3bae5e
+   ASPR id: 0x6A70
+   Type:    Key 1 encrypted, IAT
+  SetMenu
+   Address: 0x7e39f3f6
+   ASPR id: 0xB354
+   Type:    Key 1 encrypted, IAT
+  SetForegroundWindow
+   Address: 0x7e3742ed
+   ASPR id: 0x6326
+   Type:    Key 1 encrypted, IAT
+  SetFocus
+   Address: 0x7e37b112
+   ASPR id: 0xD248
+   Type:    Key 1 encrypted, IAT
+  SetDlgItemTextW
+   Address: 0x7e37736c
+   ASPR id: 0xAAD1
+   Type:    Key 1 encrypted, IAT
+  SetDlgItemTextA
+   Address: 0x7e38c972
+   ASPR id: 0xE488
+   Type:    Key 1 encrypted, IAT
+  SetCursorPos
+   Address: 0x7e3a61b3
+   ASPR id: 0x5A75
+   Type:    Key 1 encrypted, IAT
+  SetCursor
+   Address: 0x7e379930
+   ASPR id: 0x5512
+   Type:    Key 1 encrypted, IAT
+  SetClipboardData
+   Address: 0x7e380f9e
+   ASPR id: 0xE6AA
+   Type:    Key 1 encrypted, IAT
+  SetClassLongA
+   Address: 0x7e37fe71
+   ASPR id: 0xD71B
+   Type:    Key 1 encrypted, IAT
+  SetCaretPos
+   Address: 0x7e37a962
+   ASPR id: 0xE4B7
+   Type:    Key 1 encrypted, IAT
+  SetCapture
+   Address: 0x7e37c35e
+   ASPR id: 0x9716
+   Type:    Key 1 encrypted, IAT
+  SetActiveWindow
+   Address: 0x7e377822
+   ASPR id: 0xB519
+   Type:    Key 1 encrypted, IAT
+  SendMessageTimeoutA
+   Address: 0x7e37fb6b
+   ASPR id: 0x1AD1
+   Type:    Key 1 encrypted, IAT
+  SendMessageW
+   Address: 0x7e37929a
+   ASPR id: 0x9DAF
+   Type:    Key 1 encrypted, IAT
+  SendMessageA
+   Address: 0x7e37f3c2
+   ASPR id: 0x63D2
+   Type:    Key 1 encrypted, IAT
+  SendDlgItemMessageA
+   Address: 0x7e38c2e7
+   ASPR id: 0x9301
+   Type:    Key 1 encrypted, IAT
+  ScrollWindow
+   Address: 0x7e37ff39
+   ASPR id: 0x7146
+   Type:    Key 1 encrypted, IAT
+  ScreenToClient
+   Address: 0x7e3797a0
+   ASPR id: 0xBF13
+   Type:    Key 1 encrypted, IAT
+  RemovePropA
+   Address: 0x7e380094
+   ASPR id: 0x77D6
+   Type:    Key 1 encrypted, IAT
+  RemoveMenu
+   Address: 0x7e36f716
+   ASPR id: 0xE5F0
+   Type:    Key 1 encrypted, IAT
+  ReleaseDC
+   Address: 0x7e36869d
+   ASPR id: 0xFE05
+   Type:    Key 1 encrypted, IAT
+  ReleaseCapture
+   Address: 0x7e37c37a
+   ASPR id: 0x9C94
+   Type:    Key 1 encrypted, IAT
+  RegisterWindowMessageA
+   Address: 0x7e368e28
+   ASPR id: 0xDBA8
+   Type:    Key 1 encrypted, IAT
+  RegisterClipboardFormatA
+   Address: 0x7e368e28
+   ASPR id: 0x1C56
+   Type:    Key 1 encrypted, IAT
+  RegisterClassW
+   Address: 0x7e36a39a
+   ASPR id: 0x172A
+   Type:    Key 1 encrypted, IAT
+  RegisterClassA
+   Address: 0x7e37ea5e
+   ASPR id: 0xE3D6
+   Type:    Key 1 encrypted, no IAT
+  PtInRect
+   Address: 0x7e379719
+   ASPR id: 0x3A74
+   Type:    Key 1 encrypted, IAT
+  PostQuitMessage
+   Address: 0x7e37ca5a
+   ASPR id: 0x108C
+   Type:    Key 1 encrypted, IAT
+  PostMessageA
+   Address: 0x7e37aafd
+   ASPR id: 0x6C27
+   Type:    Key 1 encrypted, IAT
+  PeekMessageW
+   Address: 0x7e36929b
+   ASPR id: 0x9C40
+   Type:    Key 1 encrypted, IAT
+  PeekMessageA
+   Address: 0x7e37a340
+   ASPR id: 0x60A7
+   Type:    Key 1 encrypted, IAT
+  OpenDesktopA
+   Address: 0x7e382369
+   ASPR id: 0xC5EF
+   Type:    Key 1 encrypted, IAT
+  OpenClipboard
+   Address: 0x7e380277
+   ASPR id: 0xE7C7
+   Type:    Key 1 encrypted, IAT
+  OffsetRect
+   Address: 0x7e379011
+   ASPR id: 0x5D79
+   Type:    Key 1 encrypted, IAT
+  OemToCharBuffA
+   Address: 0x7e380116
+   ASPR id: 0x0CF5
+   Type:    Key 1 encrypted, IAT
+  OemToCharA
+   Address: 0x7e3800d7
+   ASPR id: 0xA028
+   Type:    Key 1 encrypted, IAT
+  MsgWaitForMultipleObjects
+   Address: 0x7e369689
+   ASPR id: 0x8F35
+   Type:    Key 1 encrypted, IAT
+  MoveWindow
+   Address: 0x7e37b29e
+   ASPR id: 0x6003
+   Type:    Key 1 encrypted, IAT
+  ModifyMenuW
+   Address: 0x7e36f51f
+   ASPR id: 0xB359
+   Type:    Key 1 encrypted, IAT
+  ModifyMenuA
+   Address: 0x7e39f20b
+   ASPR id: 0x625C
+   Type:    Key 1 encrypted, IAT
+  MessageBoxW
+   Address: 0x7e3b6534
+   ASPR id: 0x6E26
+   Type:    Key 1 encrypted, IAT
+  MessageBoxA
+   Address: 0x7e3a07ea
+   ASPR id: 0x7DE8
+   Type:    Key 1 encrypted, no IAT
+  MessageBeep
+   Address: 0x7e381f7b
+   ASPR id: 0xCA1A
+   Type:    Key 1 encrypted, IAT
+  MapWindowPoints
+   Address: 0x7e379507
+   ASPR id: 0x6D6D
+   Type:    Key 1 encrypted, IAT
+  MapVirtualKeyW
+   Address: 0x7e3a029e
+   ASPR id: 0x10B2
+   Type:    Key 1 encrypted, IAT
+  MapVirtualKeyA
+   Address: 0x7e37feea
+   ASPR id: 0xEE47
+   Type:    Key 1 encrypted, IAT
+  LookupIconIdFromDirectoryEx
+   Address: 0x7e36c4da
+   ASPR id: 0x14CD
+   Type:    Key 1 encrypted, IAT
+  LockWindowUpdate
+   Address: 0x7e389636
+   ASPR id: 0x63ED
+   Type:    Key 1 encrypted, IAT
+  LoadStringA
+   Address: 0x7e37c908
+   ASPR id: 0x3008
+   Type:    Key 1 encrypted, IAT
+  LoadKeyboardLayoutA
+   Address: 0x7e3a6262
+   ASPR id: 0x05E8
+   Type:    Key 1 encrypted, IAT
+  LoadImageW
+   Address: 0x7e377b97
+   ASPR id: 0xA55A
+   Type:    Key 1 encrypted, IAT
+  LoadImageA
+   Address: 0x7e377c08
+   ASPR id: 0x3D88
+   Type:    Key 1 encrypted, IAT
+  LoadIconA
+   Address: 0x7e37e8f6
+   ASPR id: 0x1FF7
+   Type:    Key 1 encrypted, no IAT
+  LoadCursorA
+   Address: 0x7e37d33e
+   ASPR id: 0xE9E7
+   Type:    Key 1 encrypted, IAT
+  LoadBitmapA
+   Address: 0x7e37473c
+   ASPR id: 0xF6CF
+   Type:    Key 1 encrypted, IAT
+  KillTimer
+   Address: 0x7e368c42
+   ASPR id: 0x5EE7
+   Type:    Key 1 encrypted, IAT
+  IsZoomed
+   Address: 0x7e379c8a
+   ASPR id: 0x8B05
+   Type:    Key 1 encrypted, IAT
+  IsWindowVisible
+   Address: 0x7e379e3d
+   ASPR id: 0x2EE0
+   Type:    Key 1 encrypted, IAT
+  IsWindowUnicode
+   Address: 0x7e379f72
+   ASPR id: 0xEFDF
+   Type:    Key 1 encrypted, IAT
+  IsWindowEnabled
+   Address: 0x7e37977a
+   ASPR id: 0x0801
+   Type:    Key 1 encrypted, IAT
+  IsWindow
+   Address: 0x7e379313
+   ASPR id: 0x292A
+   Type:    Key 1 encrypted, IAT
+  IsRectEmpty
+   Address: 0x7e3798fe
+   ASPR id: 0x8594
+   Type:    Key 1 encrypted, IAT
+  IsIconic
+   Address: 0x7e3797ff
+   ASPR id: 0x4104
+   Type:    Key 1 encrypted, IAT
+  IsDlgButtonChecked
+   Address: 0x7e374dfa
+   ASPR id: 0x9A9E
+   Type:    Key 1 encrypted, IAT
+  IsDialogMessageA
+   Address: 0x7e38c689
+   ASPR id: 0x5087
+   Type:    Key 1 encrypted, IAT
+  IsClipboardFormatAvailable
+   Address: 0x7e37f166
+   ASPR id: 0x7E97
+   Type:    Key 1 encrypted, IAT
+  IsChild
+   Address: 0x7e36970e
+   ASPR id: 0xE6D4
+   Type:    Key 1 encrypted, IAT
+  IsCharAlphaNumericW
+   Address: 0x7e371ac2
+   ASPR id: 0x962A
+   Type:    Key 1 encrypted, IAT
+  IsCharAlphaNumericA
+   Address: 0x7e39f469
+   ASPR id: 0x1063
+   Type:    Key 1 encrypted, IAT
+  IsCharAlphaA
+   Address: 0x7e38e5e6
+   ASPR id: 0x013F
+   Type:    Key 1 encrypted, IAT
+  InvalidateRect
+   Address: 0x7e378fd5
+   ASPR id: 0x2CA6
+   Type:    Key 1 encrypted, IAT
+  IntersectRect
+   Address: 0x7e378f1f
+   ASPR id: 0x14BE
+   Type:    Key 1 encrypted, IAT
+  InsertMenuItemW
+   Address: 0x7e36f5c8
+   ASPR id: 0xD267
+   Type:    Key 1 encrypted, IAT
+  InsertMenuItemA
+   Address: 0x7e39f710
+   ASPR id: 0x61CA
+   Type:    Key 1 encrypted, IAT
+  InsertMenuW
+   Address: 0x7e36f60e
+   ASPR id: 0xCB66
+   Type:    Key 1 encrypted, IAT
+  InsertMenuA
+   Address: 0x7e38ed26
+   ASPR id: 0xD569
+   Type:    Key 1 encrypted, IAT
+  InflateRect
+   Address: 0x7e3798d5
+   ASPR id: 0xBE1C
+   Type:    Key 1 encrypted, IAT
+  HideCaret
+   Address: 0x7e37b086
+   ASPR id: 0x42CF
+   Type:    Key 1 encrypted, IAT
+  GetWindowThreadProcessId
+   Address: 0x7e368a80
+   ASPR id: 0x00B6
+   Type:    Key 1 encrypted, IAT
+  GetWindowTextLengthW
+   Address: 0x7e377836
+   ASPR id: 0x1FC5
+   Type:    Key 1 encrypted, IAT
+  GetWindowTextLengthA
+   Address: 0x7e39f18b
+   ASPR id: 0x5AA3
+   Type:    Key 1 encrypted, IAT
+  GetWindowTextW
+   Address: 0x7e37a5cd
+   ASPR id: 0xADE8
+   Type:    Key 1 encrypted, IAT
+  GetWindowTextA
+   Address: 0x7e38216b
+   ASPR id: 0xBA47
+   Type:    Key 1 encrypted, IAT
+  GetWindowRgn
+   Address: 0x7e36e443
+   ASPR id: 0x0CB8
+   Type:    Key 1 encrypted, IAT
+  GetWindowRect
+   Address: 0x7e3790b4
+   ASPR id: 0x2AB4
+   Type:    Key 1 encrypted, IAT
+  GetWindowPlacement
+   Address: 0x7e3803c7
+   ASPR id: 0x0F9F
+   Type:    Key 1 encrypted, IAT
+  GetWindowLongW
+   Address: 0x7e3688a6
+   ASPR id: 0x3177
+   Type:    Key 1 encrypted, IAT
+  GetWindowLongA
+   Address: 0x7e36945d
+   ASPR id: 0x0088
+   Type:    Key 1 encrypted, IAT
+  GetUserObjectSecurity
+   Address: 0x7e3a5b65
+   ASPR id: 0x3EDA
+   Type:    Key 1 encrypted, IAT
+  GetUpdateRect
+   Address: 0x7e37a8c9
+   ASPR id: 0x932D
+   Type:    Key 1 encrypted, IAT
+  GetThreadDesktop
+   Address: 0x7e369a51
+   ASPR id: 0x6222
+   Type:    Key 1 encrypted, IAT
+  GetTabbedTextExtentW
+   Address: 0x7e3aa677
+   ASPR id: 0xF9EE
+   Type:    Key 1 encrypted, IAT
+  GetTabbedTextExtentA
+   Address: 0x7e3aa6a1
+   ASPR id: 0x15FD
+   Type:    Key 1 encrypted, IAT
+  GetSystemMetrics
+   Address: 0x7e368f9c
+   ASPR id: 0x8FF2
+   Type:    Key 1 encrypted, IAT
+  GetSystemMenu
+   Address: 0x7e37b222
+   ASPR id: 0xDBAC
+   Type:    Key 1 encrypted, IAT
+  GetSysColor
+   Address: 0x7e368e78
+   ASPR id: 0x83D3
+   Type:    Key 1 encrypted, IAT
+  GetSubMenu
+   Address: 0x7e37d896
+   ASPR id: 0xFB2E
+   Type:    Key 1 encrypted, IAT
+  GetScrollRange
+   Address: 0x7e37f787
+   ASPR id: 0xF051
+   Type:    Key 1 encrypted, IAT
+  GetScrollPos
+   Address: 0x7e37f704
+   ASPR id: 0xB04A
+   Type:    Key 1 encrypted, IAT
+  GetScrollInfo
+   Address: 0x7e37dfe2
+   ASPR id: 0xA671
+   Type:    Key 1 encrypted, IAT
+  GetPropA
+   Address: 0x7e380042
+   ASPR id: 0xC6AA
+   Type:    Key 1 encrypted, IAT
+  GetParent
+   Address: 0x7e37910f
+   ASPR id: 0x8972
+   Type:    Key 1 encrypted, IAT
+  GetWindow
+   Address: 0x7e379655
+   ASPR id: 0xF32F
+   Type:    Key 1 encrypted, IAT
+  GetNextDlgTabItem
+   Address: 0x7e3737c3
+   ASPR id: 0x10F5
+   Type:    Key 1 encrypted, IAT
+  GetMessagePos
+   Address: 0x7e37996c
+   ASPR id: 0x303B
+   Type:    Key 1 encrypted, IAT
+  GetMessageA
+   Address: 0x7e37772b
+   ASPR id: 0x2DF3
+   Type:    Key 1 encrypted, IAT
+  GetMenuStringW
+   Address: 0x7e3a64e4
+   ASPR id: 0xABE6
+   Type:    Key 1 encrypted, IAT
+  GetMenuStringA
+   Address: 0x7e39f24e
+   ASPR id: 0xFE5E
+   Type:    Key 1 encrypted, IAT
+  GetMenuState
+   Address: 0x7e36f967
+   ASPR id: 0x7706
+   Type:    Key 1 encrypted, IAT
+  GetMenuItemInfoW
+   Address: 0x7e36f72a
+   ASPR id: 0x33E0
+   Type:    Key 1 encrypted, IAT
+  GetMenuItemInfoA
+   Address: 0x7e37f0ad
+   ASPR id: 0x73CE
+   Type:    Key 1 encrypted, IAT
+  GetMenuItemID
+   Address: 0x7e39f1c8
+   ASPR id: 0x08FC
+   Type:    Key 1 encrypted, IAT
+  GetMenuItemCount
+   Address: 0x7e37ef1c
+   ASPR id: 0x81D2
+   Type:    Key 1 encrypted, IAT
+  GetMenu
+   Address: 0x7e3814ba
+   ASPR id: 0x593E
+   Type:    Key 1 encrypted, IAT
+  GetLastActivePopup
+   Address: 0x7e38157a
+   ASPR id: 0xA961
+   Type:    Key 1 encrypted, IAT
+  GetKeyboardState
+   Address: 0x7e37d226
+   ASPR id: 0x7F44
+   Type:    Key 1 encrypted, IAT
+  GetKeyboardLayout
+   Address: 0x7e379bf6
+   ASPR id: 0xFD04
+   Type:    Key 1 encrypted, IAT
+  GetKeyState
+   Address: 0x7e379ed9
+   ASPR id: 0x12E1
+   Type:    Key 1 encrypted, IAT
+  GetKeyNameTextA
+   Address: 0x7e39f6b4
+   ASPR id: 0x338F
+   Type:    Key 1 encrypted, IAT
+  GetIconInfo
+   Address: 0x7e37d427
+   ASPR id: 0x5CE7
+   Type:    Key 1 encrypted, IAT
+  GetForegroundWindow
+   Address: 0x7e379823
+   ASPR id: 0x22B6
+   Type:    Key 1 encrypted, IAT
+  GetFocus
+   Address: 0x7e3798c8
+   ASPR id: 0xD1AF
+   Type:    Key 1 encrypted, IAT
+  GetDoubleClickTime
+   Address: 0x7e37d86b
+   ASPR id: 0x8F10
+   Type:    Key 1 encrypted, IAT
+  GetDlgItemTextA
+   Address: 0x7e3bb05e
+   ASPR id: 0x3A7A
+   Type:    Key 1 encrypted, IAT
+  GetDlgItem
+   Address: 0x7e37436e
+   ASPR id: 0x7A83
+   Type:    Key 1 encrypted, IAT
+  GetDlgCtrlID
+   Address: 0x7e37af1b
+   ASPR id: 0xBB29
+   Type:    Key 1 encrypted, IAT
+  GetDialogBaseUnits
+   Address: 0x7e3a6003
+   ASPR id: 0xB48B
+   Type:    Key 1 encrypted, IAT
+  GetDesktopWindow
+   Address: 0x7e37d1d2
+   ASPR id: 0xE524
+   Type:    Key 1 encrypted, IAT
+  GetDCEx
+   Address: 0x7e37c595
+   ASPR id: 0x7FE8
+   Type:    Key 1 encrypted, IAT
+  GetDC
+   Address: 0x7e3686c7
+   ASPR id: 0x592D
+   Type:    Key 1 encrypted, IAT
+  GetCursorPos
+   Address: 0x7e37974e
+   ASPR id: 0xB78B
+   Type:    Key 1 encrypted, IAT
+  GetCursor
+   Address: 0x7e37a91b
+   ASPR id: 0x6990
+   Type:    Key 1 encrypted, IAT
+  GetClipboardData
+   Address: 0x7e380dba
+   ASPR id: 0x88DE
+   Type:    Key 1 encrypted, IAT
+  GetClientRect
+   Address: 0x7e37908e
+   ASPR id: 0x8B06
+   Type:    Key 1 encrypted, IAT
+  GetClassNameA
+   Address: 0x7e37f45f
+   ASPR id: 0xABBD
+   Type:    Key 1 encrypted, IAT
+  GetClassLongA
+   Address: 0x7e37f4f1
+   ASPR id: 0x7E10
+   Type:    Key 1 encrypted, IAT
+  GetClassInfoW
+   Address: 0x7e37e81e
+   ASPR id: 0x88B6
+   Type:    Key 1 encrypted, IAT
+  GetClassInfoA
+   Address: 0x7e38ebff
+   ASPR id: 0xC3BA
+   Type:    Key 1 encrypted, IAT
+  GetCapture
+   Address: 0x7e3694da
+   ASPR id: 0x0C6E
+   Type:    Key 1 encrypted, IAT
+  GetAsyncKeyState
+   Address: 0x7e37a78f
+   ASPR id: 0x780F
+   Type:    Key 1 encrypted, IAT
+  GetActiveWindow
+   Address: 0x7e37c2e8
+   ASPR id: 0x8B36
+   Type:    Key 1 encrypted, IAT
+  FrameRect
+   Address: 0x7e37f92a
+   ASPR id: 0xE195
+   Type:    Key 1 encrypted, IAT
+  FlashWindow
+   Address: 0x7e3a5fc4
+   ASPR id: 0x2242
+   Type:    Key 1 encrypted, IAT
+  FindWindowA
+   Address: 0x7e3782e1
+   ASPR id: 0x38BA
+   Type:    Key 1 encrypted, IAT
+  FillRect
+   Address: 0x7e379c2f
+   ASPR id: 0x03F3
+   Type:    Key 1 encrypted, IAT
+  EqualRect
+   Address: 0x7e379e81
+   ASPR id: 0x2AF3
+   Type:    Key 1 encrypted, IAT
+  EnumWindows
+   Address: 0x7e37a5ae
+   ASPR id: 0x2336
+   Type:    Key 1 encrypted, IAT
+  EnumThreadWindows
+   Address: 0x7e37f539
+   ASPR id: 0xBCF0
+   Type:    Key 1 encrypted, IAT
+  EnumDesktopWindows
+   Address: 0x7e37851a
+   ASPR id: 0x4DEF
+   Type:    Key 1 encrypted, IAT
+  EnumClipboardFormats
+   Address: 0x7e38e53d
+   ASPR id: 0x3C4B
+   Type:    Key 1 encrypted, IAT
+  EndPaint
+   Address: 0x7e378ffd
+   ASPR id: 0x08D9
+   Type:    Key 1 encrypted, IAT
+  EnableWindow
+   Address: 0x7e379849
+   ASPR id: 0x3C68
+   Type:    Key 1 encrypted, IAT
+  EnableMenuItem
+   Address: 0x7e37d2c4
+   ASPR id: 0xF773
+   Type:    Key 1 encrypted, IAT
+  EmptyClipboard
+   Address: 0x7e380d96
+   ASPR id: 0xF381
+   Type:    Key 1 encrypted, IAT
+  DrawTextW
+   Address: 0x7e37d7e2
+   ASPR id: 0x58C8
+   Type:    Key 1 encrypted, IAT
+  DrawTextA
+   Address: 0x7e38c702
+   ASPR id: 0x0422
+   Type:    Key 1 encrypted, IAT
+  DrawMenuBar
+   Address: 0x7e39f69c
+   ASPR id: 0xB62F
+   Type:    Key 1 encrypted, IAT
+  DrawIconEx
+   Address: 0x7e37cb84
+   ASPR id: 0xA46E
+   Type:    Key 1 encrypted, IAT
+  DrawIcon
+   Address: 0x7e38d06c
+   ASPR id: 0x5B68
+   Type:    Key 1 encrypted, IAT
+  DrawFrameControl
+   Address: 0x7e38e940
+   ASPR id: 0x7811
+   Type:    Key 1 encrypted, IAT
+  DrawFocusRect
+   Address: 0x7e37f94f
+   ASPR id: 0x1F92
+   Type:    Key 1 encrypted, IAT
+  DrawEdge
+   Address: 0x7e37fbf6
+   ASPR id: 0x22AA
+   Type:    Key 1 encrypted, IAT
+  DispatchMessageW
+   Address: 0x7e368a01
+   ASPR id: 0x7CE9
+   Type:    Key 1 encrypted, IAT
+  DispatchMessageA
+   Address: 0x7e3696b8
+   ASPR id: 0xE807
+   Type:    Key 1 encrypted, IAT
+  DestroyWindow
+   Address: 0x7e37b19c
+   ASPR id: 0x8164
+   Type:    Key 1 encrypted, IAT
+  DestroyMenu
+   Address: 0x7e37d39d
+   ASPR id: 0x6C9B
+   Type:    Key 1 encrypted, IAT
+  DestroyIcon
+   Address: 0x7e37d312
+   ASPR id: 0xD478
+   Type:    Key 1 encrypted, no IAT
+  DestroyCaret
+   Address: 0x7e379c0e
+   ASPR id: 0x23E2
+   Type:    Key 1 encrypted, IAT
+  DeleteMenu
+   Address: 0x7e37ced3
+   ASPR id: 0x76AB
+   Type:    Key 1 encrypted, IAT
+  DefWindowProcW
+   Address: 0x7e378d20
+   ASPR id: 0x03C0
+   Type:    Key 1 encrypted, IAT
+  DefWindowProcA
+   Address: 0x7e37c17e
+   ASPR id: 0x0DC5
+   Type:    Key 1 encrypted, IAT
+  DefMDIChildProcA
+   Address: 0x7e39f9b4
+   ASPR id: 0xFAF6
+   Type:    Key 1 encrypted, IAT
+  DefFrameProcA
+   Address: 0x7e39f965
+   ASPR id: 0x14BD
+   Type:    Key 1 encrypted, IAT
+  CreateWindowExW
+   Address: 0x7e37d0a3
+   ASPR id: 0x3E3F
+   Type:    Key 1 encrypted, IAT
+  CreateWindowExA
+   Address: 0x7e37e4a9
+   ASPR id: 0x30B6
+   Type:    Key 1 encrypted, IAT
+  CreatePopupMenu
+   Address: 0x7e36f601
+   ASPR id: 0x12BC
+   Type:    Key 1 encrypted, IAT
+  CreateMenu
+   Address: 0x7e37f306
+   ASPR id: 0xCCA2
+   Type:    Key 1 encrypted, IAT
+  CreateIconIndirect
+   Address: 0x7e36c86c
+   ASPR id: 0x1DAE
+   Type:    Key 1 encrypted, no IAT
+  CreateIconFromResourceEx
+   Address: 0x7e36d354
+   ASPR id: 0x036B
+   Type:    Key 1 encrypted, no IAT
+  CreateIcon
+   Address: 0x7e3a70bc
+   ASPR id: 0xC0B9
+   Type:    Key 1 encrypted, no IAT
+  CreateDialogParamW
+   Address: 0x7e36ea3b
+   ASPR id: 0x5CAE
+   Type:    Key 1 encrypted, IAT
+  CreateDialogParamA
+   Address: 0x7e38c7db
+   ASPR id: 0x771F
+   Type:    Key 1 encrypted, no IAT
+  CreateCaret
+   Address: 0x7e37a94e
+   ASPR id: 0x0273
+   Type:    Key 1 encrypted, IAT
+  CloseDesktop
+   Address: 0x7e37812f
+   ASPR id: 0xD3B1
+   Type:    Key 1 encrypted, no IAT
+  CloseClipboard
+   Address: 0x7e380265
+   ASPR id: 0x6E5D
+   Type:    Key 1 encrypted, no IAT
+  ClientToScreen
+   Address: 0x7e379b60
+   ASPR id: 0x7870
+   Type:    Key 1 encrypted, IAT
+  CheckMenuItem
+   Address: 0x7e381abd
+   ASPR id: 0x2B4D
+   Type:    Key 1 encrypted, IAT
+  CheckDlgButton
+   Address: 0x7e374dca
+   ASPR id: 0x780E
+   Type:    Key 1 encrypted, IAT
+  CharUpperBuffW
+   Address: 0x7e369216
+   ASPR id: 0xBC6E
+   Type:    Key 1 encrypted, IAT
+  CharUpperW
+   Address: 0x7e3690d2
+   ASPR id: 0xD6D2
+   Type:    Key 1 encrypted, IAT
+  CharPrevExA
+   Address: 0x7e3b9882
+   ASPR id: 0x1522
+   Type:    Key 1 encrypted, IAT
+  CharPrevW
+   Address: 0x7e37d607
+   ASPR id: 0xA38C
+   Type:    Key 1 encrypted, IAT
+  CharNextExA
+   Address: 0x7e3b984e
+   ASPR id: 0xDD44
+   Type:    Key 1 encrypted, IAT
+  CharNextW
+   Address: 0x7e37b1b0
+   ASPR id: 0x3299
+   Type:    Key 1 encrypted, IAT
+  CharLowerBuffW
+   Address: 0x7e369e57
+   ASPR id: 0x13C2
+   Type:    Key 1 encrypted, IAT
+  CharLowerW
+   Address: 0x7e37b24c
+   ASPR id: 0xB428
+   Type:    Key 1 encrypted, IAT
+  CallWindowProcW
+   Address: 0x7e37a01e
+   ASPR id: 0x0D7B
+   Type:    Key 1 encrypted, IAT
+  CallWindowProcA
+   Address: 0x7e37a97d
+   ASPR id: 0x7C44
+   Type:    Key 1 encrypted, IAT
+  CallNextHookEx
+   Address: 0x7e37b3c6
+   ASPR id: 0x60DE
+   Type:    Key 1 encrypted, IAT
+  BringWindowToTop
+   Address: 0x7e3803a8
+   ASPR id: 0x2E49
+   Type:    Key 1 encrypted, no IAT
+  BeginPaint
+   Address: 0x7e378fe9
+   ASPR id: 0x96C7
+   Type:    Key 1 encrypted, IAT
+  AttachThreadInput
+   Address: 0x7e381e52
+   ASPR id: 0x66CD
+   Type:    Key 1 encrypted, IAT
+  AppendMenuW
+   Address: 0x7e3732ba
+   ASPR id: 0x8785
+   Type:    Key 1 encrypted, IAT
+  AppendMenuA
+   Address: 0x7e381b0e
+   ASPR id: 0xC62D
+   Type:    Key 1 encrypted, IAT
+  CharPrevA
+   Address: 0x7e37c8da
+   ASPR id: 0xAF13
+   Type:    Key 1 encrypted, IAT
+  CharNextA
+   Address: 0x7e37c8b0
+   ASPR id: 0x3334
+   Type:    Key 1 encrypted, IAT
+  CharLowerBuffA
+   Address: 0x7e378845
+   ASPR id: 0x8DE3
+   Type:    Key 1 encrypted, IAT
+  CharLowerA
+   Address: 0x7e378717
+   ASPR id: 0x2098
+   Type:    Key 1 encrypted, IAT
+  CharUpperBuffA
+   Address: 0x7e36ae3f
+   ASPR id: 0xEBD7
+   Type:    Key 1 encrypted, IAT
+  CharUpperA
+   Address: 0x7e368d2b
+   ASPR id: 0x6147
+   Type:    Key 1 encrypted, IAT
+  CharToOemBuffA
+   Address: 0x7e381626
+   ASPR id: 0x9936
+   Type:    Key 1 encrypted, IAT
+  CharToOemA
+   Address: 0x7e36aef1
+   ASPR id: 0xF6B7
+   Type:    Key 1 encrypted, IAT
+  AdjustWindowRectEx
+   Address: 0x7e37e7ea
+   ASPR id: 0xA5BA
+   Type:    Key 1 encrypted, IAT
+  ActivateKeyboardLayout
+   Address: 0x7e378673
+   ASPR id: 0x11B5
+   Type:    Key 1 encrypted, IAT
+shell32.dll
+  Module base: 0x7c9c0000
+  ASPR id:     0x18CE
+  IAT at:      0x0074bb94
+ Imports:
+  Shell_NotifyIconA
+   Address: 0x7ca28c76
+   ASPR id: 0x0812
+   Type:    Key 1 encrypted, IAT
+  ShellExecuteExA
+   Address: 0x7ca40ed5
+   ASPR id: 0x895C
+   Type:    Key 1 encrypted, no IAT
+  ShellExecuteW
+   Address: 0x7cab5fdd
+   ASPR id: 0xE86A
+   Type:    Key 1 encrypted, IAT
+  ShellExecuteA
+   Address: 0x7ca41200
+   ASPR id: 0x2553
+   Type:    Key 1 encrypted, no IAT
+  SHGetFileInfoA
+   Address: 0x7ca31601
+   ASPR id: 0x3ED7
+   Type:    Key 1 encrypted, no IAT
+  SHFileOperationA
+   Address: 0x7ca70c6c
+   ASPR id: 0x8F56
+   Type:    Key 1 encrypted, no IAT
+  FindExecutableW
+   Address: 0x7ca3fb3e
+   ASPR id: 0xCAB9
+   Type:    Key 1 encrypted, IAT
+  FindExecutableA
+   Address: 0x7ca3faac
+   ASPR id: 0x65AE
+   Type:    Key 1 encrypted, no IAT
+  ExtractIconW
+   Address: 0x7ca318ee
+   ASPR id: 0xA270
+   Type:    Key 1 encrypted, IAT
+  ExtractIconA
+   Address: 0x7ca73547
+   ASPR id: 0x0B2F
+   Type:    Key 1 encrypted, no IAT
+  DragQueryFileW
+   Address: 0x7ca18376
+   ASPR id: 0x4AFA
+   Type:    Key 1 encrypted, IAT
+  DragQueryFileA
+   Address: 0x7ca77d69
+   ASPR id: 0x42D3
+   Type:    Key 1 encrypted, IAT
+winmm.dll
+  Module base: 0x76b20000
+  ASPR id:     0xFC59
+  IAT at:      0x0074bbc8
+ Imports:
+  timeGetTime
+   Address: 0x76b24e4f
+   ASPR id: 0x7D4E
+   Type:    Key 1 encrypted, IAT
+  PlaySoundA
+   Address: 0x76b3a8bf
+   ASPR id: 0xB40B
+   Type:    Key 1 encrypted, IAT
+ole32.dll
+  Module base: 0x774d0000
+  ASPR id:     0xA7E5
+  IAT at:      0x0074bbd4
+ Imports:
+  CreateStreamOnHGlobal
+   Address: 0x774f59d8
+   ASPR id: 0xF25A
+   Type:    Key 1 encrypted, IAT
+  ReleaseStgMedium
+   Address: 0x7751b6eb
+   ASPR id: 0xCAA5
+   Type:    Key 1 encrypted, IAT
+  DoDragDrop
+   Address: 0x775c0fb7
+   ASPR id: 0xDDDC
+   Type:    Key 1 encrypted, IAT
+  RevokeDragDrop
+   Address: 0x77522bed
+   ASPR id: 0x8C04
+   Type:    Key 1 encrypted, IAT
+  RegisterDragDrop
+   Address: 0x774f1b4a
+   ASPR id: 0xFBBB
+   Type:    Key 1 encrypted, IAT
+  OleUninitialize
+   Address: 0x7752327f
+   ASPR id: 0x23E8
+   Type:    Key 1 encrypted, IAT
+  OleInitialize
+   Address: 0x774f1c0a
+   ASPR id: 0x0CCD
+   Type:    Key 1 encrypted, IAT
+  StgOpenStorage
+   Address: 0x774f6eec
+   ASPR id: 0xB9AF
+   Type:    Key 1 encrypted, IAT
+  StgCreateDocfile
+   Address: 0x77529b0f
+   ASPR id: 0x7DCC
+   Type:    Key 1 encrypted, IAT
+  CoTaskMemAlloc
+   Address: 0x774ed020
+   ASPR id: 0x4C80
+   Type:    Key 1 encrypted, IAT
+  CLSIDFromString
+   Address: 0x77520975
+   ASPR id: 0x9FE6
+   Type:    Key 1 encrypted, IAT
+  CoCreateInstance
+   Address: 0x774ef1d4
+   ASPR id: 0xF58A
+   Type:    Key 1 encrypted, IAT
+  CoGetMalloc
+   Address: 0x774ededc
+   ASPR id: 0xB996
+   Type:    Key 1 encrypted, IAT
+  CoUninitialize
+   Address: 0x774f1364
+   ASPR id: 0x17D2
+   Type:    Key 1 encrypted, IAT
+  CoInitialize
+   Address: 0x7751f9ba
+   ASPR id: 0x3F05
+   Type:    Key 1 encrypted, IAT
+  IsEqualGUID
+   Address: 0x77568ca7
+   ASPR id: 0xE98B
+   Type:    Key 1 encrypted, IAT
+comctl32.dll
+  Module base: 0x773c0000
+  ASPR id:     0x9911
+  IAT at:      0x0074bc18
+ Imports:
+  ImageList_GetImageInfo
+   Address: 0x773d56fb
+   ASPR id: 0xAE63
+   Type:    Key 2 encrypted, IAT
+  ImageList_SetIconSize
+   Address: 0x773d56b3
+   ASPR id: 0xA570
+   Type:    Key 2 encrypted, IAT
+  ImageList_GetIconSize
+   Address: 0x773d566b
+   ASPR id: 0xF7FE
+   Type:    Key 2 encrypted, IAT
+  ImageList_GetDragImage
+   Address: 0x773d4e22
+   ASPR id: 0xCA93
+   Type:    Key 2 encrypted, IAT
+  ImageList_DragShowNolock
+   Address: 0x773d4f7e
+   ASPR id: 0xD301
+   Type:    Key 2 encrypted, IAT
+  ImageList_SetDragCursorImage
+   Address: 0x773d4dce
+   ASPR id: 0x2F9F
+   Type:    Key 2 encrypted, IAT
+  ImageList_DragMove
+   Address: 0x773d4f2b
+   ASPR id: 0x3713
+   Type:    Key 2 encrypted, IAT
+  ImageList_DragLeave
+   Address: 0x773d4f56
+   ASPR id: 0xE286
+   Type:    Key 2 encrypted, IAT
+  ImageList_DragEnter
+   Address: 0x773d4efd
+   ASPR id: 0x3859
+   Type:    Key 2 encrypted, IAT
+  ImageList_EndDrag
+   Address: 0x773d4e67
+   ASPR id: 0xE80A
+   Type:    Key 2 encrypted, IAT
+  ImageList_BeginDrag
+   Address: 0x773d4eb5
+   ASPR id: 0x0690
+   Type:    Key 2 encrypted, IAT
+  ImageList_Remove
+   Address: 0x773d558d
+   ASPR id: 0x7EA9
+   Type:    Key 2 encrypted, IAT
+  ImageList_DrawEx
+   Address: 0x773d53d0
+   ASPR id: 0xA12E
+   Type:    Key 2 encrypted, IAT
+  ImageList_AddMasked
+   Address: 0x773d5389
+   ASPR id: 0x9EC7
+   Type:    Key 2 encrypted, IAT
+  ImageList_Replace
+   Address: 0x773d533e
+   ASPR id: 0x41C8
+   Type:    Key 2 encrypted, IAT
+  ImageList_Draw
+   Address: 0x773d5468
+   ASPR id: 0x9E3C
+   Type:    Key 2 encrypted, IAT
+  ImageList_GetBkColor
+   Address: 0x773d52b5
+   ASPR id: 0x5B37
+   Type:    Key 2 encrypted, IAT
+  ImageList_SetBkColor
+   Address: 0x773d526f
+   ASPR id: 0x2F89
+   Type:    Key 2 encrypted, IAT
+  ImageList_ReplaceIcon
+   Address: 0x773d5228
+   ASPR id: 0xA735
+   Type:    Key 2 encrypted, IAT
+  ImageList_Add
+   Address: 0x773d51e1
+   ASPR id: 0xFD58
+   Type:    Key 2 encrypted, IAT
+  ImageList_GetImageCount
+   Address: 0x773d515b
+   ASPR id: 0xE561
+   Type:    Key 2 encrypted, IAT
+  ImageList_Destroy
+   Address: 0x773d511f
+   ASPR id: 0xF123
+   Type:    Key 2 encrypted, IAT
+  ImageList_Create
+   Address: 0x773d9366
+   ASPR id: 0xF5EB
+   Type:    Key 2 encrypted, IAT
+  InitCommonControls
+   Address: 0x7743b62a
+   ASPR id: 0x580C
+   Type:    Key 1 encrypted, no IAT
+shell32.dll
+  Module base: 0x7c9c0000
+  ASPR id:     0x18CE
+  IAT at:      0x0074bc7c
+ Imports:
+  SHGetDesktopFolder
+   Address: 0x7c9ebc58
+   ASPR id: 0xAF5F
+   Type:    Key 1 encrypted, no IAT
+  SHBrowseForFolder
+   Address: 0x7cac7497
+   ASPR id: 0xA346
+   Type:    Key 1 encrypted, IAT
+  SHGetSpecialFolderLocation
+   Address: 0x7c9ef7d3
+   ASPR id: 0x8240
+   Type:    Key 1 encrypted, no IAT
+  SHGetPathFromIDList
+   Address: 0x7ca34ce1
+   ASPR id: 0x01B4
+   Type:    Key 1 encrypted, no IAT
+winspool.drv
+  Module base: 0x72f90000
+  ASPR id:     0xD3A9
+  IAT at:      0x0074bc90
+ Imports:
+  OpenPrinterA
+   Address: 0x72fa3757
+   ASPR id: 0x7E74
+   Type:    Key 1 encrypted, IAT
+  EnumPrintersA
+   Address: 0x72f9b041
+   ASPR id: 0x9675
+   Type:    Key 1 encrypted, IAT
+  DocumentPropertiesA
+   Address: 0x72fa665f
+   ASPR id: 0xEDB7
+   Type:    Key 1 encrypted, IAT
+  ClosePrinter
+   Address: 0x72f94d40
+   ASPR id: 0x2C9A
+   Type:    Key 1 encrypted, IAT
+comdlg32.dll
+  Module base: 0x76380000
+  ASPR id:     0x9E20
+  IAT at:      0x0074bca4
+ Imports:
+  PrintDlgA
+   Address: 0x763a46fd
+   ASPR id: 0x4383
+   Type:    Key 1 encrypted, no IAT
+  ChooseFontA
+   Address: 0x7639c1c1
+   ASPR id: 0x0A46
+   Type:    Key 1 encrypted, no IAT
+  ChooseColorA
+   Address: 0x7638ee36
+   ASPR id: 0xEE33
+   Type:    Key 1 encrypted, no IAT
+  GetSaveFileNameW
+   Address: 0x76397c2b
+   ASPR id: 0x7DD1
+   Type:    Key 1 encrypted, IAT
+  GetSaveFileNameA
+   Address: 0x76397c10
+   ASPR id: 0x6E55
+   Type:    Key 1 encrypted, no IAT
+  GetOpenFileNameW
+   Address: 0x76397b9d
+   ASPR id: 0xFDDC
+   Type:    Key 1 encrypted, IAT
+  GetOpenFileNameA
+   Address: 0x7638309f
+   ASPR id: 0x505A
+   Type:    Key 1 encrypted, no IAT
+kernel32.dll
+  Module base: 0x7c800000
+  ASPR id:     0x7C8B
+  IAT at:      0x0074bcc4
+ Imports:
+  SetVolumeLabelW
+   Address: 0x7c861579
+   ASPR id: 0xC94E
+   Type:    Key 2 encrypted, IAT
+gdi32.dll
+  Module base: 0x77f10000
+  ASPR id:     0x84BA
+  IAT at:      0x0074bccc
+ Imports:
+  PlayMetaFileRecord
+   Address: 0x77f24019
+   ASPR id: 0x0A2B
+   Type:    Key 1 encrypted, IAT
+advapi32.dll
+  Module base: 0x77dc0000
+  ASPR id:     0x5141
+  IAT at:      0x0074bcd4
+ Imports:
+  StartServiceA
+   Address: 0x77ddfb58
+   ASPR id: 0xEEAA
+   Type:    Key 1 encrypted, IAT
+  QueryServiceConfigA
+   Address: 0x77de1596
+   ASPR id: 0xA148
+   Type:    Key 1 encrypted, no IAT
+  OpenServiceA
+   Address: 0x77de4c66
+   ASPR id: 0x124A
+   Type:    Key 1 encrypted, no IAT
+  OpenSCManagerA
+   Address: 0x77de69ae
+   ASPR id: 0x2F84
+   Type:    Key 1 encrypted, no IAT
+  DeleteService
+   Address: 0x77e274b1
+   ASPR id: 0x4163
+   Type:    Key 1 encrypted, no IAT
+  CreateServiceA
+   Address: 0x77e27211
+   ASPR id: 0x2B77
+   Type:    Key 1 encrypted, no IAT
+  ControlService
+   Address: 0x77de4a09
+   ASPR id: 0x2BD6
+   Type:    Key 1 encrypted, no IAT
+  CloseServiceHandle
+   Address: 0x77dd6ce5
+   ASPR id: 0x9731
+   Type:    Key 1 encrypted, no IAT
+imm32.dll
+  Module base: 0x76360000
+  ASPR id:     0x530A
+  IAT at:      0x0074bcf8
+ Imports:
+  ImmSetCompositionWindow
+   Address: 0x76364dd6
+   ASPR id: 0x513E
+   Type:    Key 1 encrypted, IAT
+  ImmReleaseContext
+   Address: 0x763629d3
+   ASPR id: 0x32EB
+   Type:    Key 1 encrypted, IAT
+  ImmGetContext
+   Address: 0x763623a1
+   ASPR id: 0x95BD
+   Type:    Key 1 encrypted, IAT
+  ImmGetDefaultIMEWnd
+   Address: 0x763697be
+   ASPR id: 0x5A98
+   Type:    Key 1 encrypted, IAT
+advapi32.dll
+  Module base: 0x77dc0000
+  ASPR id:     0x5141
+  IAT at:      0x0074bd0c
+ Imports:
+  AddAccessAllowedAce
+   Address: 0x77dc7d31
+   ASPR id: 0x6171
+   Type:    Key 1 encrypted, no IAT
+  GetAce
+   Address: 0x77dd4c33
+   ASPR id: 0x9CA2
+   Type:    Key 1 encrypted, no IAT
+  InitializeAcl
+   Address: 0x77dc7d09
+   ASPR id: 0x719F
+   Type:    Key 1 encrypted, no IAT
+gdi32.dll
+  Module base: 0x77f10000
+  ASPR id:     0x84BA
+  IAT at:      0x0074bd1c
+ Imports:
+  TranslateCharsetInfo
+   Address: 0x77f1a8db
+   ASPR id: 0x2D46
+   Type:    Key 1 encrypted, IAT
+  CreateDIBSection
+   Address: 0x77f19e19
+   ASPR id: 0xE0CB
+   Type:    Key 1 encrypted, IAT
+
+WARN: Code may reference to the ASPR utility APIs, which may cause problems after unpacking

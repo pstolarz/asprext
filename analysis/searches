@@ -1,0 +1,51 @@
+SEARCHES FOR REGIONS
+
+--------
+PART 1
+8b12            mov     edx,dword ptr [edx]
+8b12            mov     edx,dword ptr [edx]
+035004          add     edx,dword ptr [eax+4]
+
+8b 12 8b 12 03 50 04
+
+--------
+VM traceing
+
+8b83b5000000    mov     eax,dword ptr [ebx+0B5h]
+83c013          add     eax,13h
+
+8b 83 b5 00 00 00 83 c0 13
+
+
+Breakpoints for unpacking
+--------
+aspr_imports load
+8d7808          lea     edi,[eax+8]
+8d74240d        lea     esi,[esp+0Dh]
+
+8d 78 08 8d 74 24 0d
+
+--------
+aspr_ipatch load
+
+8bf2            mov     esi,edx
+8b4318          mov     eax,dword ptr [ebx+18h]
+890424          mov     dword ptr [esp],eax
+
+8b f2 8b 43 18 89 04 24
+
+--------
+check memory call
+
+8a442424        mov     al,byte ptr [esp+24h]
+05ff000000      add     eax,0FFh
+
+8a 44 24 24 05 ff 00 00 00
+
+--------
+aspr_oep
+
+668b4028        mov     ax,word ptr [eax+28h]
+668945fe        mov     word ptr [ebp-2],ax
+
+66 8b 40 28 66 89 45 fe

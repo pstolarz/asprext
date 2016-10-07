@@ -1,0 +1,19 @@
+!aspr_imports load eax
+; iat
+bp GetModuleFileNameA 2; g; bc *; ba e1 0059485f; g;
+
+!aspr_ipatch load ebx 0059d3a0
+; write patches
+bp GetModuleFileNameA 2; g; bc *; ba e1 0059eeef; g;
+; aip
+ba e1 0059de67;
+
+!aspr_oep edx
+; eop
+ba e1 401000; g;
+bp GetModuleFileNameA 2; g; bc *; ba e1 005951bf; g;
+
+idt: 0050d000
+delta: 00150000
+
+$$>a< script/tls_search 0x400000

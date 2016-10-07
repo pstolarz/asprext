@@ -1,0 +1,19 @@
+!aspr_imports load eax
+; iat
+bp GetModuleFileNameA 2; g; bc *; ba e1 006d085f; g;
+bp GetModuleFileNameA 2; g; bc *; ba e1 006cf85f; g;
+
+!aspr_ipatch load ebx 006d93a0
+!aspr_ipatch load ebx 006d83a0
+; write patches
+bp GetModuleFileNameA 2; g; bc *; ba e1 006daeef; g;
+bp GetModuleFileNameA 2; g; bc *; ba e1 006d9eef; g;
+
+!aspr_oep edx
+; eop
+ba e1 0053e10e; g;
+bp GetModuleFileNameA 2; g; bc *; ba e1 006d11bf; g;
+bp GetModuleFileNameA 2; g; bc *; ba e1 006d01bf; g;
+
+delta: 0028c000
+       0028b000 (oep)

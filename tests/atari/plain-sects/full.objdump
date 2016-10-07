@@ -1,0 +1,664 @@
+
+full.dump:     file format pei-i386
+full.dump
+architecture: i386, flags 0x0000012e:
+EXEC_P, HAS_LINENO, HAS_DEBUG, HAS_LOCALS, D_PAGED
+start address 0x004a04c2
+
+Characteristics 0x103
+	relocations stripped
+	executable
+	32 bit words
+
+Time/Date		Fri Jan  6 14:32:06 2012
+Magic			010b	(PE32)
+MajorLinkerVersion	8
+MinorLinkerVersion	0
+SizeOfCode		000b9000
+SizeOfInitializedData	04123000
+SizeOfUninitializedData	00000000
+AddressOfEntryPoint	000a04c2
+BaseOfCode		00001000
+BaseOfData		000ba000
+ImageBase		00400000
+SectionAlignment	00001000
+FileAlignment		00001000
+MajorOSystemVersion	4
+MinorOSystemVersion	0
+MajorImageVersion	0
+MinorImageVersion	0
+MajorSubsystemVersion	4
+MinorSubsystemVersion	0
+Win32Version		00000000
+SizeOfImage		041dd000
+SizeOfHeaders		00001000
+CheckSum		00140d32
+Subsystem		00000002	(Windows GUI)
+DllCharacteristics	00000000
+SizeOfStackReserve	00100000
+SizeOfStackCommit	00001000
+SizeOfHeapReserve	00100000
+SizeOfHeapCommit	00001000
+LoaderFlags		00000000
+NumberOfRvaAndSizes	00000010
+
+The Data Directory
+Entry 0 00000000 00000000 Export Directory [.edata (or where ever we found it)]
+Entry 1 000f8ab4 00000154 Import Directory [parts of .idata]
+Entry 2 041ae000 0002e64c Resource Directory [.rsrc]
+Entry 3 00000000 00000000 Exception Directory [.pdata]
+Entry 4 00000000 00000000 Security Directory
+Entry 5 00000000 00000000 Base Relocation Directory [.reloc]
+Entry 6 000ba8d0 0000001c Debug Directory
+Entry 7 00000000 00000000 Description Directory
+Entry 8 00000000 00000000 Special Directory
+Entry 9 00000000 00000000 Thread Storage Directory [.tls]
+Entry a 00000000 00000000 Load Configuration Directory
+Entry b 00000000 00000000 Bound Import Directory
+Entry c 000ba000 00000814 Import Address Table Directory
+Entry d 000f8a2c 00000040 Delay Import Directory
+Entry e 00000000 00000000 CLR Runtime Header
+Entry f 00000000 00000000 Reserved
+
+There is an import table in .rdata at 0x4f8ab4
+
+The Import Tables (interpreted .rdata section contents)
+ vma:            Hint    Time      Forward  DLL       First
+                 Table   Stamp     Chain    Name      Thunk
+ 000f8ab4	000f8c44 00000000 00000000 000f94ee 000ba03c
+
+	DLL Name: AVIFIL32.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	f94d6	    6  AVIFileCreateStreamA
+	f94c2	   20  AVIFileWriteData
+	f94b4	    9  AVIFileExit
+	f94a0	   52  AVIStreamRelease
+	f948e	   28  AVISaveOptions
+	f9480	   14  AVIFileInit
+	f946a	   54  AVIStreamSetFormat
+	f945a	   16  AVIFileOpenA
+	f9448	   57  AVIStreamWrite
+	f9436	   19  AVIFileRelease
+	f941c	   22  AVIMakeCompressedStream
+
+ 000f8ac8	000f9090 00000000 00000000 000f94fc 000ba488
+
+	DLL Name: MSVFW32.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	80000002	    2  <none>
+
+ 000f8adc	000f93ac 00000000 00000000 000f95fc 000ba7a4
+
+	DLL Name: WINMM.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	f9508	  163  timeGetTime
+	f952c	  203  waveOutUnprepareHeader
+	f9546	  184  waveOutGetDevCapsA
+	f955c	  202  waveOutSetVolume
+	f9570	  198  waveOutReset
+	f9580	  199  waveOutRestart
+	f9592	  193  waveOutGetVolume
+	f95a6	  196  waveOutPause
+	f95b6	  204  waveOutWrite
+	f95c6	  197  waveOutPrepareHeader
+	f95de	  183  waveOutClose
+	f95ee	  195  waveOutOpen
+	f9516	  150  mmioStringToFOURCCA
+
+ 000f8af0	000f8c74 00000000 00000000 000f961a 000ba06c
+
+	DLL Name: DDRAW.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	f9606	    8  DirectDrawCreate
+
+ 000f8b04	000f8c84 00000000 00000000 000f9624 000ba07c
+
+	DLL Name: DSOUND.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	80000001	    1  <none>
+
+ 000f8b18	000f8c7c 00000000 00000000 000f9646 000ba074
+
+	DLL Name: DINPUT.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	f9630	    0  DirectInputCreateA
+
+ 000f8b2c	000f8de8 00000000 00000000 000fa22a 000ba1e0
+
+	DLL Name: KERNEL32.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	f9dd6	  611  LockFile
+	f9de2	  879  UnlockFile
+	f9df0	  784  SetEndOfFile
+	f9e00	  147  DuplicateHandle
+	f9e12	  491  GetVolumeInformationA
+	f9e2a	  437  GetShortPathNameA
+	f9e3e	  510  GlobalFlags
+	f9e4c	  600  LocalAlloc
+	f9e5a	  869  TlsGetValue
+	f9e68	  518  GlobalReAlloc
+	f9e78	  514  GlobalHandle
+	f9e88	  867  TlsAlloc
+	f9e94	  870  TlsSetValue
+	f9ea2	  607  LocalReAlloc
+	f9eb2	  868  TlsFree
+	f9ebc	  937  WritePrivateProfileStringA
+	f9eda	  556  InterlockedIncrement
+	f9ef2	  260  GetCPInfo
+	f9efe	  403  GetOEMCP
+	f9f0a	  789  SetErrorMode
+	f9f1a	  528  HeapAlloc
+	f9f26	  534  HeapFree
+	f9f32	  897  VirtualAlloc
+	f9f42	  538  HeapReAlloc
+	f9f50	  185  ExitProcess
+	f9f5e	  339  GetDriveTypeA
+	f9f6e	  358  GetFileType
+	f9f7c	  186  ExitThread
+	f9f8a	  111  CreateThread
+	f9f9a	  458  GetSystemTimeAsFileTime
+	f9fb4	  290  GetConsoleCP
+	f9fc4	  307  GetConsoleMode
+	f9fd6	  272  GetCommandLineA
+	f9fe8	  419  GetProcessHeap
+	f9ffa	  439  GetStartupInfoA
+	fa00c	  878  UnhandledExceptionFilter
+	f9dc2	  238  FlushFileBuffers
+	fa046	  727  RtlUnwind
+	fa052	  679  RaiseException
+	fa064	  540  HeapSize
+	fa070	  862  TerminateProcess
+	fa084	  569  IsDebuggerPresent
+	fa098	  899  VirtualFree
+	fa0a6	  532  HeapDestroy
+	fa0b4	  530  HeapCreate
+	fa0c2	  253  GetACP
+	fa0cc	  575  IsValidCodePage
+	fa0de	  580  LCMapStringA
+	fa0ee	  581  LCMapStringW
+	fa0fe	  804  SetHandleCount
+	fa110	  823  SetStdHandle
+	fa120	  482  GetTimeZoneInformation
+	fa13a	  921  WriteConsoleA
+	fa14a	  309  GetConsoleOutputCP
+	fa160	  931  WriteConsoleW
+	fa170	  246  FreeEnvironmentStringsA
+	fa18a	  341  GetEnvironmentStrings
+	fa1a2	  247  FreeEnvironmentStringsW
+	fa1bc	  343  GetEnvironmentStringsW
+	fa1d6	  442  GetStringTypeA
+	fa1e8	  445  GetStringTypeW
+	fa1fa	  346  GetExitCodeProcess
+	fa210	  787  SetEnvironmentVariableA
+	f9652	  856  SuspendThread
+	f9662	  855  SleepEx
+	f966c	   84  CreateFileMappingA
+	f9682	  616  MapViewOfFile
+	f9692	  628  MulDiv
+	f969c	  881  UnmapViewOfFile
+	f96ae	   52  CloseHandle
+	f96bc	  210  FindFirstFileA
+	f96ce	  206  FindClose
+	f96da	  320  GetCurrentDirectoryA
+	f96f2	  778  SetCurrentDirectoryA
+	f970a	  916  WideCharToMultiByte
+	f9720	  853  SizeofResource
+	f9732	  613  LockResource
+	f9742	  599  LoadResource
+	f9752	  227  FindResourceA
+	f9762	  347  GetExitCodeThread
+	f9776	  640  OpenFileMappingA
+	f9db0	  795  SetFilePointer
+	f9da4	  932  WriteFile
+	f9d92	  474  GetThreadLocale
+	f9d80	  243  FormatMessageA
+	f9d74	  604  LocalFree
+	f9d66	  355  GetFileSize
+	f9d58	   83  CreateFileA
+	f9d40	  859  SystemTimeToFileTime
+	f9d26	  602  LocalFileTimeToFileTime
+	f9d10	  512  GlobalGetAtomNameA
+	f9cfe	  507  GlobalFindAtomA
+	f9cf2	  961  lstrcmpW
+	f9ce2	  250  FreeResource
+	f9cce	  333  GetDiskFreeSpaceA
+	f978a	   59  CompareStringW
+	f979c	  443  GetStringTypeExA
+	f97b0	  629  MultiByteToWideChar
+	f97c6	  963  lstrcmpiA
+	fa028	  842  SetUnhandledExceptionFilter
+	f9cba	  361  GetFullPathNameA
+	f9ca6	  467  GetTempFileNameA
+	f9c98	  357  GetFileTime
+	f9c8a	  799  SetFileTime
+	f9c74	  323  GetCurrentProcessId
+	f9c62	  502  GlobalAddAtomA
+	f9c4a	  552  InterlockedDecrement
+	f9c34	  382  GetModuleFileNameW
+	f9c20	  506  GlobalDeleteAtom
+	f9c0c	  325  GetCurrentThread
+	f9bf4	   63  ConvertDefaultLocale
+	f9bda	  163  EnumResourceLanguagesA
+	f9bc8	  372  GetLocaleInfoA
+	f9bb6	  595  LoadLibraryExA
+	f9baa	  960  lstrcmpA
+	f9b94	  326  GetCurrentThreadId
+	f9b84	  722  ResumeThread
+	f9b74	  706  ReleaseMutex
+	f9b64	   96  CreateMutexA
+	f9b50	  383  GetModuleHandleA
+	f9b40	  808  SetLastError
+	f9b34	  966  lstrcpyA
+	f9b18	  676  QueryPerformanceFrequency
+	f9afe	  675  QueryPerformanceCounter
+	f9aea	  836  SetThreadPriority
+	f9ad6	  774  SetConsoleTitleA
+	f9aca	  693  ReadFile
+	f9ab8	  102  CreateProcessA
+	f9aaa	  245  FreeConsole
+	f97d2	  972  lstrlenA
+	f9a9a	  489  GetVersionExA
+	f9a86	  322  GetCurrentProcess
+	f9a70	  381  GetModuleFileNameA
+	f9a60	   10  AllocConsole
+	f9a48	  750  SetConsoleCtrlHandler
+	f9a34	  817  SetPriorityClass
+	f9a24	  441  GetStdHandle
+	f9a12	  416  GetProcAddress
+	f99fa	  593  LeaveCriticalSection
+	f99ea	   79  CreateEventA
+	f99e2	  854  Sleep
+	f99c6	  547  InitializeCriticalSection
+	f99ba	  790  SetEvent
+	f99a4	  912  WaitForSingleObject
+	f9996	  248  FreeLibrary
+	f997e	  129  DeleteCriticalSection
+	f9964	  910  WaitForMultipleObjects
+	f9954	  594  LoadLibraryA
+	f9946	  719  ResetEvent
+	f992e	  152  EnterCriticalSection
+	f9920	  515  GlobalLock
+	f9912	  511  GlobalFree
+	f9902	  522  GlobalUnlock
+	f98f4	  504  GlobalAlloc
+	f98e6	  131  DeleteFileA
+	f98d6	  371  GetLocalTime
+	f98c6	  479  GetTickCount
+	f98ae	  197  FileTimeToSystemTime
+	f9898	  350  GetFileAttributesA
+	f987e	  196  FileTimeToLocalFileTime
+	f986e	  220  FindNextFileA
+	f9862	  622  MoveFileA
+	f984c	  793  SetFileAttributesA
+	f9838	  708  RemoveDirectoryA
+	f9824	   75  CreateDirectoryA
+	f9814	  369  GetLastError
+	f9806	  488  GetVersion
+	f97f4	   58  CompareStringA
+	f97de	  553  InterlockedExchange
+
+ 000f8b40	000f90e8 00000000 00000000 000fadb6 000ba4e0
+
+	DLL Name: USER32.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	facbe	  200  EndPaint
+	facca	  347  GetSysColorBrush
+	facde	  691  UnregisterClassA
+	facf2	  150  DestroyIcon
+	fad00	  614  SetParent
+	fad0c	  182  DrawIcon
+	fad18	  644  SetWindowRgn
+	fad28	   70  CopyAcceleratorTableA
+	fad40	   93  CreateMenu
+	fad4e	  517  PostThreadMessageA
+	fad64	  350  GetTabbedTextExtentA
+	fad7c	  269  GetDCEx
+	fad86	  463  LockWindowUpdate
+	fad9a	  538  RegisterClipboardFormatA
+	fabe0	  442  LoadCursorA
+	fabd0	  149  DestroyCursor
+	fabbe	  690  UnpackDDElParam
+	fabac	  560  ReuseDDElParam
+	faba0	  454  LoadMenuA
+	fab8e	  553  ReleaseCapture
+	fab7a	  438  LoadAcceleratorsA
+	fab68	  398  InsertMenuItemA
+	fab58	  621  SetRectEmpty
+	fab4e	  605  SetMenu
+	fab36	  679  TranslateAcceleratorA
+	fab1c	  551  RegisterWindowMessageA
+	fab10	  721  WinHelpA
+	fab02	  243  GetCapture
+	faaf2	  250  GetClassLongA
+	faae2	  252  GetClassNameA
+	faad6	  618  SetPropA
+	faaca	  330  GetPropA
+	faabc	  556  RemovePropA
+	faaa6	  279  GetForegroundWindow
+	faa90	   12  BeginDeferWindowPos
+	faa7c	  197  EndDeferWindowPos
+	faa6c	  355  GetTopWindow
+	faa5a	  317  GetMessageTime
+	faa4a	  316  GetMessagePos
+	faa38	  474  MapWindowPoints
+	faa28	  564  ScrollWindow
+	faa16	  624  SetScrollRange
+	faa04	  343  GetScrollRange
+	fa9f4	  623  SetScrollPos
+	fa9e4	  342  GetScrollPos
+	fa9d4	  656  ShowScrollBar
+	fa9c6	  345  GetSubMenu
+	fa9b6	  307  GetMenuItemID
+	fa9a2	  306  GetMenuItemCount
+	fa990	   96  CreateWindowExA
+	fa97e	  247  GetClassInfoExA
+	fa96e	  246  GetClassInfoA
+	fa95c	  534  RegisterClassA
+	fa94a	  561  ScreenToClient
+	fa93e	  223  EqualRect
+	fa92c	  144  DeferWindowPos
+	fa920	   74  CopyRect
+	fa910	  341  GetScrollInfo
+	fa900	  622  SetScrollInfo
+	fa8ee	  142  DefWindowProcA
+	fa8dc	   27  CallWindowProcA
+	fa8ce	  501  OffsetRect
+	fa8be	  402  IntersectRect
+	fa8a8	  371  GetWindowPlacement
+	fa894	  270  GetDesktopWindow
+	fa882	  579  SetActiveWindow
+	fa864	   82  CreateDialogIndirectParamA
+	fa850	  323  GetNextDlgTabItem
+	fa844	  198  EndDialog
+	fa83a	  414  IsChild
+	facb0	   13  BeginPaint
+	fa80c	  376  GetWindowTextLengthA
+	fa800	  598  SetFocus
+	fa7f4	  429  IsWindow
+	fa7e2	  595  SetDlgItemTextA
+	fa7d2	  594  SetDlgItemInt
+	fa7bc	  566  SendDlgItemMessageA
+	fa7aa	  275  GetDlgItemTextA
+	fa79a	  274  GetDlgItemInt
+	fa78c	  273  GetDlgItem
+	fa778	   59  CheckRadioButton
+	fa76c	  362  GetWindow
+	fa75a	  430  IsWindowEnabled
+	fa748	  655  ShowOwnedPopups
+	fa73c	  589  SetCursor
+	fa72a	  516  PostQuitMessage
+	fa71c	  314  GetMessageA
+	fa70a	  235  GetActiveWindow
+	fa6f8	  433  IsWindowVisible
+	fa6e8	  708  ValidateRect
+	fa6d2	  609  SetMenuItemBitmaps
+	fa6b4	  302  GetMenuCheckMarkDimensions
+	fa6a6	  440  LoadBitmapA
+	fa698	  487  ModifyMenuA
+	fa678	   57  CheckMenuItem
+	fa66c	  325  GetParent
+	fa65e	  151  DestroyMenu
+	fa64c	  676  TrackPopupMenu
+	fa63a	   94  CreatePopupMenu
+	fa62c	  394  InflateRect
+	fa61e	  346  GetSysColor
+	fa60a	  181  DrawFrameControl
+	fa5fa	  272  GetDlgCtrlID
+	fa5e8	  724  WindowFromPoint
+	fa5dc	  278  GetFocus
+	fa5d0	  446  LoadIconA
+	fa5bc	  417  IsDialogMessageA
+	fa5a8	  682  TranslateMessage
+	fa596	  375  GetWindowTextA
+	fa584	  194  EnableMenuItem
+	fa574	  153  DestroyWindow
+	fa560	  203  EnumChildWindows
+	fa552	  184  DrawMenuBar
+	fa546	  634  SetTimer
+	fa530	   85  CreateDialogParamA
+	fa51c	  161  DispatchMessageA
+	fa50a	  646  SetWindowTextA
+	fa4fc	  227  FindWindowA
+	fa4e0	  379  GetWindowThreadProcessId
+	fa4d2	  222  EnumWindows
+	fa4bc	  574  SendMessageTimeoutA
+	fa4ae	  289  GetKeyState
+	fa49c	   26  CallNextHookEx
+	fa48c	  591  SetCursorPos
+	fa478	  650  SetWindowsHookExA
+	fa462	  686  UnhookWindowsHookEx
+	fa454	  654  ShowCursor
+	fa444	  643  SetWindowPos
+	fa434	  514  PostMessageA
+	fa42a	  620  SetRect
+	fa41c	   52  CharUpperA
+	fa40c	  372  GetWindowRect
+	fa3fe	  555  RemoveMenu
+	fa3f2	  524  PtInRect
+	fa3e2	  348  GetSystemMenu
+	fa3ce	  349  GetSystemMetrics
+	fa3be	  267  GetCursorPos
+	fa3aa	  242  GetAsyncKeyState
+	fa39e	  437  KillTimer
+	fa394	  300  GetMenu
+	fa37e	  271  GetDialogBaseUnits
+	fa370	  479  MessageBoxA
+	fa362	  459  LoadStringA
+	faca2	  364  GetWindowDC
+	fac94	  381  GrayStringA
+	fac86	  189  DrawTextExA
+	fac7a	  188  DrawTextA
+	fac68	  667  TabbedTextOutA
+	fac5a	  580  SetCapture
+	fac48	   64  ClientToScreen
+	fac34	  308  GetMenuItemInfoA
+	fac28	  435  IsZoomed
+	fac16	  312  GetMenuStringA
+	fac08	    8  AppendMenuA
+	fabfa	  397  InsertMenuA
+	fa824	    2  AdjustWindowRectEx
+	fabee	  226  FillRect
+	fa352	  533  RedrawWindow
+	fa340	  366  GetWindowLongA
+	fa32e	  640  SetWindowLongA
+	fa31c	  403  InvalidateRect
+	fa314	  268  GetDC
+	fa304	  196  EnableWindow
+	fa2f8	  554  ReleaseDC
+	fa2ea	   65  ClipCursor
+	fa2da	  255  GetClientRect
+	fa2ca	  700  UpdateWindow
+	fa2b2	  665  SystemParametersInfoA
+	fa2a2	  571  SendMessageA
+	fa28c	  599  SetForegroundWindow
+	fa27e	  658  ShowWindow
+	fa272	  422  IsIconic
+	fa262	  512  PeekMessageA
+	fa24e	   15  BringWindowToTop
+	fa238	  296  GetLastActivePopup
+	fa688	  311  GetMenuState
+
+ 000f8b54	000f8c8c 00000000 00000000 000fb320 000ba084
+
+	DLL Name: GDI32.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	faeea	   39  CreateBitmap
+	faefa	  352  GetClipBox
+	faf08	  572  SetTextColor
+	faf18	  533  SetBkColor
+	faf26	  405  GetObjectA
+	faf34	   81  DPtoLP
+	faf3e	  581  StartDocA
+	faf4a	  584  StartPage
+	faf56	  152  EndPage
+	faf60	  528  SetAbortProc
+	faf70	    0  AbortDoc
+	faf7c	  150  EndDoc
+	faf86	   46  CreateDCA
+	faf92	   71  CreatePen
+	faf9e	  448  GetViewportOrgEx
+	fafb2	  502  Rectangle
+	fafbe	  421  GetStockObject
+	fafd0	   76  CreateRectRgnIndirect
+	fafe8	  444  GetTextMetricsA
+	faffa	  436  GetTextExtentPoint32A
+	fb012	   58  CreateFontIndirectA
+	fb028	  221  ExtTextOutA
+	fb036	  519  SaveDC
+	fb040	  512  RestoreDC
+	fb04c	  534  SetBkMode
+	fb058	  564  SetPolyFillMode
+	fb06a	  565  SetROP2
+	fb074	  568  SetStretchBltMode
+	fb088	  555  SetMapMode
+	fb096	  215  ExcludeClipRect
+	fb0a8	  455  IntersectClipRect
+	fb0bc	  461  LineTo
+	fb0c6	  465  MoveToEx
+	fb0d2	  570  SetTextAlign
+	faedc	  585  StretchBlt
+	fb0e2	  524  SelectClipRgn
+	fb0f2	   75  CreateRectRgn
+	fb102	  447  GetViewportExtEx
+	fb116	  450  GetWindowExtEx
+	fb128	  412  GetPixel
+	fb134	  497  PtVisible
+	fb140	  501  RectVisible
+	fb14e	  590  TextOutA
+	fb15a	  212  Escape
+	fb164	  575  SetViewportOrgEx
+	fb178	  469  OffsetViewportOrgEx
+	fb18e	  574  SetViewportExtEx
+	fb1a2	  520  ScaleViewportExtEx
+	fb1b8	  579  SetWindowOrgEx
+	fb1ca	  578  SetWindowExtEx
+	fb1dc	  521  ScaleWindowExtEx
+	fb1f0	  357  GetCurrentPositionEx
+	fb208	   70  CreatePatternBrush
+	fb21e	  527  SelectPalette
+	fb22e	  332  GetBkColor
+	fb23c	  566  SetRectRgn
+	fb24a	   33  CombineRgn
+	fb258	  344  GetCharWidthA
+	fb268	   53  CreateEllipticRgn
+	fb27c	  459  LPtoDP
+	fb286	  148  Ellipse
+	fb290	  403  GetNearestColor
+	fb2a2	  333  GetBkMode
+	fb2ae	  414  GetPolyFillMode
+	fb2c0	  415  GetROP2
+	fb2ca	  422  GetStretchBltMode
+	fb2de	  431  GetTextColor
+	fb2ee	  427  GetTextAlign
+	fb2fe	  441  GetTextFaceA
+	fb30e	  451  GetWindowOrgEx
+	faeca	  594  UnrealizeObject
+	faeb6	   80  CreateSolidBrush
+	faea4	  499  RealizePalette
+	fae96	   57  CreateFontA
+	fae7c	  404  GetNearestPaletteIndex
+	fae72	   18  BitBlt
+	fae58	  425  GetSystemPaletteEntries
+	fae4c	  140  DeleteDC
+	fae3c	   69  CreatePalette
+	fae2c	  143  DeleteObject
+	fae1c	  526  SelectObject
+	fae06	   45  CreateCompatibleDC
+	fadec	   44  CreateCompatibleBitmap
+	faddc	  586  StretchDIBits
+	fadcc	  363  GetDeviceCaps
+	fadc2	  477  PatBlt
+
+ 000f8b68	000f93f8 00000000 00000000 000fb33a 000ba7f0
+
+	DLL Name: comdlg32.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	fb32a	    7  GetFileTitleA
+
+ 000f8b7c	000f93e4 00000000 00000000 000fb388 000ba7dc
+
+	DLL Name: WINSPOOL.DRV
+	vma:  Hint/Ord Member-Name Bound-To
+	fb348	   27  ClosePrinter
+	fb358	   70  DocumentPropertiesA
+	fb36e	  125  OpenPrinterA
+	fb37e	  108  GetJobA
+
+ 000f8b90	000f8c08 00000000 00000000 000fb482 000ba000
+
+	DLL Name: ADVAPI32.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	fb3a4	  516  RegSetValueExA
+	fb3b6	  503  RegQueryValueExA
+	fb3ca	  468  RegDeleteKeyA
+	fb3da	  478  RegEnumKeyExA
+	fb472	  464  RegCreateKeyA
+	fb3ea	  465  RegCreateKeyExA
+	fb3fc	  492  RegOpenKeyExA
+	fb40c	  477  RegEnumKeyA
+	fb41a	  491  RegOpenKeyA
+	fb428	  502  RegQueryValueA
+	fb43a	  558  SetFileSecurityA
+	fb44e	  240  GetFileSecurityA
+	fb462	  515  RegSetValueA
+	fb396	  459  RegCloseKey
+
+ 000f8ba4	000f90a8 00000000 00000000 000fb54e 000ba4a0
+
+	DLL Name: SHELL32.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	fb508	  188  SHGetPathFromIDListA
+	fb4a0	   33  DragQueryFileA
+	fb4b2	   31  DragFinish
+	fb4c0	   30  DragAcceptFiles
+	fb4d2	  167  SHGetDesktopFolder
+	fb53e	   43  ExtractIconA
+	fb520	  195  SHGetSpecialFolderLocation
+	fb490	  263  ShellExecuteA
+	fb4fa	  183  SHGetMalloc
+	fb4e8	  172  SHGetFileInfoA
+
+ 000f8bb8	000f90d4 00000000 00000000 000fb5a6 000ba4cc
+
+	DLL Name: SHLWAPI.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	fb56e	   47  PathFindExtensionA
+	fb584	  125  PathStripToRootA
+	fb55a	   49  PathFindFileNameA
+	fb598	   85  PathIsUNCA
+
+ 000f8bcc	000f9400 00000000 00000000 000fb636 000ba7f8
+
+	DLL Name: ole32.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	fb5d6	  260  OleTranslateAccelerator
+	fb5c6	   59  CoInitialize
+	fb5b2	   16  CoCreateInstance
+	fb61a	  229  OleDestroyMenuDescriptor
+	fb600	  227  OleCreateMenuDescriptor
+	fb5f0	  199  IsAccelerator
+
+ 000f8be0	000f9098 00000000 00000000 000fb640 000ba490
+
+	DLL Name: OLEAUT32.dll
+	vma:  Hint/Ord Member-Name Bound-To
+	80000008	    8  <none>
+	8000000c	   12  <none>
+	80000009	    9  <none>
+
+ 000f8bf4	00000000 00000000 00000000 00000000 00000000
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000b8c30  00401000  00401000  00001000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .rdata        0004164e  004ba000  004ba000  000ba000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  2 .data         00009000  004fc000  004fc000  000fc000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  3 .rsrc         0002e64c  045ae000  045ae000  00105000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+SYMBOL TABLE:
+no symbols
+
+

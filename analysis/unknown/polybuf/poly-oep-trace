@@ -1,0 +1,917 @@
+39 emulated opcodes:
+1. 01CB0341    cmp dword [edi], 00000000; jne 01CB043A; jmp 01CB0C50
+2. 01CB0356    jmp 01CB039C -> as call
+3. 01CB0396    jmp 00403B68 -> as call
+4. 01CB049C    cmp byte [004F9010], 00000000; jne 01CB0CAA; jmp 01CB03C0
+5. 01CB0583    je 01CB0C91; jmp 01CB0DB5
+6. 01CB058D    jmp 01CB0450 -> as call
+7. 01CB05F7    je 01CB06A1; jmp 01CB0391
+8. 01CB060C    jmp 00405BEC -> as call
+9. 01CB0623    jmp 00401298 -> as call
+10. 01CB062D    jmp 00403184 -> as call
+11. 01CB06A1    cmp dword [ebx], 00000000; jne 01CB0C07; jmp 01CB0611
+12. 01CB06AB    jmp 01CB0592 -> as call
+13. 01CB075D    jmp 01CB0CAA
+14. 01CB0767    jmp 00451E44 -> as call
+15. 01CB081D    cmp byte [00506048], 00000000; je 01CB049C; jmp 01CB06B0
+16. 01CB0845    cmp dword [edi], 00000000; je 01CB0C50; jmp 01CB043A
+17. 01CB098E    jmp 00439488 -> as call
+18. 01CB0998    jmp 00406AE0 -> as call
+19. 01CB09F4    jmp 004012A0 -> as call (not found)
+20. 01CB0AA1    cmp dword [esi], 00000000; je 01CB0C91; jmp 01CB05FC
+21. 01CB0AD1    jmp 004062BB -> as call
+22. 01CB0B61    jmp 00406338 -> as call
+23. 01CB0BAB    jmp 00406A2C -> as call
+24. 01CB0C62    jmp 00403B18 -> as call
+25. 01CB0C67    cmp dword [esi], 00000000; jne 01CB0D80; jmp 01CB0D7B
+26. 01CB0C96    jmp 004039C4 -> as call
+27. 01CB0CB5    jne 01CB0D80; jmp 01CB0C67
+28. 01CB0CBF    jmp 01CB0592 -> as call
+29. 01CB0D32    jmp 01CB0CB1
+30. 01CB0D39    je 01CB0BB0; jmp 01CB0CEF
+31. 01CB0D43    jmp 004522D8 -> as call
+32. 01CB0D6A    cmp dword [eax], 00000000; je 01CB0573; jmp 01CB04A1
+33. 01CB0D76    jmp 00403AAC -> as call
+34. 01CB0D85    jmp 004039EC -> as call
+35. 01CB0DBB    jmp 004012B8 -> as call
+36. 01CB0DDB    jne 01CB0C50; jmp 01CB0845
+37. 01CB0E14    jne 01CB05F3; jmp 01CB05F0
+38. 01CB0E2F    jmp 01CB0C9B
+39. 01CB0E73    jmp 01CB0BA3 -> as call
+
+;
+; stolen OEP
+;
+; main proc
+01CB02ED 55              push ebp
+01CB02EE 3eeb02          ds jmp short 01cb02f3
+01CB02F3 81f5244c9849    xor ebp,49984c24
+01CB02F9 8bec            mov ebp,esp
+01CB02FB e932030000      jmp dword 01cb0632
+01CB0632 83c4f4          add esp,byte -0c
+01CB0635 e915010000      jmp dword 01cb074f
+01CB074F 53              push ebx
+01CB0750 e9f4060000      jmp dword 01cb0e49
+01CB0E49 eb01            jmp short 01cb0e4c
+01CB0E4C 8d41a7          lea eax,[ecx-59]
+01CB0E4F f3eb02          rep jmp short 01cb0e54
+01CB0E54 8d447a6d        lea eax,[edx+edi*2+6d]
+01CB0E58 64eb02          fs jmp short 01cb0e5d
+01CB0E5D 8d443893        lea eax,[eax+edi-6d]
+01CB0E61 2bc7            sub eax,edi
+01CB0E63 2bc7            sub eax,edi
+01CB0E65 8d8425d47a4f00  lea eax,[ebp+004f7ad4]
+01CB0E6C 2bc5            sub eax,ebp
+01CB0E6E 68720acb01      push dword 01cb0a72
+01CB0E73 e888f10800      call dword 01d40000   ; jmp 01CB0BA3 -> call 01CB0BA3; ret to 01CB0A72
+01CB0A72 bb7afd4000      mov ebx,0040fd7a
+01CB0A77 c1c379          rol ebx,byte 79
+01CB0A7A 335c2408        xor ebx,[esp+08]
+01CB0A7E 335c2428        xor ebx,[esp+28]
+01CB0A82 3eeb02          ds jmp short 01cb0a87
+01CB0A87 8d9c2030525000  lea ebx,[eax+00505230]
+01CB0A8E 2bd8            sub ebx,eax
+01CB0A90 8b1b            mov ebx,[ebx]
+01CB0A92 e9b5ffffff      jmp dword 01cb0a4c
+01CB0A4C 03442438        add eax,[esp+38]
+01CB0A50 65eb01          gs jmp short 01cb0a54
+01CB0A54 8b442410        mov eax,[esp+10]
+01CB0A58 65eb01          gs jmp short 01cb0a5c
+01CB0A5C 8b03            mov eax,[ebx]
+01CB0A5E e915040000      jmp dword 01cb0e78
+01CB0E78 33542428        xor edx,[esp+28]
+01CB0E7C 33542408        xor edx,[esp+08]
+01CB0E80 f2eb01          repne jmp short 01cb0e84
+01CB0E84 ba6eae4200      mov edx,0042ae6e
+01CB0E89 baa6904400      mov edx,004490a6
+01CB0E8E 8d942024774f00  lea edx,[eax+004f7724]
+01CB0E95 f3eb02          rep jmp short 01cb0e9a
+01CB0E9A 2bd0            sub edx,eax
+01CB0E9C eb01            jmp short 01cb0e9f
+01CB0E9F ff32            push dword [edx]
+01CB0EA1 f2eb01          repne jmp short 01cb0ea5
+01CB0EA5 c1d2a9          rcl edx,byte a9
+01CB0EA8 ba4a914500      mov edx,0045914a
+01CB0EAD 5a              pop edx
+01CB0EAE e9def5ffff      jmp dword 01cb0491
+01CB0491 8990bc000000    mov [eax+000000bc],edx
+01CB0497 e9c7050000      jmp dword 01cb0a63
+01CB0A63 c780b8000000bc534f00 mov dword [eax+000000b8],004f53bc
+01CB0A6D e9d4f8ffff      jmp dword 01cb0346
+01CB0346 33442428        xor eax,[esp+28]
+01CB034A b832664700      mov eax,00476632
+01CB034F 8b03            mov eax,[ebx]
+01CB0351 686c07cb01      push dword 01cb076c
+01CB0356 e8a5fc0800      call dword 01d40000   ; jmp 01CB039C -> call 01CB039C; ret to 01CB076C
+01CB076C c1c051          rol eax,byte 51
+01CB076F b89a534000      mov eax,0040539a
+01CB0774 8b03            mov eax,[ebx]
+01CB0776 e949050000      jmp dword 01cb0cc4
+01CB0CC4 c1c285          rol edx,byte 85
+01CB0CC7 ba82014700      mov edx,00470182
+01CB0CCC eb02            jmp short 01cb0cd0
+01CB0CD0 0bd1            or edx,ecx
+01CB0CD2 bacec94200      mov edx,0042c9ce
+01CB0CD7 03542418        add edx,[esp+18]
+01CB0CDB 8d9435a4824f00  lea edx,[ebp+esi+004f82a4]
+01CB0CE2 2bd6            sub edx,esi
+01CB0CE4 eb02            jmp short 01cb0ce8
+01CB0CE8 2bd5            sub edx,ebp
+01CB0CEA e973faffff      jmp dword 01cb0762
+01CB0762 68d105cb01      push dword 01cb05d1
+01CB0767 e894f80800      call dword 01d40000   ; jmp 00451E44 -> call 00451E44; ret to 01CB05D1
+01CB05D1 2eeb01          cs jmp short 01cb05d5
+01CB05D5 8d4c271d        lea ecx,[edi+1d]
+01CB05D9 034c2418        add ecx,[esp+18]
+01CB05DD c1c13f          rol ecx,byte 3f
+01CB05E0 8d8c2200515000  lea ecx,[edx+00505100]
+01CB05E7 2bca            sub ecx,edx
+01CB05E9 8b09            mov ecx,[ecx]
+01CB05EB e949040000      jmp dword 01cb0a39
+01CB0A39 eb01            jmp short 01cb0a3c
+01CB0A3C b8729f4700      mov eax,00479f72
+01CB0A41 33442428        xor eax,[esp+28]
+01CB0A45 8b03            mov eax,[ebx]
+01CB0A47 e9d6fdffff      jmp dword 01cb0822
+01CB0822 f2eb01          repne jmp short 01cb0826
+01CB0826 c1d2c3          rcl edx,byte c3
+01CB0829 ba3e9a4500      mov edx,00459a3e
+01CB082E 03542438        add edx,[esp+38]
+01CB0832 83cab3          or edx,byte -4d
+01CB0835 8d9426c4c44d00  lea edx,[esi+004dc4c4]
+01CB083C 2bd6            sub edx,esi
+01CB083E 8b12            mov edx,[edx]
+01CB0840 e961feffff      jmp dword 01cb06a6
+01CB06A6 68340ecb01      push dword 01cb0e34
+01CB06AB e850f90800      call dword 01d40000   ; jmp 01CB0592 -> call 01CB0592; ret to 01CB0E34
+01CB0E34 034c2438        add ecx,[esp+38]
+01CB0E38 c1d9a3          rcr ecx,byte a3
+01CB0E3B ff35ac535000    push dword [dword 005053ac]
+01CB0E41 03cb            add ecx,ebx
+01CB0E43 59              pop ecx
+01CB0E44 e9b4f9ffff      jmp dword 01cb07fd
+01CB07FD 81f0b60cf3f6    xor eax,f6f30cb6
+01CB0803 ff33            push dword [ebx]
+01CB0805 b816ad4a00      mov eax,004aad16
+01CB080A c1d067          rcl eax,byte 67
+01CB080D 58              pop eax
+01CB080E e9e6010000      jmp dword 01cb09f9
+01CB09F9 33542408        xor edx,[esp+08]
+01CB09FD 36eb01          ss jmp short 01cb0a01
+01CB0A01 83c26c          add edx,byte +6c
+01CB0A04 8d544b08        lea edx,[ebx+ecx*2+08]
+01CB0A08 8d540af8        lea edx,[edx+ecx-08]
+01CB0A0C 2bd1            sub edx,ecx
+01CB0A0E eb02            jmp short 01cb0a12
+01CB0A12 81da763de454    sbb edx,54e43d76
+01CB0A18 8d940f88b94d00  lea edx,[edi+ecx+004db988]
+01CB0A1F 2bd1            sub edx,ecx
+01CB0A21 2bd7            sub edx,edi
+01CB0A23 f2eb01          repne jmp short 01cb0a27
+01CB0A27 ff32            push dword [edx]
+01CB0A29 ba86fc4900      mov edx,0049fc86
+01CB0A2E ba3eb94100      mov edx,0041b93e
+01CB0A33 5a              pop edx
+01CB0A34 e981020000      jmp dword 01cb0cba
+01CB0CBA 686c0ccb01      push dword 01cb0c6c
+01CB0CBF e83cf30800      call dword 01d40000   ; jmp 01CB0592 -> call 01CB0592; ret to 01CB0C6C
+01CB0C6C 2eeb01          cs jmp short 01cb0c70
+01CB0C70 2b442400        sub eax,[esp+00]
+01CB0C74 2bc3            sub eax,ebx
+01CB0C76 ff33            push dword [ebx]
+01CB0C78 65eb01          gs jmp short 01cb0c7c
+01CB0C7C c1e028          shl eax,byte 28
+01CB0C7F f3eb02          rep jmp short 01cb0c84
+01CB0C84 8d840bfe104000  lea eax,[ebx+ecx+004010fe]
+01CB0C8B 58              pop eax
+01CB0C8C e9ad000000      jmp dword 01cb0d3e
+01CB0D3E 684907cb01      push dword 01cb0749
+01CB0D43 e8b8f20800      call dword 01d40000   ; jmp 004522D8 -> call 004522D8; ret to 01CB0749
+01CB0749 5b              pop ebx
+01CB074A e939feffff      jmp dword 01cb0588
+01CB0588 687b07cb01      push dword 01cb077b
+01CB058D e86efa0800      call dword 01d40000   ; jmp 01CB0450 -> call 01CB0450; ret to 01CB077B
+01CB077B f3eb02          rep jmp short 01cb0780
+01CB0780 685a0e4500      push dword 00450e5a
+01CB0785 669c            pushfw
+01CB0787 51              push ecx
+01CB0788 8d4c757b        lea ecx,[ebp+esi*2+7b]
+01CB078C 8bcc            mov ecx,esp
+01CB078E 8d4906          lea ecx,[ecx+06]
+01CB0791 eb01            jmp short 01cb0794
+01CB0794 6a68            push byte +68
+01CB0796 55              push ebp
+01CB0797 81c5f2c128a6    add ebp,a628c1f2
+01CB079D 33e9            xor ebp,ecx
+01CB079F 36eb01          ss jmp short 01cb07a3
+01CB07A3 8b6c2430        mov ebp,[esp+30]
+01CB07A7 f3eb02          rep jmp short 01cb07ac
+01CB07AC 81cd27793db8    or ebp,b83d7927
+01CB07B2 8d6c3428        lea ebp,[esp+esi+28]
+01CB07B6 2bee            sub ebp,esi
+01CB07B8 8d6c15d8        lea ebp,[ebp+edx-28]
+01CB07BC 2bea            sub ebp,edx
+01CB07BE eb01            jmp short 01cb07c1
+01CB07C1 f3eb02          rep jmp short 01cb07c6
+01CB07C6 8d6c3d04        lea ebp,[ebp+edi+04]
+01CB07CA 2bef            sub ebp,edi
+01CB07CC eb01            jmp short 01cb07cf
+01CB07CF 56              push esi
+01CB07D0 03f7            add esi,edi
+01CB07D2 f2eb01          repne jmp short 01cb07d6
+01CB07D6 81d69e53f6d8    adc esi,d8f6539e
+01CB07DC 8db40b99824f00  lea esi,[ebx+ecx+004f8299]
+01CB07E3 2bf1            sub esi,ecx
+01CB07E5 65eb01          gs jmp short 01cb07e9
+01CB07E9 2bf3            sub esi,ebx
+01CB07EB 897500          mov [ebp+00],esi
+01CB07EE 5e              pop esi
+01CB07EF 5d              pop ebp
+01CB07F0 8f01            pop dword [ecx]
+01CB07F2 59              pop ecx
+01CB07F3 669d            popfw
+01CB07F5 c3              ret
+
+; proc_01CB0BA3
+01CB0BA3 50              push eax
+01CB0BA4 6a00            push byte +00
+01CB0BA6 68ba0bcb01      push dword 01cb0bba
+01CB0BAB e850f40800      call dword 01d40000   ; jmp 00406A2C -> call 00406A2C; ret to 01CB0BBA
+01CB0BBA 8d547509        lea edx,[ebp+esi*2+09]
+01CB0BBE 83ea09          sub edx,byte +09
+01CB0BC1 81f2da722277    xor edx,772272da
+01CB0BC7 36eb01          ss jmp short 01cb0bcb
+01CB0BCB f3eb02          rep jmp short 01cb0bd0
+01CB0BD0 81e25bcb3ec8    and edx,c83ecb5b
+01CB0BD6 f3eb02          rep jmp short 01cb0bdb
+01CB0BDB 8d940d08914f00  lea edx,[ebp+ecx+004f9108]
+01CB0BE2 2bd1            sub edx,ecx
+01CB0BE4 f2eb01          repne jmp short 01cb0be8
+01CB0BE8 2bd5            sub edx,ebp
+01CB0BEA 52              push edx
+01CB0BEB 8905dc645000    mov [dword 005064dc],eax
+01CB0BF1 894204          mov [edx+04],eax
+01CB0BF4 c7420800000000  mov dword [edx+08],00000000
+01CB0BFB c7420c00000000  mov dword [edx+0c],00000000
+01CB0C02 e98cfdffff      jmp dword 01cb0993
+01CB0993 686f0dcb01      push dword 01cb0d6f
+01CB0998 e863f60800      call dword 01d40000   ; jmp 00406AE0 -> call 00406AE0; ret to 01CB0D6F
+01CB0D6F 5a              pop edx
+01CB0D70 58              pop eax
+01CB0D71 689b03cb01      push dword 01cb039b
+01CB0D76 e885f20800      call dword 01d40000   ; jmp 00403AAC -> call 00403AAC; ret to 01CB039B
+01CB039B c3              ret
+
+; proc_01CB039C
+01CB039C 53              push ebx
+01CB039D 03442418        add eax,[esp+18]
+01CB03A1 03442438        add eax,[esp+38]
+01CB03A5 c1c817          ror eax,byte 17
+01CB03A8 c1c033          rol eax,byte 33
+01CB03AB 8d84264c515000  lea eax,[esi+0050514c]
+01CB03B2 2bc6            sub eax,esi
+01CB03B4 26eb02          es jmp short 01cb03b9
+01CB03B9 8b00            mov eax,[eax]
+01CB03BB e9aa090000      jmp dword 01cb0d6a
+01CB0D6A e891f20800      call dword 01d40000   ; cmp dword [eax], 00000000; je 01CB0573; jmp 01CB04A1
+01CB04A1 f2eb01          repne jmp short 01cb04a5
+01CB04A5 bb467c4600      mov ebx,00467c46
+01CB04AA bbfe9c4300      mov ebx,00439cfe
+01CB04AF 83dbf7          sbb ebx,byte -09
+01CB04B2 f2eb01          repne jmp short 01cb04b6
+01CB04B6 335c2408        xor ebx,[esp+08]
+01CB04BA 8d9e30ec205a    lea ebx,[esi+5a20ec30]
+01CB04C0 56              push esi
+01CB04C1 50              push eax
+01CB04C2 eb02            jmp short 01cb04c6
+01CB04C6 57              push edi
+01CB04C7 c1c8a7          ror eax,byte a7
+01CB04CA c1d8c3          rcr eax,byte c3
+01CB04CD 6abe            push byte -42
+01CB04CF 65eb01          gs jmp short 01cb04d3
+01CB04D3 669c            pushfw
+01CB04D5 50              push eax
+01CB04D6 83e899          sub eax,byte -67
+01CB04D9 eb01            jmp short 01cb04dc
+01CB04DC 03442418        add eax,[esp+18]
+01CB04E0 8bc4            mov eax,esp
+01CB04E2 8d442806        lea eax,[eax+ebp+06]
+01CB04E6 2bc5            sub eax,ebp
+01CB04E8 c700f447bafd    mov dword [eax],fdba47f4
+01CB04EE 58              pop eax
+01CB04EF 669d            popfw
+01CB04F1 b8ee964700      mov eax,004796ee
+01CB04F6 eb01            jmp short 01cb04f9
+01CB04F9 c1c879          ror eax,byte 79
+01CB04FC 58              pop eax
+01CB04FD 50              push eax
+01CB04FE 1bfd            sbb edi,ebp
+01CB0500 5f              pop edi
+01CB0501 c1cfba          ror edi,byte ba
+01CB0504 1bc7            sbb eax,edi
+01CB0506 f3eb02          rep jmp short 01cb050b
+01CB050B 1bc0            sbb eax,eax
+01CB050D 64eb02          fs jmp short 01cb0512
+01CB0512 8d44277b        lea eax,[edi+7b]
+01CB0516 eb02            jmp short 01cb051a
+01CB051A 83e87b          sub eax,byte +7b
+01CB051D 83c08b          add eax,byte -75
+01CB0520 f7d0            not eax
+01CB0522 87f0            xchg esi,eax
+01CB0524 81c6e761c114    add esi,14c161e7
+01CB052A f7de            neg esi
+01CB052C 56              push esi
+01CB052D c1d0b7          rcl eax,byte b7
+01CB0530 03442418        add eax,[esp+18]
+01CB0534 58              pop eax
+01CB0535 26eb02          es jmp short 01cb053a
+01CB053A 2bd8            sub ebx,eax
+01CB053C 8d7c1199        lea edi,[ecx+edx-67]
+01CB0540 5f              pop edi
+01CB0541 03442418        add eax,[esp+18]
+01CB0545 03442438        add eax,[esp+38]
+01CB0549 58              pop eax
+01CB054A f2eb01          repne jmp short 01cb054e
+01CB054E 8d71cf          lea esi,[ecx-31]
+01CB0551 5e              pop esi
+01CB0552 2bde            sub ebx,esi
+01CB0554 ff33            push dword [ebx]
+01CB0556 035c2418        add ebx,[esp+18]
+01CB055A bb6eb64900      mov ebx,0049b66e
+01CB055F 5b              pop ebx
+01CB0560 eb01            jmp short 01cb0563
+01CB0563 ff33            push dword [ebx]
+01CB0565 bb964e4600      mov ebx,00464e96
+01CB056A eb01            jmp short 01cb056d
+01CB056D 83cbed          or ebx,byte -13
+01CB0570 5b              pop ebx
+01CB0571 ffd3            call ebx
+01CB0573 5b              pop ebx
+01CB0574 c3              ret
+
+; proc_01CB0592
+01CB0592 55              push ebp
+01CB0593 bd76204400      mov ebp,00442076
+01CB0598 2eeb01          cs jmp short 01cb059c
+01CB059C bdac8d4800      mov ebp,00488dac
+01CB05A1 f2eb01          repne jmp short 01cb05a5
+01CB05A5 81c5dc397b0c    add ebp,0c7b39dc
+01CB05AB 8d6c245b        lea ebp,[esp+5b]
+01CB05AF 8d6c35a5        lea ebp,[ebp+esi-5b]
+01CB05B3 2bee            sub ebp,esi
+01CB05B5 51              push ecx
+01CB05B6 53              push ebx
+01CB05B7 56              push esi
+01CB05B8 57              push edi
+01CB05B9 894dfc          mov [ebp-04],ecx
+01CB05BC c1c33d          rol ebx,byte 3d
+01CB05BF bbf24b4100      mov ebx,00414bf2
+01CB05C4 52              push edx
+01CB05C5 81e33cf7166b    and ebx,6b16f73c
+01CB05CB 5b              pop ebx
+01CB05CC e98afdffff      jmp dword 01cb035b
+01CB035B f3eb02          rep jmp short 01cb0360
+01CB0360 8d341e          lea esi,[esi+ebx]
+01CB0363 f3eb02          rep jmp short 01cb0368
+01CB0368 81e61dab7106    and esi,0671ab1d
+01CB036E f3eb02          rep jmp short 01cb0373
+01CB0373 8db43538194100  lea esi,[ebp+esi+00411938]
+01CB037A f2eb01          repne jmp short 01cb037e
+01CB037E 8d740846        lea esi,[eax+ecx+46]
+01CB0382 2bf1            sub esi,ecx
+01CB0384 36eb01          ss jmp short 01cb0388
+01CB0388 8d7426ba        lea esi,[esi-46]
+01CB038C e9b7090000      jmp dword 01cb0d48
+01CB0D48 b8a6674900      mov eax,004967a6
+01CB0D4D 03442438        add eax,[esp+38]
+01CB0D51 c1c0a7          rol eax,byte a7
+01CB0D54 c1d0c3          rcl eax,byte c3
+01CB0D57 8d44235f        lea eax,[ebx+5f]
+01CB0D5B eb02            jmp short 01cb0d5f
+01CB0D5F 8d40a1          lea eax,[eax-5f]
+01CB0D62 ff50f4          call dword [eax-0c]
+01CB0D65 e920000000      jmp dword 01cb0d8a
+01CB0D8A eb01            jmp short 01cb0d8d
+01CB0D8D 83dbb3          sbb ebx,byte -4d
+01CB0D90 bb1e0a4a00      mov ebx,004a0a1e
+01CB0D95 c1db87          rcr ebx,byte 87
+01CB0D98 eb01            jmp short 01cb0d9b
+01CB0D9B bb12504800      mov ebx,00485012
+01CB0DA0 13d9            adc ebx,ecx
+01CB0DA2 8d5c284c        lea ebx,[eax+ebp+4c]
+01CB0DA6 36eb01          ss jmp short 01cb0daa
+01CB0DAA 2bdd            sub ebx,ebp
+01CB0DAC 8d5c23b4        lea ebx,[ebx-4c]
+01CB0DB0 e95efaffff      jmp dword 01cb0813
+01CB0813 8b45fc          mov eax,[ebp-04]
+01CB0816 8918            mov [eax],ebx
+01CB0818 e949030000      jmp dword 01cb0b66
+01CB0B66 33c0            xor eax,eax
+01CB0B68 55              push ebp
+01CB0B69 64ff3500000000  push dword [dword fs:00000000]
+01CB0B70 669c            pushfw
+01CB0B72 57              push edi
+01CB0B73 81c76c49a4a6    add edi,a6a4496c
+01CB0B79 03fb            add edi,ebx
+01CB0B7B 8d7c2440        lea edi,[esp+40]
+01CB0B7F 8d7c2fc0        lea edi,[edi+ebp-40]
+01CB0B83 2bfd            sub edi,ebp
+01CB0B85 8d7c0706        lea edi,[edi+eax+06]
+01CB0B89 36eb01          ss jmp short 01cb0b8d
+01CB0B8D 2bf8            sub edi,eax
+01CB0B8F 3eeb02          ds jmp short 01cb0b94
+01CB0B94 6896224500      push dword 00452296
+01CB0B99 8f07            pop dword [edi]
+01CB0B9B 5f              pop edi
+01CB0B9C 669d            popfw
+01CB0B9E e933ffffff      jmp dword 01cb0ad6
+01CB0AD6 64ff30          push dword [fs:eax]
+01CB0AD9 648920          mov [fs:eax],esp
+01CB0ADC 2bcd            sub ecx,ebp
+01CB0ADE 64eb02          fs jmp short 01cb0ae3
+01CB0AE3 03cb            add ecx,ebx
+01CB0AE5 f2eb01          repne jmp short 01cb0ae9
+01CB0AE9 33c9            xor ecx,ecx
+01CB0AEB 8d4c2e17        lea ecx,[esi+ebp+17]
+01CB0AEF 2bcd            sub ecx,ebp
+01CB0AF1 8d4c11e9        lea ecx,[ecx+edx-17]
+01CB0AF5 65eb01          gs jmp short 01cb0af9
+01CB0AF9 2bca            sub ecx,edx
+01CB0AFB 83caff          or edx,byte -01
+01CB0AFE e937fbffff      jmp dword 01cb063a
+01CB063A 81c0b434e14b    add eax,4be134b4
+01CB0640 8d8364f386c7    lea eax,[ebx-38790c9c]
+01CB0646 52              push edx
+01CB0647 53              push ebx
+01CB0648 56              push esi
+01CB0649 682c3d2b1b      push dword 1b2b3d2c
+01CB064E 5e              pop esi
+01CB064F 81c65fc03add    add esi,dd3ac05f
+01CB0655 56              push esi
+01CB0656 bb426d4100      mov ebx,00416d42
+01CB065B bb3ab44000      mov ebx,0040b43a
+01CB0660 5b              pop ebx
+01CB0661 81c3ad21dfce    add ebx,cedf21ad
+01CB0667 4b              dec ebx
+01CB0668 87d3            xchg edx,ebx
+01CB066A 83c23f          add edx,byte +3f
+01CB066D 8db75c5e4000    lea esi,[edi+00405e5c]
+01CB0673 52              push edx
+01CB0674 33742408        xor esi,[esp+08]
+01CB0678 f2eb01          repne jmp short 01cb067c
+01CB067C c1c6db          rol esi,byte db
+01CB067F 5e              pop esi
+01CB0680 2bc6            sub eax,esi
+01CB0682 eb01            jmp short 01cb0685
+01CB0685 5e              pop esi
+01CB0686 5b              pop ebx
+01CB0687 5a              pop edx
+01CB0688 f2eb01          repne jmp short 01cb068c
+01CB068C 2bc1            sub eax,ecx
+01CB068E 8d442b6a        lea eax,[ebx+ebp+6a]
+01CB0692 36eb01          ss jmp short 01cb0696
+01CB0696 2bc5            sub eax,ebp
+01CB0698 8d442096        lea eax,[eax-6a]
+01CB069C e978070000      jmp dword 01cb0e19
+01CB0E19 037c2438        add edi,[esp+38]
+01CB0E1D bf46c74800      mov edi,0048c746
+01CB0E22 8b38            mov edi,[eax]
+01CB0E24 ff572c          call dword [edi+2c]
+01CB0E27 33c0            xor eax,eax
+01CB0E29 5a              pop edx
+01CB0E2A 59              pop ecx
+01CB0E2B 59              pop ecx
+01CB0E2C 648910          mov [fs:eax],edx
+01CB0E2F e8ccf10800      call dword 01d40000   ; jmp 01CB0C9B
+01CB0C9B 837e3800        cmp dword [esi+38],byte +00
+01CB0C9F 0f850bffffff    jnz dword 01cb0bb0
+01CB0CA5 e936010000      jmp dword 01cb0de0
+01CB0DE0 03442418        add eax,[esp+18]
+01CB0DE4 83d8ef          sbb eax,byte -11
+01CB0DE7 b8cece4200      mov eax,0042cece
+01CB0DEC eb01            jmp short 01cb0def
+01CB0DEF b8d2eb4000      mov eax,0040ebd2
+01CB0DF4 eb01            jmp short 01cb0df7
+01CB0DF7 8d4411a9        lea eax,[ecx+edx-57]
+01CB0DFB f2eb01          repne jmp short 01cb0dff
+01CB0DFF 8d442b52        lea eax,[ebx+ebp+52]
+01CB0E03 2bc5            sub eax,ebp
+01CB0E05 8d4438ae        lea eax,[eax+edi-52]
+01CB0E09 2bc7            sub eax,edi
+01CB0E0B e996fcffff      jmp dword 01cb0aa6
+01CB0AA6 ba8a034b00      mov edx,004b038a
+01CB0AAB ba021a4700      mov edx,00471a02
+01CB0AB0 33542408        xor edx,[esp+08]
+01CB0AB4 83da35          sbb edx,byte +35
+01CB0AB7 26eb02          es jmp short 01cb0abc
+01CB0ABC 8d942078834400  lea edx,[eax+00448378]
+01CB0AC3 2bd0            sub edx,eax
+01CB0AC5 8b12            mov edx,[edx]
+01CB0AC7 e95cfbffff      jmp dword 01cb0628
+01CB0628 68370dcb01      push dword 01cb0d37
+01CB062D e8cef90800      call dword 01d40000   ; jmp 00403184 -> call 00403184; ret to 01CB0D37
+01CB0D37 84c0            test al,al
+01CB0D39 e8c2f20800      call dword 01d40000   ; je 01CB0BB0; jmp 01CB0CEF
+01CB0CEF 26eb02          es jmp short 01cb0cf4
+01CB0CF4 81f73e95178e    xor edi,8e17953e
+01CB0CFA 53              push ebx
+01CB0CFB 337c2428        xor edi,[esp+28]
+01CB0CFF 83df19          sbb edi,byte +19
+01CB0D02 5f              pop edi
+01CB0D03 e942fbffff      jmp dword 01cb084a
+01CB084A 03442418        add eax,[esp+18]
+01CB084E c1d007          rcl eax,byte 07
+01CB0851 c1d07f          rcl eax,byte 7f
+01CB0854 36eb01          ss jmp short 01cb0858
+01CB0858 b8940b4200      mov eax,00420b94
+01CB085D 13c1            adc eax,ecx
+01CB085F 8d442f24        lea eax,[edi+ebp+24]
+01CB0863 f2eb01          repne jmp short 01cb0867
+01CB0867 2bc5            sub eax,ebp
+01CB0869 64eb02          fs jmp short 01cb086e
+01CB086E 8d4428ad        lea eax,[eax+ebp-53]
+01CB0872 55              push ebp
+01CB0873 57              push edi
+01CB0874 64eb02          fs jmp short 01cb0879
+01CB0879 52              push edx
+01CB087A eb02            jmp short 01cb087e
+01CB087E 81ca1bb3fdc0    or edx,c0fdb31b
+01CB0884 eb02            jmp short 01cb0888
+01CB0888 68ef59081b      push dword 1b0859ef
+01CB088D baf2954700      mov edx,004795f2
+01CB0892 c1c2f5          rol edx,byte f5
+01CB0895 5a              pop edx
+01CB0896 81c2ebeeefe2    add edx,e2efeeeb
+01CB089C c1c78d          rol edi,byte 8d
+01CB089F 337c2408        xor edi,[esp+08]
+01CB08A3 c1c781          rol edi,byte 81
+01CB08A6 337c2428        xor edi,[esp+28]
+01CB08AA 8d7a0b          lea edi,[edx+0b]
+01CB08AD 3eeb02          ds jmp short 01cb08b2
+01CB08B2 52              push edx
+01CB08B3 51              push ecx
+01CB08B4 64eb02          fs jmp short 01cb08b9
+01CB08B9 53              push ebx
+01CB08BA 33d7            xor edx,edi
+01CB08BC ba33a48004      mov edx,0480a433
+01CB08C1 c1db97          rcr ebx,byte 97
+01CB08C4 035c2418        add ebx,[esp+18]
+01CB08C8 bb56254900      mov ebx,00492556
+01CB08CD bb0e5d4000      mov ebx,00405d0e
+01CB08D2 8d5c2250        lea ebx,[edx+50]
+01CB08D6 83eb50          sub ebx,byte +50
+01CB08D9 81c325b6cff1    add ebx,f1cfb625
+01CB08DF f7db            neg ebx
+01CB08E1 53              push ebx
+01CB08E2 334c2428        xor ecx,[esp+28]
+01CB08E6 83c941          or ecx,byte +41
+01CB08E9 59              pop ecx
+01CB08EA c1c9fb          ror ecx,byte fb
+01CB08ED 03542418        add edx,[esp+18]
+01CB08F1 03542438        add edx,[esp+38]
+01CB08F5 8bd1            mov edx,ecx
+01CB08F7 81eacbb4f435    sub edx,35f4b4cb
+01CB08FD 4a              dec edx
+01CB08FE 03fa            add edi,edx
+01CB0900 335c2428        xor ebx,[esp+28]
+01CB0904 83cb59          or ebx,byte +59
+01CB0907 5b              pop ebx
+01CB0908 64eb02          fs jmp short 01cb090d
+01CB090D 8d4c516b        lea ecx,[ecx+edx*2+6b]
+01CB0911 eb01            jmp short 01cb0914
+01CB0914 8d4995          lea ecx,[ecx-6b]
+01CB0917 f2eb01          repne jmp short 01cb091b
+01CB091B 2bca            sub ecx,edx
+01CB091D 59              pop ecx
+01CB091E 83da35          sbb edx,byte +35
+01CB0921 33542408        xor edx,[esp+08]
+01CB0925 5a              pop edx
+01CB0926 8d7c37c0        lea edi,[edi+esi-40]
+01CB092A 36eb01          ss jmp short 01cb092e
+01CB092E 2bfe            sub edi,esi
+01CB0930 81efd9eaf7fd    sub edi,fdf7ead9
+01CB0936 f7df            neg edi
+01CB0938 57              push edi
+01CB0939 bd2ef04a00      mov ebp,004af02e
+01CB093E bd66164a00      mov ebp,004a1666
+01CB0943 5d              pop ebp
+01CB0944 c1cd49          ror ebp,byte 49
+01CB0947 f7d5            not ebp
+01CB0949 55              push ebp
+01CB094A ba2ae84600      mov edx,0046e82a
+01CB094F 33542408        xor edx,[esp+08]
+01CB0953 5a              pop edx
+01CB0954 eb02            jmp short 01cb0958
+01CB0958 03c2            add eax,edx
+01CB095A 33542428        xor edx,[esp+28]
+01CB095E 33542408        xor edx,[esp+08]
+01CB0962 eb02            jmp short 01cb0966
+01CB0966 5a              pop edx
+01CB0967 337c2408        xor edi,[esp+08]
+01CB096B bf3a504900      mov edi,0049503a
+01CB0970 f3eb02          rep jmp short 01cb0975
+01CB0975 5f              pop edi
+01CB0976 bdaa4b4700      mov ebp,00474baa
+01CB097B eb01            jmp short 01cb097e
+01CB097E c1c5c7          rol ebp,byte c7
+01CB0981 5d              pop ebp
+01CB0982 f3eb02          rep jmp short 01cb0987
+01CB0987 2bc5            sub eax,ebp
+01CB0989 685507cb01      push dword 01cb0755
+01CB098E e86df60800      call dword 01d40000   ; jmp 00439488 -> call 00439488; ret to 01CB0755
+01CB0755 897e38          mov [esi+38],edi
+01CB0758 e953040000      jmp dword 01cb0bb0
+01CB0BB0 5f              pop edi
+01CB0BB1 5e              pop esi
+01CB0BB2 5b              pop ebx
+01CB0BB3 59              pop ecx
+01CB0BB4 5d              pop ebp
+01CB0BB5 e9d1f8ffff      jmp dword 01cb048b
+01CB048B c3              ret
+
+; proc_01CB0450
+01CB0450 53              push ebx
+01CB0451 56              push esi
+01CB0452 57              push edi
+01CB0453 55              push ebp
+01CB0454 65eb01          gs jmp short 01cb0458
+01CB0458 bbb09a4600      mov ebx,00469ab0
+01CB045D 33db            xor ebx,ebx
+01CB045F eb01            jmp short 01cb0462
+01CB0462 8d5c5167        lea ebx,[ecx+edx*2+67]
+01CB0466 eb01            jmp short 01cb0469
+01CB0469 f2eb01          repne jmp short 01cb046d
+01CB046D bb3a074500      mov ebx,0045073a
+01CB0472 f2eb01          repne jmp short 01cb0476
+01CB0476 bb9e434100      mov ebx,0041439e
+01CB047B 8d9c35a4645000  lea ebx,[ebp+esi+005064a4]
+01CB0482 2bde            sub ebx,esi
+01CB0484 2bdd            sub ebx,ebp
+01CB0486 e982ffffff      jmp dword 01cb040d
+01CB040D bec6da4200      mov esi,0042dac6
+01CB0412 be7e534600      mov esi,0046537e
+01CB0417 81ee1894e1a9    sub esi,a9e19418
+01CB041D eb01            jmp short 01cb0420
+01CB0420 8d747522        lea esi,[ebp+esi*2+22]
+01CB0424 83ee22          sub esi,byte +22
+01CB0427 8db40b38605000  lea esi,[ebx+ecx+00506038]
+01CB042E eb01            jmp short 01cb0431
+01CB0431 2bf1            sub esi,ecx
+01CB0433 2bf3            sub esi,ebx
+01CB0435 e986090000      jmp dword 01cb0dc0
+01CB0DC0 eb02            jmp short 01cb0dc4
+01CB0DC4 33fe            xor edi,esi
+01CB0DC6 bf56024400      mov edi,00440256
+01CB0DCB c1cf07          ror edi,byte 07
+01CB0DCE 8dbc223c605000  lea edi,[edx+0050603c]
+01CB0DD5 2bfa            sub edi,edx
+01CB0DD7 807b2400        cmp byte [ebx+24],00
+01CB0DDB e820f20800      call dword 01d40000   ; jne 01CB0C50; jmp 01CB0845
+01CB0845 e8b6f70800      call dword 01d40000   ; cmp dword [edi], 00000000; je 01CB0C50; jmp 01CB043A
+01CB043A 2bd5            sub edx,ebp
+01CB043C ff37            push dword [edi]
+01CB043E c1d213          rcl edx,byte 13
+01CB0441 c1da6f          rcr edx,byte 6f
+01CB0444 5a              pop edx
+01CB0445 89d0            mov eax,edx
+01CB0447 33d2            xor edx,edx
+01CB0449 8917            mov [edi],edx
+01CB044B e9d2feffff      jmp dword 01cb0322
+01CB0322 8d2c07          lea ebp,[edi+eax]
+01CB0325 f3eb02          rep jmp short 01cb032a
+01CB032A 81e5d7261bda    and ebp,da1b26d7
+01CB0330 8d6c2046        lea ebp,[eax+46]
+01CB0334 f3eb02          rep jmp short 01cb0339
+01CB0339 8d6c0dba        lea ebp,[ebp+ecx-46]
+01CB033D 2be9            sub ebp,ecx
+01CB033F ffd5            call ebp
+01CB0341 e8bafc0800      call dword 01d40000   ; cmp dword [edi], 00000000; jne 01CB043A; jmp 01CB0C50
+01CB0C50 833d4060500000  cmp dword [dword 00506040],byte +00
+01CB0C57 0f8454000000    jz dword 01cb0cb1
+01CB0C5D 681d08cb01      push dword 01cb081d
+01CB0C62 e899f30800      call dword 01d40000   ; jmp 00403B18 -> call 00403B18; ret to 01CB081D
+01CB081D e8def70800      call dword 01d40000   ; cmp byte [00506048], 00000000; je 01CB049C; jmp 01CB06B0
+01CB06B0 83ea8d          sub edx,byte -73
+01CB06B3 c1d249          rcl edx,byte 49
+01CB06B6 684c9debe8      push dword e8eb9d4c
+01CB06BB 669c            pushfw
+01CB06BD 57              push edi
+01CB06BE eb02            jmp short 01cb06c2
+01CB06C2 0bf9            or edi,ecx
+01CB06C4 8bfc            mov edi,esp
+01CB06C6 64eb02          fs jmp short 01cb06cb
+01CB06CB 8d7c1f04        lea edi,[edi+ebx+04]
+01CB06CF 36eb01          ss jmp short 01cb06d3
+01CB06D3 56              push esi
+01CB06D4 50              push eax
+01CB06D5 8d444730        lea eax,[edi+eax*2+30]
+01CB06D9 83e830          sub eax,byte +30
+01CB06DC 2bc0            sub eax,eax
+01CB06DE 68b2975939      push dword 395997b2
+01CB06E3 b89e014900      mov eax,0049019e
+01CB06E8 03442418        add eax,[esp+18]
+01CB06EC 58              pop eax
+01CB06ED c1c865          ror eax,byte 65
+01CB06F0 40              inc eax
+01CB06F1 83c05e          add eax,byte +5e
+01CB06F4 40              inc eax
+01CB06F5 50              push eax
+01CB06F6 81c65c632319    add esi,1923635c
+01CB06FC 5e              pop esi
+01CB06FD 81ee1fcdca91    sub esi,91cacd1f
+01CB0703 f7de            neg esi
+01CB0705 8d44355d        lea eax,[ebp+esi+5d]
+01CB0709 81c85880a9e6    or eax,e6a98058
+01CB070F 8d4647          lea eax,[esi+47]
+01CB0712 83e847          sub eax,byte +47
+01CB0715 03f8            add edi,eax
+01CB0717 33c5            xor eax,ebp
+01CB0719 58              pop eax
+01CB071A 33742428        xor esi,[esp+28]
+01CB071E 33742408        xor esi,[esp+08]
+01CB0722 f3eb02          rep jmp short 01cb0727
+01CB0727 5e              pop esi
+01CB0728 2bfb            sub edi,ebx
+01CB072A eb01            jmp short 01cb072d
+01CB072D c70734904f00    mov dword [edi],004f9034
+01CB0733 5f              pop edi
+01CB0734 eb02            jmp short 01cb0738
+01CB0738 669d            popfw
+01CB073A 03542438        add edx,[esp+38]
+01CB073E ba860c4600      mov edx,00460c86
+01CB0743 5a              pop edx
+01CB0744 e9ba030000      jmp dword 01cb0b03
+01CB0B03 33442428        xor eax,[esp+28]
+01CB0B07 eb01            jmp short 01cb0b0a
+01CB0B0A 03442438        add eax,[esp+38]
+01CB0B0E 6882ba1294      push dword 9412ba82
+01CB0B13 669c            pushfw
+01CB0B15 55              push ebp
+01CB0B16 8d2c11          lea ebp,[ecx+edx]
+01CB0B19 eb01            jmp short 01cb0b1c
+01CB0B1C 8bec            mov ebp,esp
+01CB0B1E 8d6c1d06        lea ebp,[ebp+ebx+06]
+01CB0B22 2beb            sub ebp,ebx
+01CB0B24 eb01            jmp short 01cb0b27
+01CB0B27 51              push ecx
+01CB0B28 83e90b          sub ecx,byte +0b
+01CB0B2B 36eb01          ss jmp short 01cb0b2f
+01CB0B2F 83e166          and ecx,byte +66
+01CB0B32 eb01            jmp short 01cb0b35
+01CB0B35 8d8a1c625000    lea ecx,[edx+0050621c]
+01CB0B3B f2eb01          repne jmp short 01cb0b3f
+01CB0B3F 2bca            sub ecx,edx
+01CB0B41 26eb02          es jmp short 01cb0b46
+01CB0B46 51              push ecx
+01CB0B47 8f4500          pop dword [ebp+00]
+01CB0B4A 59              pop ecx
+01CB0B4B 5d              pop ebp
+01CB0B4C f3eb02          rep jmp short 01cb0b51
+01CB0B51 669d            popfw
+01CB0B53 83c8eb          or eax,byte -15
+01CB0B56 b88ee74700      mov eax,0047e78e
+01CB0B5B 58              pop eax
+01CB0B5C 68cc0acb01      push dword 01cb0acc
+01CB0B61 e89af40800      call dword 01d40000   ; jmp 00406338 -> call 00406338; ret to 01CB0ACC
+01CB0ACC 685d07cb01      push dword 01cb075d
+01CB0AD1 e82af50800      call dword 01d40000   ; jmp 004062BB -> call 004062BB; ret to 01CB075D
+01CB075D e89ef80800      call dword 01d40000   ; jmp 01CB0CAA
+01CB0CAA 33c0            xor eax,eax
+01CB0CAC a340605000      mov [00506040],eax
+01CB0CB1 807b2402        cmp byte [ebx+24],02
+01CB0CB5 e846f30800      call dword 01d40000   ; jne 01CB0D80; jmp 01CB0C67
+01CB0C67 e894f30800      call dword 01d40000   ; cmp dword [esi], 00000000; jne 01CB0D80; jmp 01CB0D7B
+01CB0D7B 33c0            xor eax,eax
+01CB0D7D 89430c          mov [ebx+0c],eax
+01CB0D80 68970acb01      push dword 01cb0a97
+01CB0D85 e876f20800      call dword 01d40000   ; jmp 004039EC -> call 004039EC; ret to 01CB0A97
+01CB0A97 807b2401        cmp byte [ebx+24],01
+01CB0A9B 0f865bfbffff    jna dword 01cb05fc
+01CB0AA1 e85af50800      call dword 01d40000   ; cmp dword [esi], 00000000; je 01CB0C91; jmp 01CB05FC
+01CB05FC 8b4310          mov eax,[ebx+10]
+01CB05FF 85c0            test eax,eax
+01CB0601 0f848a060000    jz dword 01cb0c91
+01CB0607 687a05cb01      push dword 01cb057a
+01CB060C e8eff90800      call dword 01d40000   ; jmp 00405BEC -> call 00405BEC; ret to 01CB057A
+01CB057A 8b4310          mov eax,[ebx+10]
+01CB057D 8b5010          mov edx,[eax+10]
+01CB0580 3b5004          cmp edx,[eax+04]
+01CB0583 e878fa0800      call dword 01d40000   ; je 01CB0C91; jmp 01CB0DB5
+01CB0DB5 52              push edx
+01CB0DB6 68910ccb01      push dword 01cb0c91
+01CB0DBB e840f20800      call dword 01d40000   ; jmp 004012B8 -> call 004012B8; ret to 01CB0C91
+01CB0C91 68100ecb01      push dword 01cb0e10
+01CB0C96 e865f30800      call dword 01d40000   ; jmp 004039C4 -> call 004039C4; ret to 01CB0E10
+01CB0E10 807b2401        cmp byte [ebx+24],01
+01CB0E14 e8e7f10800      call dword 01d40000   ; jne 01CB05F3; jmp 01CB05F0
+01CB05F0 ff5328          call dword [ebx+28]
+01CB05F3 807b2400        cmp byte [ebx+24],00
+01CB05F7 e804fa0800      call dword 01d40000   ; je 01CB06A1; jmp 01CB0391
+01CB0391 68a106cb01      push dword 01cb06a1
+01CB0396 e865fc0800      call dword 01d40000   ; jmp 00403B68 -> call 00403B68; ret to 01CB06A1
+01CB06A1 e85af90800      call dword 01d40000   ; cmp dword [ebx], 00000000; jne 01CB0C07; jmp 01CB0611
+01CB0611 81e8a696df5d    sub eax,5ddf96a6
+01CB0617 2eeb01          cs jmp short 01cb061b
+01CB061B 8b06            mov eax,[esi]
+01CB061D 50              push eax
+01CB061E 68070ccb01      push dword 01cb0c07
+01CB0623 e8d8f90800      call dword 01d40000   ; jmp 00401298 -> call 00401298; ret to 01CB0C07
+01CB0C07 8d445147        lea eax,[ecx+edx*2+47]
+01CB0C0B 8d4408b9        lea eax,[eax+ecx-47]
+01CB0C0F 2bc1            sub eax,ecx
+01CB0C11 8b03            mov eax,[ebx]
+01CB0C13 56              push esi
+01CB0C14 eb02            jmp short 01cb0c18
+01CB0C18 03f6            add esi,esi
+01CB0C1A eb02            jmp short 01cb0c1e
+01CB0C1E 65eb01          gs jmp short 01cb0c22
+01CB0C22 8d744b34        lea esi,[ebx+ecx*2+34]
+01CB0C26 8d7426cc        lea esi,[esi-34]
+01CB0C2A f3eb02          rep jmp short 01cb0c2f
+01CB0C2F 2bf1            sub esi,ecx
+01CB0C31 eb01            jmp short 01cb0c34
+01CB0C34 13f1            adc esi,ecx
+01CB0C36 65eb01          gs jmp short 01cb0c3a
+01CB0C3A 8d742825        lea esi,[eax+ebp+25]
+01CB0C3E f3eb02          rep jmp short 01cb0c43
+01CB0C43 2bf5            sub esi,ebp
+01CB0C45 8d742edb        lea esi,[esi+ebp-25]
+01CB0C49 2bf5            sub esi,ebp
+01CB0C4B e9b0f6ffff      jmp dword 01cb0300
+01CB0300 bfb6774a00      mov edi,004a77b6
+01CB0305 f2eb01          repne jmp short 01cb0309
+01CB0309 c1cffd          ror edi,byte fd
+01CB030C 53              push ebx
+01CB030D eb02            jmp short 01cb0311
+01CB0311 eb02            jmp short 01cb0315
+01CB0315 8d7c6804        lea edi,[eax+ebp*2+04]
+01CB0319 83ef04          sub edi,byte +04
+01CB031C 5f              pop edi
+01CB031D e9e6090000      jmp dword 01cb0d08
+01CB0D08 64eb02          fs jmp short 01cb0d0d
+01CB0D0D eb01            jmp short 01cb0d10
+01CB0D10 8d4c1197        lea ecx,[ecx+edx-69]
+01CB0D14 2bca            sub ecx,edx
+01CB0D16 8d0c0b          lea ecx,[ebx+ecx]
+01CB0D19 b926934300      mov ecx,00439326
+01CB0D1E eb01            jmp short 01cb0d21
+01CB0D21 c1d975          rcr ecx,byte 75
+01CB0D24 8d8c170b000000  lea ecx,[edi+edx+0000000b]
+01CB0D2B 2bca            sub ecx,edx
+01CB0D2D 2bcf            sub ecx,edi
+01CB0D2F f3a5            rep movsd
+01CB0D31 5e              pop esi
+01CB0D32 e8c9f20800      call dword 01d40000   ; jmp 01CB0CB1
+; conditional branch
+01CB049C e85ffb0800      call dword 01d40000   ; cmp byte [004F9010], 00000000; jne 01CB0CAA; jmp 01CB03C0
+01CB03C0 6a00            push byte +00
+01CB03C2 ff742414        push dword [esp+14]
+01CB03C6 669c            pushfw
+01CB03C8 51              push ecx
+01CB03C9 8d4c35d3        lea ecx,[ebp+esi-2d]
+01CB03CD 64eb02          fs jmp short 01cb03d2
+01CB03D2 2bce            sub ecx,esi
+01CB03D4 8bcc            mov ecx,esp
+01CB03D6 f3eb02          rep jmp short 01cb03db
+01CB03DB 8d4c3906        lea ecx,[ecx+edi+06]
+01CB03DF 64eb02          fs jmp short 01cb03e4
+01CB03E4 2bcf            sub ecx,edi
+01CB03E6 eb02            jmp short 01cb03ea
+01CB03EA 56              push esi
+01CB03EB 81f650203a89    xor esi,893a2050
+01CB03F1 8db354904f00    lea esi,[ebx+004f9054]
+01CB03F7 2bf3            sub esi,ebx
+01CB03F9 f2eb01          repne jmp short 01cb03fd
+01CB03FD 56              push esi
+01CB03FE 8f01            pop dword [ecx]
+01CB0400 5e              pop esi
+01CB0401 59              pop ecx
+01CB0402 f2eb01          repne jmp short 01cb0406
+01CB0406 669d            popfw
+01CB0408 e990050000      jmp dword 01cb099d
+01CB099D 680ce3f2a3      push dword a3f2e30c
+01CB09A2 669c            pushfw
+01CB09A4 57              push edi
+01CB09A5 81f7e48c5e19    xor edi,195e8ce4
+01CB09AB 36eb01          ss jmp short 01cb09af
+01CB09AF 2eeb01          cs jmp short 01cb09b3
+01CB09B3 8b7c2430        mov edi,[esp+30]
+01CB09B7 81cf92016efb    or edi,fb6e0192
+01CB09BD f2eb01          repne jmp short 01cb09c1
+01CB09C1 8d7c2437        lea edi,[esp+37]
+01CB09C5 2eeb01          cs jmp short 01cb09c9
+01CB09C9 eb01            jmp short 01cb09cc
+01CB09CC 8d7c07c9        lea edi,[edi+eax-37]
+01CB09D0 2bf8            sub edi,eax
+01CB09D2 8d7f06          lea edi,[edi+06]
+01CB09D5 65eb01          gs jmp short 01cb09d9
+01CB09D9 eb01            jmp short 01cb09dc
+01CB09DC f2eb01          repne jmp short 01cb09e0
+01CB09E0 6834904f00      push dword 004f9034
+01CB09E5 8f07            pop dword [edi]
+01CB09E7 5f              pop edi
+01CB09E8 eb01            jmp short 01cb09eb
+01CB09EB 669d            popfw
+01CB09ED 6a00            push byte +00
+01CB09EF 68aa0ccb01      push dword 01cb0caa
+01CB09F4 e807f60800      call dword 01d40000   ; jmp 004012A0 -> call 004012A0; ret to 01CB0CAA

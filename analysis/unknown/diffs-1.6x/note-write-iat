@@ -1,0 +1,357 @@
+differences to v1.6X:
+
+imp_stl_capi entry spec:
+  imp_tpy     byte      == imports_t::imp_stl_capi  (offset 0x3a)
+  proc_id     word      imported proc id
+  capi_i      byte      capi index 1..15
+
+imp_stl_gpa_alt entry spec (counterpart of 1.6X imp_stl_gpa2 type):
+  imp_tpy       byte        == imports_t::imp_stl_capi  (offset 0x39)
+  proc_id       word        imported proc id
+  proc_dec_len  word        length of decoded proc name
+  proc_dec      var length  decoded proc name
+
+-------- write_iat()
+write_iat(imports_t *imps(eax))
+
+00ca54dc 53              push    ebx
+00ca54dd 56              push    esi
+00ca54de 57              push    edi
+00ca54df 55              push    ebp
+00ca54e0 83c4f4          add     esp,0FFFFFFF4h
+00ca54e3 8bf0            mov     esi,eax
+00ca54e5 c6042401        mov     byte ptr [esp],1                               ; imps
+00ca54e9 eb01            jmp     00ca54ec
+00ca54eb 9a              ???
+00ca54ec 837e0400        cmp     dword ptr [esi+4],0
+00ca54f0 0f841a010000    je      00ca5610
+00ca54f6 8b7e04          mov     edi,dword ptr [esi+4]                          ; &imps->imp_dsc.ids_tab
+00ca54f9 8b4650          mov     eax,dword ptr [esi+50h]
+00ca54fc 89442404        mov     dword ptr [esp+4],eax                          ; imps->mod_base
+00ca5500 eb01            jmp     00ca5503
+00ca5502 69              ???
+00ca5503 8d4634          lea     eax,[esi+34h]
+00ca5506 b909000000      mov     ecx,9
+00ca550b 8bd7            mov     edx,edi
+00ca550d e8d60cfdff      call    00c761e8                                       ; init ids: memcpy(imps->imp_endmrk, imp_dsc->ids_tab, 9)
+00ca5512 83c709          add     edi,9                                          ; &imp_dsc->last
+00ca5515 e9ea000000      jmp     00ca5604
+
+; loop (lib)
+00ca551a 89442408        mov     dword ptr [esp+8],eax                          ; iat_addr_rva = imp_dsc->last
+00ca551e 6aff            push    0FFFFFFFFh
+00ca5520 e85718feff      call    00c86d7c
+00ca5525 40              inc     eax
+00ca5526 8903            mov     dword ptr [ebx],eax                            ; destroy iat address after its use: imp_dsc->last = rand()%0xffffffff
+00ca5528 83c704          add     edi,4
+00ca552b 83c706          add     edi,6
+00ca552e 8bef            mov     ebp,edi                                        ; &lib->lib_name
+00ca5530 8bc7            mov     eax,edi
+00ca5532 e8d56dfdff      call    00c7c30c                                       ; strlen(&lib->lib_name)
+00ca5537 40              inc     eax
+00ca5538 0fb7c0          movzx   eax,ax
+00ca553b 03f8            add     edi,eax                                        ; &imp_dsc->imp_tpy
+00ca553d 8b4648          mov     eax,dword ptr [esi+48h]
+00ca5540 8b00            mov     eax,dword ptr [eax]
+00ca5542 334648          xor     eax,dword ptr [esi+48h]
+00ca5545 2b464c          sub     eax,dword ptr [esi+4Ch]
+00ca5548 e80bffffff      call    00ca5458                                       ; check againts bp on 1st 4 bytes of 'kernel32!GetProcAddress'
+00ca554d 25ff000000      and     eax,0FFh
+00ca5552 03f8            add     edi,eax
+00ca5554 8a1f            mov     bl,byte ptr [edi]                              ; imp_dsc->imp_tpy
+00ca5556 47              inc     edi                                            ; &(imp_dsc->proc_id)
+00ca5557 8b4640          mov     eax,dword ptr [esi+40h]
+00ca555a 8b00            mov     eax,dword ptr [eax]
+00ca555c 334640          xor     eax,dword ptr [esi+40h]
+00ca555f 2b4644          sub     eax,dword ptr [esi+44h]
+00ca5562 e8f1feffff      call    00ca5458                                       ; check againts bp on 1st 4 bytes of 'kernel32!LoadLibrary'
+00ca5567 25ff000000      and     eax,0FFh
+00ca556c 03f8            add     edi,eax
+00ca556e 8b442404        mov     eax,dword ptr [esp+4]
+00ca5572 01442408        add     dword ptr [esp+8],eax                          ; iat_ent = iat_addr_rva + imps->mod_base
+00ca5576 e980000000      jmp     00ca55fb
+
+; loop (proc)
+00ca557b 3a5e37          cmp     bl,byte ptr [esi+37h]
+00ca557e 7517            jne     00ca5597
+
+; imp_plain
+00ca5580 83c702          add     edi,2
+00ca5583 8bc7            mov     eax,edi                                        ; skip imp_dsc->proc_id
+00ca5585 50              push    eax
+00ca5586 55              push    ebp
+00ca5587 8d442410        lea     eax,[esp+10h]
+00ca558b 50              push    eax
+00ca558c 56              push    esi
+00ca558d e8eafcffff      call    00ca527c                                       ; write_iat_ent()
+00ca5592 83c704          add     edi,4                                          ; skip imp_dsc->procn_addr
+00ca5595 eb61            jmp     00ca55f8
+00ca5597 3a5e38          cmp     bl,byte ptr [esi+38h]
+00ca559a 7517            jne     00ca55b3
+
+; imp_stl_re
+00ca559c 83c702          add     edi,2
+00ca559f 8bc7            mov     eax,edi                                        ; skip imp_dsc->proc_id
+00ca55a1 50              push    eax
+00ca55a2 55              push    ebp
+00ca55a3 8d442410        lea     eax,[esp+10h]
+00ca55a7 50              push    eax
+00ca55a8 56              push    esi
+00ca55a9 e8cefcffff      call    00ca527c                                       ; write_iat_ent()
+00ca55ae 83c702          add     edi,2
+00ca55b1 eb45            jmp     00ca55f8
+00ca55b3 3a5e3a          cmp     bl,byte ptr [esi+3Ah]
+00ca55b6 7526            jne     00ca55de
+
+; imp_stl_capi
+00ca55b8 83c702          add     edi,2                                          ; skip imp_dsc->proc_id
+00ca55bb 8a07            mov     al,byte ptr [edi]
+00ca55bd e89672ffff      call    00c9c858
+00ca55c2 8b542408        mov     edx,dword ptr [esp+8]
+00ca55c6 8902            mov     dword ptr [edx],eax                            ; *iat_ent = capi[imp_dsc->capi_i];      capi := 1..15
+00ca55c8 85c0            test    eax,eax
+00ca55ca 750a            jne     00ca55d6
+00ca55cc 682456ca00      push    0CA5624h
+00ca55d1 e8a207feff      call    00c85d78                                       ; error
+00ca55d6 8344240804      add     dword ptr [esp+8],4
+00ca55db 47              inc     edi
+00ca55dc eb1a            jmp     00ca55f8
+
+; rest of types
+00ca55de 83c702          add     edi,2                                          ; skip imp_dsc->proc_id
+00ca55e1 8bc7            mov     eax,edi
+00ca55e3 50              push    eax
+00ca55e4 55              push    ebp
+00ca55e5 8d442410        lea     eax,[esp+10h]
+00ca55e9 50              push    eax
+00ca55ea 56              push    esi
+00ca55eb e88cfcffff      call    00ca527c                                       ; write_iat_ent()
+00ca55f0 0fb707          movzx   eax,word ptr [edi]
+00ca55f3 83c002          add     eax,2
+00ca55f6 03f8            add     edi,eax                                        ; skip decoded proc name + its size (written on 2 bytes)
+
+; next iter (proc)
+00ca55f8 8a1f            mov     bl,byte ptr [edi]
+00ca55fa 47              inc     edi
+00ca55fb 3a5e34          cmp     bl,byte ptr [esi+34h]
+00ca55fe 0f8577ffffff    jne     00ca557b                                       ; is a next proc: imp_dsc->imp_tpy!=imp_dsc->imp_endmrk
+
+; next iter (lib)
+00ca5604 8bdf            mov     ebx,edi
+00ca5606 8b03            mov     eax,dword ptr [ebx]
+00ca5608 85c0            test    eax,eax
+00ca560a 0f850affffff    jne     00ca551a                                       ; lib->last!=0
+
+00ca5610 8a0424          mov     al,byte ptr [esp]
+00ca5613 83c40c          add     esp,0Ch
+00ca5616 5d              pop     ebp
+00ca5617 5f              pop     edi
+00ca5618 5e              pop     esi
+00ca5619 5b              pop     ebx
+00ca561a c3              ret
+
+
+-------- write_iat_ent()
+
+00ca527c 55              push    ebp
+00ca527d 8bec            mov     ebp,esp
+00ca527f 81c4f8feffff    add     esp,0FFFFFEF8h
+00ca5285 53              push    ebx
+00ca5286 56              push    esi
+00ca5287 57              push    edi
+00ca5288 8b5514          mov     edx,dword ptr [ebp+14h]
+00ca528b 8b5d08          mov     ebx,dword ptr [ebp+8]                          ; imports
+00ca528e 8dbdfafeffff    lea     edi,[ebp-106h]
+00ca5294 8bc2            mov     eax,edx
+00ca5296 48              dec     eax
+00ca5297 83e802          sub     eax,2
+00ca529a 0fb630          movzx   esi,byte ptr [eax]                             ; imp_tpy
+00ca529d 8b4510          mov     eax,dword ptr [ebp+10h]
+00ca52a0 83e802          sub     eax,2
+00ca52a3 0fb600          movzx   eax,byte ptr [eax]                             ; lib_id
+00ca52a6 3b432c          cmp     eax,dword ptr [ebx+2Ch]
+00ca52a9 7606            jbe     00ca52b1
+00ca52ab 89432c          mov     dword ptr [ebx+2Ch],eax
+00ca52ae eb01            jmp     00ca52b1
+00ca52b0 69              ???
+00ca52b1 33c0            xor     eax,eax
+00ca52b3 8a433b          mov     al,byte ptr [ebx+3Bh]
+00ca52b6 3bf0            cmp     esi,eax
+00ca52b8 755e            jne     00ca5318
+00ca52ba eb01            jmp     00ca52bd
+00ca52bc c7              ???
+
+; imp_key2_iat (key2 decryption, resolved to proc addr)
+00ca52bd 668b02          mov     ax,word ptr [edx]
+00ca52c0 668945fa        mov     word ptr [ebp-6],ax
+00ca52c4 83c202          add     edx,2
+00ca52c7 8955fc          mov     dword ptr [ebp-4],edx
+00ca52ca 66817dfaff00    cmp     word ptr [ebp-6],0FFh
+00ca52d0 760b            jbe     00ca52dd
+00ca52d2 0fb745fa        movzx   eax,word ptr [ebp-6]
+00ca52d6 e871d2fcff      call    00c7254c                                       ; malloc()
+00ca52db 8bf8            mov     edi,eax
+00ca52dd 0fb775fa        movzx   esi,word ptr [ebp-6]
+00ca52e1 8bce            mov     ecx,esi
+00ca52e3 8b55fc          mov     edx,dword ptr [ebp-4]
+00ca52e6 8bc7            mov     eax,edi
+00ca52e8 e8fb0efdff      call    00c761e8                                       ; memcpy()
+00ca52ed 6a0a            push    0Ah
+00ca52ef 8d4b12          lea     ecx,[ebx+12h]                                  ; key2
+00ca52f2 8bd6            mov     edx,esi
+00ca52f4 8bc7            mov     eax,edi
+00ca52f6 e88d07feff      call    00c85a88                                       ; decode()
+00ca52fb 897dfc          mov     dword ptr [ebp-4],edi
+00ca52fe 8b45fc          mov     eax,dword ptr [ebp-4]
+00ca5301 50              push    eax
+00ca5302 8b4510          mov     eax,dword ptr [ebp+10h]
+00ca5305 50              push    eax
+00ca5306 53              push    ebx
+00ca5307 e87cfdffff      call    00ca5088                                       ; resolve_proc()
+00ca530c 8b550c          mov     edx,dword ptr [ebp+0Ch]
+00ca530f 8b12            mov     edx,dword ptr [edx]
+00ca5311 8902            mov     dword ptr [edx],eax                            ; *iat_ent = proc_addr
+00ca5313 e920010000      jmp     00ca5438                                       ; finish
+
+00ca5318 33c0            xor     eax,eax
+00ca531a 8a4335          mov     al,byte ptr [ebx+35h]
+00ca531d 3bf0            cmp     esi,eax
+00ca531f 7422            je      00ca5343
+00ca5321 33c0            xor     eax,eax
+00ca5323 8a4336          mov     al,byte ptr [ebx+36h]
+00ca5326 3bf0            cmp     esi,eax
+00ca5328 7419            je      00ca5343
+00ca532a 33c0            xor     eax,eax
+00ca532c 8a4337          mov     al,byte ptr [ebx+37h]
+00ca532f 3bf0            cmp     esi,eax
+00ca5331 7410            je      00ca5343
+00ca5333 33c0            xor     eax,eax
+00ca5335 8a4339          mov     al,byte ptr [ebx+39h]
+00ca5338 3bf0            cmp     esi,eax
+00ca533a 0f85ad000000    jne     00ca53ed
+00ca5340 eb01            jmp     00ca5343
+00ca5342 e8              ???
+
+; imp_key1_noiat (do not resolve)
+; imp_key1_iat (key1 decryption, resolved to proc addr)
+; imp_plain (no decryption, resolved to proc addr)
+; imp_stl_gpa_alt (key1 decryption, resolved to &imp_stl_gpa_alt_proc())
+00ca5343 33c0            xor     eax,eax
+00ca5345 8a4336          mov     al,byte ptr [ebx+36h]
+00ca5348 3bf0            cmp     esi,eax
+00ca534a 7409            je      00ca5355
+00ca534c 33c0            xor     eax,eax
+00ca534e 8a4339          mov     al,byte ptr [ebx+39h]
+00ca5351 3bf0            cmp     esi,eax
+00ca5353 7543            jne     00ca5398
+
+; imp_key1_iat, imp_stl_gpa_alt
+00ca5355 668b02          mov     ax,word ptr [edx]
+00ca5358 668945fa        mov     word ptr [ebp-6],ax
+00ca535c 83c202          add     edx,2
+00ca535f 8955fc          mov     dword ptr [ebp-4],edx
+00ca5362 66817dfaff00    cmp     word ptr [ebp-6],0FFh
+00ca5368 760b            jbe     00ca5375
+00ca536a 0fb745fa        movzx   eax,word ptr [ebp-6]
+00ca536e e8d9d1fcff      call    00c7254c                                       ; malloc()
+00ca5373 8bf8            mov     edi,eax
+00ca5375 0fb74dfa        movzx   ecx,word ptr [ebp-6]
+00ca5379 8b55fc          mov     edx,dword ptr [ebp-4]
+00ca537c 8bc7            mov     eax,edi
+00ca537e e8650efdff      call    00c761e8                                       ; memcpy()
+00ca5383 6a0a            push    0Ah
+00ca5385 8d4b08          lea     ecx,[ebx+8]                                    ; key1
+00ca5388 0fb755fa        movzx   edx,word ptr [ebp-6]
+00ca538c 8bc7            mov     eax,edi
+00ca538e e8f506feff      call    00c85a88                                       ; decode()
+00ca5393 897dfc          mov     dword ptr [ebp-4],edi
+00ca5396 eb08            jmp     00ca53a0
+
+00ca5398 8b02            mov     eax,dword ptr [edx]
+00ca539a 8945fc          mov     dword ptr [ebp-4],eax
+00ca539d eb01            jmp     00ca53a0
+00ca539f 9a              ???
+00ca53a0 33c0            xor     eax,eax
+00ca53a2 8a4339          mov     al,byte ptr [ebx+39h]
+00ca53a5 3bf0            cmp     esi,eax
+00ca53a7 7524            jne     00ca53cd
+
+; imp_stl_gpa_alt
+00ca53a9 8b45fc          mov     eax,dword ptr [ebp-4]
+00ca53ac 50              push    eax
+00ca53ad 8b4510          mov     eax,dword ptr [ebp+10h]
+00ca53b0 50              push    eax
+00ca53b1 53              push    ebx
+00ca53b2 e8d1fcffff      call    00ca5088                                       ; proc_addr = resolve proc()
+00ca53b7 8b15902bcb00    mov     edx,dword ptr ds:[0CB2B90h]
+00ca53bd 8902            mov     dword ptr [edx],eax                            ; save proc_addr
+00ca53bf b87442ca00      mov     eax,0CA4274h
+00ca53c4 8b550c          mov     edx,dword ptr [ebp+0Ch]
+00ca53c7 8b12            mov     edx,dword ptr [edx]
+00ca53c9 8902            mov     dword ptr [edx],eax                            ; *iat_ent = &imp_stl_gpa_alt_proc()
+00ca53cb eb6b            jmp     00ca5438                                       ; finish
+
+; imp_key1_noiat, imp_key1_iat, imp_plain
+00ca53cd 33c0            xor     eax,eax
+00ca53cf 8a4335          mov     al,byte ptr [ebx+35h]
+00ca53d2 3bf0            cmp     esi,eax
+00ca53d4 7462            je      00ca5438                                       ; do not resolve imp_key1_noiat
+
+; imp_key1_iat, imp_plain
+00ca53d6 8b45fc          mov     eax,dword ptr [ebp-4]
+00ca53d9 50              push    eax
+00ca53da 8b4510          mov     eax,dword ptr [ebp+10h]
+00ca53dd 50              push    eax
+00ca53de 53              push    ebx
+00ca53df e8a4fcffff      call    00ca5088                                       ; proc_addr = resolve_proc()
+00ca53e4 8b550c          mov     edx,dword ptr [ebp+0Ch]
+00ca53e7 8b12            mov     edx,dword ptr [edx]
+00ca53e9 8902            mov     dword ptr [edx],eax
+00ca53eb eb4b            jmp     00ca5438                                       ; finish
+
+00ca53ed 33c0            xor     eax,eax
+00ca53ef 8a4338          mov     al,byte ptr [ebx+38h]
+00ca53f2 3bf0            cmp     esi,eax
+00ca53f4 7542            jne     00ca5438
+00ca53f6 eb01            jmp     00ca53f9
+00ca53f8 9a              ???
+
+; imp_stl_re
+00ca53f9 b8b045ca00      mov     eax,0CA45B0h
+00ca53fe 8b550c          mov     edx,dword ptr [ebp+0Ch]
+00ca5401 8b12            mov     edx,dword ptr [edx]
+00ca5403 8902            mov     dword ptr [edx],eax                            ; *iat_ent = &call_stl_re()
+00ca5405 b82c56ca00      mov     eax,0CA562Ch
+00ca540a beb845ca00      mov     esi,0CA45B8h
+00ca540f 2bc6            sub     eax,esi
+00ca5411 50              push    eax
+00ca5412 56              push    esi
+00ca5413 e8ccfbfdff      call    00c84fe4                                       ; crc check
+00ca5418 3b4328          cmp     eax,dword ptr [ebx+28h]
+00ca541b 741b            je      00ca5438                                       ; finish
+00ca541d 6aff            push    0FFFFFFFFh
+00ca541f e85819feff      call    00c86d7c
+00ca5424 8d5308          lea     edx,[ebx+8]
+00ca5427 8902            mov     dword ptr [edx],eax                            ; corrupt key1
+00ca5429 6a1e            push    1Eh
+00ca542b e84c19feff      call    00c86d7c
+00ca5430 8b550c          mov     edx,dword ptr [ebp+0Ch]
+00ca5433 0102            add     dword ptr [edx],eax
+00ca5435 eb01            jmp     00ca5438
+00ca5437 e9              ???
+
+; finish
+; imp_key1_noiat, imp_key2_noiat incl. unrecognized types (do not resolve)
+00ca5438 8b450c          mov     eax,dword ptr [ebp+0Ch]
+00ca543b 830004          add     dword ptr [eax],4                              ; point to the next iat entry: iat_ent+=4
+00ca543e 8d85fafeffff    lea     eax,[ebp-106h]
+00ca5444 3bf8            cmp     edi,eax
+00ca5446 7407            je      00ca544f
+00ca5448 8bc7            mov     eax,edi
+00ca544a e815d1fcff      call    00c72564
+00ca544f 5f              pop     edi
+00ca5450 5e              pop     esi
+00ca5451 5b              pop     ebx
+00ca5452 8be5            mov     esp,ebp
+00ca5454 5d              pop     ebp
+00ca5455 c21000          ret     10h

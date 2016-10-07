@@ -1,0 +1,260 @@
+ad /q ${/v:__ver}
+ad /q ${/v:__ld_imp_srch}
+ad /q ${/v:__ld_imp_bp}
+ad /q ${/v:__ld_imp_arg}
+ad /q ${/v:__ld_ptch_srch}
+ad /q ${/v:__ld_ptch_bp}
+ad /q ${/v:__ld_ptch_arg}
+ad /q ${/v:__ld_ptch_arg_tmpl}
+ad /q ${/v:__detect_oep_bp}
+ad /q ${/v:__detect_oep_srch}
+ad /q ${/v:__detect_oep_arg}
+ad /q ${/v:__chk_mem_addr_call}
+
+$$ in (args): ver_conf_file mod_base
+$$ out (pseudo-reg): $t0: 0:error, 1: ok
+$$ out (aliases): __ld_imp_arg, __ld_imp_bp, __ld_ptch_arg, __ld_ptch_bp, __detect_oep_arg, __detect_oep_bp
+$$ modified pseudo-regs: t0-t11
+
+$$ working state: continue(0), found(1), error(2)
+r $t11=0
+
+.block
+{
+  bp kernel32!GetModuleFileNameA
+
+  $$ continue until unpacked ASPR protection code will be reached
+  .while (@$t11==0)
+  {
+    g; pt; t
+
+    $$ detect searching range
+    aS /c ${/v:__off_info} !dump_offset_info -v -a @eip
+    .block
+    {
+      aS /c ${/v:__srch_rng} !sxtr -t 1 [__off_info]/sect mem range: (0x[0-9A-Fa-f]+)\.\.(0x[0-9A-Fa-f]+)/\1 \2
+      aS /c ${/v:__eip_mod_base} !sxtr [__off_info]/Module base:[ ]*(0x[0-9A-Fa-f]+)/\1
+      .if (@$t1==0)
+      {
+        ad /q ${/v:__srch_rng}
+
+        aS /c ${/v:__rng_len} !sxtr -t 1 [__off_info]/Base address:[ ]*(0x[0-9A-Fa-f]+).+Alloc base:[ ]*(0x[0-9A-Fa-f]+).+Region size:[ ]*(0x[0-9A-Fa-f]+)/\1-\2+\3
+        aS /c ${/v:__rng_base_addr} !sxtr [__off_info]/Alloc base:[ ]*(0x[0-9A-Fa-f]+)/\1
+        .if (@$t1!=0) {
+          r $t2 = ${__rng_base_addr}+${__rng_len}-1
+          aS /c ${/v:__srch_rng} .printf "${__rng_base_addr} 0x%08X", @$t2
+        }
+        ad /q ${/v:__rng_len}
+        ad /q ${/v:__rng_base_addr}
+      } .else {
+        r $t2 = ${$arg2}
+        r $t3 = ${__eip_mod_base}
+        .if (@$t2!=@$t3) { r $t1=0 }
+      }
+      ad /q ${/v:__eip_mod_base}
+    }
+    ad /q ${/v:__off_info}
+
+    .if (@$t1!=0)
+    {
+      .echo "INFO: Searching ASPR module in range: ${__srch_rng}"
+
+      !fopn -m "r" -t 0 ${$arg1}
+      .if (@$t0!=0)
+      {
+        $$ read conf file lines loop
+        aS /c ${/v:__ln} !frdl @$t0
+        .while (1)
+        {
+          $$ t1: 0:EOF, 1:line read
+          !sxtr -t 1 [__ln]/.+
+          .if (@$t1==1) {
+            $$ t2-9: indicators of args
+            !sxtr -t 2 [__ln]/\[.+\]
+            !sxtr -t 3 [__ln]/^[\x20\t]*LdImpBp
+            !sxtr -t 4 [__ln]/^[\x20\t]*LdImpArg
+            !sxtr -t 5 [__ln]/^[\x20\t]*LdPtchBp
+            !sxtr -t 6 [__ln]/^[\x20\t]*LdPtchArg
+            !sxtr -t 7 [__ln]/^[\x20\t]*DetectOEPBp
+            !sxtr -t 8 [__ln]/^[\x20\t]*DetectOEPArg
+            !sxtr -t 9 [__ln]/^[\x20\t]*ChkMemAddrCall
+          }
+
+          $$ check if EOF or next ver section reached
+          .if (@$t1==0 | @$t2==1)
+          {
+            !sxtr -t 2 [__ver]/.+
+            !sxtr -t 3 [__ld_imp_srch]/.+
+            !sxtr -t 4 [__ld_imp_arg]/.+
+            !sxtr -t 5 [__ld_ptch_srch]/.+
+            !sxtr -t 6 [__ld_ptch_arg_tmpl]/.+
+            !sxtr -t 7 [__ld_ptch_arg_tmpl]/ChkMemAddr
+            !sxtr -t 8 [__detect_oep_srch]/.+
+            !sxtr -t 9 [__detect_oep_arg]/.+
+            !sxtr -t 10 [__chk_mem_addr_call]/.+
+
+            .if (@$t2==1)
+            {
+              $$ some ver spec has been read, check & process it
+              .if (@$t3==1 & @$t4==1 & @$t5==1 & @$t6==1 & @$t8==1 & @$t9==1 & (@$t7==0 | @$t10==1))
+              {
+                .if (@$t11==0)
+                {
+                  r $t2=0
+                  .foreach (t { s -[1]b ${__srch_rng} ${__ld_imp_srch} })
+                  {
+                    .if (@$t2==0) {
+                      aS ${/v:__ld_imp_bp} ${t}
+                      .printf "INFO: Load imports bp addr: ${t}"
+                    } .else {
+                      .printf ", ${t}"
+                    }
+                    r $t2 = @$t2+1
+                  }
+                  .if (@$t2>0) {
+                    $$ upacked code reached
+                    .printf "\n"
+                    r $t11=1
+                  }
+                }
+
+                .if (@$t11==1)
+                {
+                  $$ search remaining points in the unpacked code
+                  r $t2=0
+                  .foreach (t { s -[1]b ${__srch_rng} ${__ld_ptch_srch} })
+                  {
+                    .if (@$t2==0) {
+                      aS ${/v:__ld_ptch_bp} ${t}
+                      .printf "INFO: Load patches bp addr: ${t}"
+                    } .else {
+                      .printf ", ${t}"
+                    }
+                    r $t2 = @$t2+1
+                  }
+                  .if (@$t2>0) { .printf "\n" }
+                  .else { r $t11=2 }
+
+                  r $t2=0
+                  .foreach (t { s -[1]b ${__srch_rng} ${__detect_oep_srch} })
+                  {
+                    .if (@$t2==0) {
+                      aS ${/v:__detect_oep_bp} ${t}
+                      .printf "INFO: Detect OEP bp addr: ${t}"
+                    } .else {
+                      .printf ", ${t}"
+                    }
+                    r $t2 = @$t2+1
+                  }
+                  .if (@$t2>0) { .printf "\n" }
+                  .else { r $t11=2 }
+
+                  .if (@$t7==1)
+                  {
+                    r $t2=0
+                    .foreach (t { s -[1]b ${__srch_rng} ${__chk_mem_addr_call} })
+                    {
+                      .if (@$t2==0) {
+                        $$ call dest addr
+                        r $t3 = ${t}+dwo(${t}+1)+5
+
+                        $$ 1st opcode under the call is mov eax, check_mem_addr
+                        r $t3 = dwo(@$t3+1)
+
+                        aS /c ${/v:chk_mem} .printf "0x%08x", @$t3
+                        .block { aS /c ${/v:__ld_ptch_arg} !sxtr [__ld_ptch_arg_tmpl]/(.*)(ChkMemAddr)(.*)/\1${chk_mem}\3 }
+                        ad /q ${/v:chk_mem}
+
+                        .printf "INFO: Check mem addr retrieval: ${t}"
+                      } .else {
+                        .printf ", ${t}"
+                      }
+                      r $t2 = @$t2+1
+                    }
+                    .if (@$t2>0) { .printf "\n" }
+                    .else { r $t11=2 }
+                  }
+
+                  .if (@$t11==1) {
+                    .printf "INFO: Version ${__ver} detected\n"
+                  } .elsif (@$t11==2) {
+                    .printf "ERR: Can not establish breakpoints locations\n"
+                  }
+
+                }
+              } .else {
+                r $t11=2
+                .printf "ERR: Error in ${$arg1}: partial version specification\n"
+              }
+            } .else {
+              .if (@$t1==0) {
+                r $t11=2
+                .printf "ERR: No versions specification in ${$arg1}\n"
+              }
+            }
+
+            ad /q ${/v:__ver}
+            ad /q ${/v:__ld_imp_srch}
+            ad /q ${/v:__ld_ptch_srch}
+            ad /q ${/v:__ld_ptch_arg_tmpl}
+            ad /q ${/v:__detect_oep_srch}
+            ad /q ${/v:__chk_mem_addr_call}
+
+            .if (@$t11==0) {
+              ad /q ${/v:__ld_imp_arg}
+              ad /q ${/v:__detect_oep_arg}
+            }
+
+            .if (@$t11!=0 | @$t1==0) { .break }
+            .else { aS /c ${/v:__ver} !sxtr [__ln]/\[(.+)\]/\1 }
+          } .else
+          {
+            $$ reading ver args
+            .if (@$t3==1) {
+              aS /c ${/v:__ld_imp_srch} !sxtr [__ln]/=[ \t]*(.+)\n/\1
+            }
+            .elsif (@$t4==1) {
+              aS /c ${/v:__ld_imp_arg} !sxtr [__ln]/=[ \t]*(.+)\n/\1
+            }
+            .elsif (@$t5==1) {
+              aS /c ${/v:__ld_ptch_srch} !sxtr [__ln]/=[ \t]*(.+)\n/\1
+            }
+            .elsif (@$t6==1) {
+              aS /c ${/v:__ld_ptch_arg_tmpl} !sxtr [__ln]/=[ \t]*(.+)\n/\1
+            }
+            .elsif (@$t7==1) {
+              aS /c ${/v:__detect_oep_srch} !sxtr [__ln]/=[ \t]*(.+)\n/\1
+            }
+            .elsif (@$t8==1) {
+              aS /c ${/v:__detect_oep_arg} !sxtr [__ln]/=[ \t]*(.+)\n/\1
+            }
+            .elsif (@$t9==1) {
+              aS /c ${/v:__chk_mem_addr_call} !sxtr [__ln]/=[ \t]*(.+)\n/\1
+            }
+          }
+
+          aS /c ${/v:__ln} !frdl @$t0
+        }
+
+        ad /q ${/v:__ln}
+        !fcls @$t0
+      } .else {
+        r $t11=2
+        .printf "ERR: Open ${$arg1} file error\n"
+      }
+    }
+    ad /q ${/v:__srch_rng}
+  }
+
+  bc *
+}
+
+.if (@$t11==2) {
+  r $t0=0
+  ad /q ${/v:__ld_imp_bp}
+  ad /q ${/v:__ld_imp_arg}
+  ad /q ${/v:__ld_ptch_bp}
+  ad /q ${/v:__ld_ptch_arg}
+  ad /q ${/v:__detect_oep_bp}
+  ad /q ${/v:__detect_oep_arg}
+} .else { r $t0=1 }

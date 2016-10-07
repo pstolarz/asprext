@@ -1,0 +1,1030 @@
+INFO: Loading ASPR patches...
+INFO: Import patch at 0x00401254 references dupl. import kernel32.dll!DeleteFileA; IAT addrs: 0x0074b230 0x0074b570; set to 0x0074b230
+INFO: Import patch at 0x0040126c references dupl. import kernel32.dll!GetSystemTime; IAT addrs: 0x0074b224 0x0074b468; set to 0x0074b224
+INFO: Import patch at 0x00401284 references dupl. import user32.dll!MessageBoxA; IAT addrs: 0x0074b240 0x0074b8dc; set to 0x0074b240
+INFO: Import patch at 0x004012a4 references dupl. import kernel32.dll!SetEndOfFile; IAT addrs: 0x0074b20c 0x0074b370; set to 0x0074b20c
+INFO: Import patch at 0x004012b4 references dupl. import kernel32.dll!WriteFile; IAT addrs: 0x0074b204 0x0074b30c; set to 0x0074b204
+INFO: Import patch at 0x004012cc references dupl. import kernel32.dll!GetCommandLineA; IAT addrs: 0x0074b1f8 0x0074b518; set to 0x0074b1f8
+INFO: Import patch at 0x004012dc references dupl. import kernel32.dll!GetModuleFileNameA; IAT addrs: 0x0074b1f0 0x0074b4bc; set to 0x0074b1f0
+INFO: Import patch at 0x004012e4 references dupl. import kernel32.dll!GetModuleHandleA; IAT addrs: 0x0074b1ec 0x0074b4b4; set to 0x0074b1ec
+INFO: Import patch at 0x004012f4 references dupl. import kernel32.dll!SetCurrentDirectoryA; IAT addrs: 0x0074b1e4 0x0074b378; set to 0x0074b1e4
+INFO: Import patch at 0x00405434 references dupl. import kernel32.dll!DeleteFileA; IAT addrs: 0x0074b230 0x0074b570; set to 0x0074b230
+INFO: Import patch at 0x004054e4 references dupl. import kernel32.dll!GetCommandLineA; IAT addrs: 0x0074b1f8 0x0074b518; set to 0x0074b1f8
+INFO: Import patch at 0x0040559c references dupl. import kernel32.dll!GetModuleFileNameA; IAT addrs: 0x0074b1f0 0x0074b4bc; set to 0x0074b1f0
+INFO: Import patch at 0x004055a4 references dupl. import kernel32.dll!GetModuleHandleA; IAT addrs: 0x0074b1ec 0x0074b4b4; set to 0x0074b1ec
+INFO: Import patch at 0x0040563c references dupl. import kernel32.dll!GetSystemTime; IAT addrs: 0x0074b224 0x0074b468; set to 0x0074b224
+INFO: Import patch at 0x00405824 references dupl. import kernel32.dll!SetCurrentDirectoryA; IAT addrs: 0x0074b1e4 0x0074b378; set to 0x0074b1e4
+INFO: Import patch at 0x0040582c references dupl. import kernel32.dll!SetEndOfFile; IAT addrs: 0x0074b20c 0x0074b370; set to 0x0074b20c
+INFO: Import patch at 0x004058f4 references dupl. import kernel32.dll!WriteFile; IAT addrs: 0x0074b204 0x0074b30c; set to 0x0074b204
+INFO: Import patch at 0x00406254 references dupl. import user32.dll!MessageBoxA; IAT addrs: 0x0074b240 0x0074b8dc; set to 0x0074b240
+INFO: 168 patches loaded = 168 import patches + 0 emulated opcode patches
+
+
+1. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!DeleteFileA [0x7C8328AD]
+  Reference type:  JMP
+  Appl. address:   0x00401254
+  Patch data:      ff2530b27400
+2. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetFileType [0x7C8113C9]
+  Reference type:  JMP
+  Appl. address:   0x00401264
+  Patch data:      ff2528b27400
+3. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetSystemTime [0x7C80176F]
+  Reference type:  JMP
+  Appl. address:   0x0040126c
+  Patch data:      ff2524b27400
+4. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetFileSize [0x7C810FEF]
+  Reference type:  JMP
+  Appl. address:   0x00401274
+  Patch data:      ff2520b27400
+5. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetStdHandle [0x7C810C89]
+  Reference type:  JMP
+  Appl. address:   0x0040127c
+  Patch data:      ff251cb27400
+6. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          user32.dll!MessageBoxA [0x7E3A07EA]
+  Reference type:  JMP
+  Appl. address:   0x00401284
+  Patch data:      ff2540b27400
+7. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!SetEndOfFile [0x7C832A46]
+  Reference type:  JMP
+  Appl. address:   0x004012a4
+  Patch data:      ff250cb27400
+8. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!WriteFile [0x7C8112FF]
+  Reference type:  JMP
+  Appl. address:   0x004012b4
+  Patch data:      ff2504b27400
+9. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!ExitThread [0x7C80C0F8]
+  Reference type:  JMP
+  Appl. address:   0x004012c4
+  Patch data:      ff25fcb17400
+10. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetCommandLineA [0x7C810C6D]
+  Reference type:  JMP
+  Appl. address:   0x004012cc
+  Patch data:      ff25f8b17400
+11. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetModuleFileNameA [0x7C80B56F]
+  Reference type:  JMP
+  Appl. address:   0x004012dc
+  Patch data:      ff25f0b17400
+12. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetModuleHandleA [0x7C80B741]
+  Reference type:  JMP
+  Appl. address:   0x004012e4
+  Patch data:      ff25ecb17400
+13. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!SetCurrentDirectoryA [0x7C8360E5]
+  Reference type:  JMP
+  Appl. address:   0x004012f4
+  Patch data:      ff25e4b17400
+14. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!AccessCheck [0x77DC73A0]
+  Reference type:  JMP
+  Appl. address:   0x00405244
+  Patch data:      ff25f4b27400
+15. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!AdjustTokenPrivileges [0x77DCF00C]
+  Reference type:  JMP
+  Appl. address:   0x0040524c
+  Patch data:      ff25f0b27400
+16. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!AllocateAndInitializeSid [0x77DC7CC9]
+  Reference type:  JMP
+  Appl. address:   0x00405254
+  Patch data:      ff25ecb27400
+17. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!EqualSid [0x77DCF07A]
+  Reference type:  JMP
+  Appl. address:   0x0040525c
+  Patch data:      ff25e8b27400
+18. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!FreeSid [0x77DC7CB8]
+  Reference type:  JMP
+  Appl. address:   0x00405264
+  Patch data:      ff25e4b27400
+19. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!GetLengthSid [0x77DC7D5C]
+  Reference type:  JMP
+  Appl. address:   0x00405274
+  Patch data:      ff25dcb27400
+20. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!GetSecurityDescriptorControl [0x77DD4BB9]
+  Reference type:  JMP
+  Appl. address:   0x0040527c
+  Patch data:      ff25d8b27400
+21. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!GetSecurityDescriptorOwner [0x77DD4B55]
+  Reference type:  JMP
+  Appl. address:   0x00405284
+  Patch data:      ff25d4b27400
+22. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!GetTokenInformation [0x77DC7305]
+  Reference type:  JMP
+  Appl. address:   0x0040528c
+  Patch data:      ff25d0b27400
+23. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!GetUserNameA [0x77DD54C4]
+  Reference type:  JMP
+  Appl. address:   0x0040529c
+  Patch data:      ff25ccb27400
+24. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!ImpersonateSelf [0x77DD4EE0]
+  Reference type:  JMP
+  Appl. address:   0x004052a4
+  Patch data:      ff25c4b27400
+25. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!InitializeSecurityDescriptor [0x77DC79C6]
+  Reference type:  JMP
+  Appl. address:   0x004052ac
+  Patch data:      ff25c0b27400
+26. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!LookupAccountSidA [0x77DFD8EC]
+  Reference type:  JMP
+  Appl. address:   0x004052c4
+  Patch data:      ff25b4b27400
+27. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!LookupPrivilegeValueA [0x77DEC238]
+  Reference type:  JMP
+  Appl. address:   0x004052cc
+  Patch data:      ff25b0b27400
+28. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!MapGenericMask [0x77DD484B]
+  Reference type:  JMP
+  Appl. address:   0x004052d4
+  Patch data:      ff25acb27400
+29. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!OpenProcessToken [0x77DC798B]
+  Reference type:  JMP
+  Appl. address:   0x004052dc
+  Patch data:      ff25a8b27400
+30. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!OpenThreadToken [0x77DC72CC]
+  Reference type:  JMP
+  Appl. address:   0x004052e4
+  Patch data:      ff25a4b27400
+31. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!RegCloseKey [0x77DC6C27]
+  Reference type:  JMP
+  Appl. address:   0x004052ec
+  Patch data:      ff25a0b27400
+32. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!RegCreateKeyExA [0x77DCE9F4]
+  Reference type:  JMP
+  Appl. address:   0x00405304
+  Patch data:      ff2598b27400
+33. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!RegDeleteKeyA [0x77DD42A0]
+  Reference type:  JMP
+  Appl. address:   0x00405314
+  Patch data:      ff2590b27400
+34. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!RegDeleteValueA [0x77DCECE5]
+  Reference type:  JMP
+  Appl. address:   0x0040531c
+  Patch data:      ff2588b27400
+35. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!RegOpenKeyExA [0x77DC7852]
+  Reference type:  JMP
+  Appl. address:   0x0040534c
+  Patch data:      ff2574b27400
+36. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!RegQueryValueExA [0x77DC7ABB]
+  Reference type:  JMP
+  Appl. address:   0x0040536c
+  Patch data:      ff2564b27400
+37. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!RegSetValueExA [0x77DCEAE7]
+  Reference type:  JMP
+  Appl. address:   0x00405384
+  Patch data:      ff2554b27400
+38. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!RevertToSelf [0x77DC7338]
+  Reference type:  JMP
+  Appl. address:   0x0040538c
+  Patch data:      ff2550b27400
+39. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!SetSecurityDescriptorDacl [0x77DC79EB]
+  Reference type:  JMP
+  Appl. address:   0x0040539c
+  Patch data:      ff2548b27400
+40. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!CopyFileA [0x7C829E16]
+  Reference type:  JMP
+  Appl. address:   0x004053c4
+  Patch data:      ff252cb67400
+41. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!CreateDirectoryA [0x7C822ED4]
+  Reference type:  JMP
+  Appl. address:   0x004053d4
+  Patch data:      ff2524b67400
+42. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!CreateEventA [0x7C813366]
+  Reference type:  JMP
+  Appl. address:   0x004053dc
+  Patch data:      ff251cb67400
+43. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!CreateFileMappingA [0x7C80950A]
+  Reference type:  JMP
+  Appl. address:   0x004053f4
+  Patch data:      ff2510b67400
+44. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!CreateMutexA [0x7C80E9DF]
+  Reference type:  JMP
+  Appl. address:   0x004053fc
+  Patch data:      ff250cb67400
+45. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!CreateProcessA [0x7C80236B]
+  Reference type:  JMP
+  Appl. address:   0x0040540c
+  Patch data:      ff2508b67400
+46. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!CreateSemaphoreA [0x7C810B6D]
+  Reference type:  JMP
+  Appl. address:   0x00405414
+  Patch data:      ff2500b67400
+47. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!DeleteFileA [0x7C8328AD]
+  Reference type:  JMP
+  Appl. address:   0x00405434
+  Patch data:      ff2530b27400
+48. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!DuplicateHandle [0x7C80DE9E]
+  Reference type:  JMP
+  Appl. address:   0x00405444
+  Patch data:      ff25e8b57400
+49. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!ExpandEnvironmentStringsA [0x7C8333D9]
+  Reference type:  JMP
+  Appl. address:   0x0040545c
+  Patch data:      ff25dcb57400
+50. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!FileTimeToDosDateTime [0x7C813116]
+  Reference type:  JMP
+  Appl. address:   0x00405464
+  Patch data:      ff25d8b57400
+51. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!FileTimeToLocalFileTime [0x7C80E906]
+  Reference type:  JMP
+  Appl. address:   0x0040546c
+  Patch data:      ff25d4b57400
+52. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!FileTimeToSystemTime [0x7C80E88C]
+  Reference type:  JMP
+  Appl. address:   0x00405474
+  Patch data:      ff25d0b57400
+53. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!FindClose [0x7C80EE9C]
+  Reference type:  JMP
+  Appl. address:   0x0040547c
+  Patch data:      ff25ccb57400
+54. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!FlushFileBuffers [0x7C812BB9]
+  Reference type:  JMP
+  Appl. address:   0x004054ac
+  Patch data:      ff25b4b57400
+55. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!FreeLibrary [0x7C80AC7E]
+  Reference type:  JMP
+  Appl. address:   0x004054b4
+  Patch data:      ff25b0b57400
+56. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetACP [0x7C8099B5]
+  Reference type:  JMP
+  Appl. address:   0x004054d4
+  Patch data:      ff25a0b57400
+57. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetCommandLineA [0x7C810C6D]
+  Reference type:  JMP
+  Appl. address:   0x004054e4
+  Patch data:      ff25f8b17400
+58. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetComputerNameA [0x7C822DCC]
+  Reference type:  JMP
+  Appl. address:   0x004054f4
+  Patch data:      ff2594b57400
+59. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetCurrentDirectoryA [0x7C8140DE]
+  Reference type:  JMP
+  Appl. address:   0x00405504
+  Patch data:      ff258cb57400
+60. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetCurrentProcess [0x7C80DE95]
+  Reference type:  JMP
+  Appl. address:   0x0040550c
+  Patch data:      ff2584b57400
+61. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetCurrentProcessId [0x7C8099C0]
+  Reference type:  JMP
+  Appl. address:   0x00405514
+  Patch data:      ff2580b57400
+62. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetCurrentThread [0x7C80998B]
+  Reference type:  JMP
+  Appl. address:   0x0040551c
+  Patch data:      ff257cb57400
+63. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetCurrentThreadId [0x7C8097D0]
+  Reference type:  JMP
+  Appl. address:   0x00405524
+  Patch data:      ff2578b57400
+64. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetDiskFreeSpaceA [0x7C831A11]
+  Reference type:  JMP
+  Appl. address:   0x0040552c
+  Patch data:      ff2574b57400
+65. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetDriveTypeA [0x7C822C0B]
+  Reference type:  JMP
+  Appl. address:   0x00405534
+  Patch data:      ff2570b57400
+66. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetEnvironmentVariableA [0x7C81584A]
+  Reference type:  JMP
+  Appl. address:   0x00405544
+  Patch data:      ff256cb57400
+67. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetExitCodeProcess [0x7C81B24B]
+  Reference type:  JMP
+  Appl. address:   0x0040554c
+  Patch data:      ff2564b57400
+68. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetExitCodeThread [0x7C822B5D]
+  Reference type:  JMP
+  Appl. address:   0x00405554
+  Patch data:      ff2560b57400
+69. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetFileTime [0x7C83261D]
+  Reference type:  JMP
+  Appl. address:   0x0040556c
+  Patch data:      ff2554b57400
+70. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetModuleFileNameA [0x7C80B56F]
+  Reference type:  JMP
+  Appl. address:   0x0040559c
+  Patch data:      ff25f0b17400
+71. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetModuleHandleA [0x7C80B741]
+  Reference type:  JMP
+  Appl. address:   0x004055a4
+  Patch data:      ff25ecb17400
+72. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetOverlappedResult [0x7C831F9C]
+  Reference type:  JMP
+  Appl. address:   0x004055ac
+  Patch data:      ff2534b57400
+73. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetPrivateProfileIntA [0x7C83643C]
+  Reference type:  JMP
+  Appl. address:   0x004055bc
+  Patch data:      ff2530b57400
+74. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetPrivateProfileSectionA [0x7C835F29]
+  Reference type:  JMP
+  Appl. address:   0x004055cc
+  Patch data:      ff2528b57400
+75. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetPrivateProfileStringA [0x7C833556]
+  Reference type:  JMP
+  Appl. address:   0x004055dc
+  Patch data:      ff2520b57400
+76. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetProfileIntA [0x7C8364B1]
+  Reference type:  JMP
+  Appl. address:   0x004055f4
+  Patch data:      ff2510b57400
+77. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetProfileStringA [0x7C822BBD]
+  Reference type:  JMP
+  Appl. address:   0x004055fc
+  Patch data:      ff250cb57400
+78. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetShortPathNameA [0x7C835BB4]
+  Reference type:  JMP
+  Appl. address:   0x0040560c
+  Patch data:      ff2508b57400
+79. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetStartupInfoA [0x7C801EF2]
+  Reference type:  JMP
+  Appl. address:   0x00405614
+  Patch data:      ff2500b57400
+80. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetSystemDefaultLCID [0x7C80BFDD]
+  Reference type:  JMP
+  Appl. address:   0x0040561c
+  Patch data:      ff25fcb47400
+81. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetSystemDirectoryA [0x7C81F006]
+  Reference type:  JMP
+  Appl. address:   0x0040562c
+  Patch data:      ff25f8b47400
+82. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetSystemTime [0x7C80176F]
+  Reference type:  JMP
+  Appl. address:   0x0040563c
+  Patch data:      ff2524b27400
+83. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetTempFileNameA [0x7C8619DF]
+  Reference type:  JMP
+  Appl. address:   0x0040564c
+  Patch data:      ff25e8b47400
+84. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetTempPathA [0x7C835DD2]
+  Reference type:  JMP
+  Appl. address:   0x00405654
+  Patch data:      ff25e0b47400
+85. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetTimeZoneInformation [0x7C81419F]
+  Reference type:  JMP
+  Appl. address:   0x00405664
+  Patch data:      ff25d8b47400
+86. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetUserDefaultLCID [0x7C809FB0]
+  Reference type:  JMP
+  Appl. address:   0x0040566c
+  Patch data:      ff25d4b47400
+87. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetUserDefaultLangID [0x7C80C004]
+  Reference type:  JMP
+  Appl. address:   0x00405674
+  Patch data:      ff25d0b47400
+88. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetVolumeInformationA [0x7C8232CD]
+  Reference type:  JMP
+  Appl. address:   0x00405694
+  Patch data:      ff25c4b47400
+89. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GetWindowsDirectoryA [0x7C822A8B]
+  Reference type:  JMP
+  Appl. address:   0x004056a4
+  Patch data:      ff25bcb47400
+90. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GlobalDeleteAtom [0x7C813673]
+  Reference type:  JMP
+  Appl. address:   0x004056bc
+  Patch data:      ff25acb47400
+91. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!GlobalMemoryStatus [0x7C813BAA]
+  Reference type:  JMP
+  Appl. address:   0x004056dc
+  Patch data:      ff259cb47400
+92. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!IsBadCodePtr [0x7C80BD6F]
+  Reference type:  JMP
+  Appl. address:   0x00405714
+  Patch data:      ff2580b47400
+93. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!IsBadReadPtr [0x7C809EA1]
+  Reference type:  JMP
+  Appl. address:   0x0040571c
+  Patch data:      ff257cb47400
+94. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!IsBadWritePtr [0x7C809F19]
+  Reference type:  JMP
+  Appl. address:   0x00405724
+  Patch data:      ff2578b47400
+95. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!IsDBCSLeadByte [0x7C80B87C]
+  Reference type:  JMP
+  Appl. address:   0x0040572c
+  Patch data:      ff2574b47400
+96. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!IsDBCSLeadByteEx [0x7C87B686]
+  Reference type:  JMP
+  Appl. address:   0x00405734
+  Patch data:      ff2570b47400
+97. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!IsValidCodePage [0x7C811643]
+  Reference type:  JMP
+  Appl. address:   0x0040573c
+  Patch data:      ff256cb47400
+98. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!LoadLibraryExA [0x7C801D53]
+  Reference type:  JMP
+  Appl. address:   0x0040575c
+  Patch data:      ff2560b47400
+99. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!LocalFileTimeToFileTime [0x7C814604]
+  Reference type:  JMP
+  Appl. address:   0x0040576c
+  Patch data:      ff2554b47400
+100. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!MapViewOfFile [0x7C80B9A5]
+  Reference type:  JMP
+  Appl. address:   0x00405784
+  Patch data:      ff2548b47400
+101. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!MoveFileA [0x7C835E97]
+  Reference type:  JMP
+  Appl. address:   0x00405794
+  Patch data:      ff2544b47400
+102. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!OpenMutexA [0x7C80EABB]
+  Reference type:  JMP
+  Appl. address:   0x004057ac
+  Patch data:      ff2534b47400
+103. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!OpenProcess [0x7C813499]
+  Reference type:  JMP
+  Appl. address:   0x004057b4
+  Patch data:      ff2530b47400
+104. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!OutputDebugStringA [0x7C85ADC4]
+  Reference type:  JMP
+  Appl. address:   0x004057bc
+  Patch data:      ff252cb47400
+105. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!PeekNamedPipe [0x7C8609EF]
+  Reference type:  JMP
+  Appl. address:   0x004057c4
+  Patch data:      ff2528b47400
+106. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!QueryPerformanceCounter [0x7C80A4C7]
+  Reference type:  JMP
+  Appl. address:   0x004057d4
+  Patch data:      ff2520b47400
+107. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!ReadProcessMemory [0x7C8021D0]
+  Reference type:  JMP
+  Appl. address:   0x004057e4
+  Patch data:      ff2518b47400
+108. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!ReleaseMutex [0x7C8024B7]
+  Reference type:  JMP
+  Appl. address:   0x004057ec
+  Patch data:      ff2514b47400
+109. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!ReleaseSemaphore [0x7C80C04D]
+  Reference type:  JMP
+  Appl. address:   0x004057f4
+  Patch data:      ff2510b47400
+110. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!RemoveDirectoryA [0x7C85C269]
+  Reference type:  JMP
+  Appl. address:   0x00405804
+  Patch data:      ff250cb47400
+111. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!ResumeThread [0x7C8332F7]
+  Reference type:  JMP
+  Appl. address:   0x00405814
+  Patch data:      ff2500b47400
+112. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!SetCurrentDirectoryA [0x7C8360E5]
+  Reference type:  JMP
+  Appl. address:   0x00405824
+  Patch data:      ff25e4b17400
+113. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!SetEndOfFile [0x7C832A46]
+  Reference type:  JMP
+  Appl. address:   0x0040582c
+  Patch data:      ff250cb27400
+114. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!SetEnvironmentVariableA [0x7C833E78]
+  Reference type:  JMP
+  Appl. address:   0x0040583c
+  Patch data:      ff25f0b37400
+115. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!SetFileAttributesA [0x7C812CFA]
+  Reference type:  JMP
+  Appl. address:   0x0040585c
+  Patch data:      ff25e0b37400
+116. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!SetFileTime [0x7C832690]
+  Reference type:  JMP
+  Appl. address:   0x0040586c
+  Patch data:      ff25d4b37400
+117. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!SetNamedPipeHandleState [0x7C831DC4]
+  Reference type:  JMP
+  Appl. address:   0x0040587c
+  Patch data:      ff25ccb37400
+118. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!SetThreadPriority [0x7C80C1A8]
+  Reference type:  JMP
+  Appl. address:   0x00405884
+  Patch data:      ff25c8b37400
+119. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!SetVolumeLabelA [0x7C861ACD]
+  Reference type:  JMP
+  Appl. address:   0x0040588c
+  Patch data:      ff25c4b37400
+120. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!SuspendThread [0x7C83973A]
+  Reference type:  JMP
+  Appl. address:   0x004058a4
+  Patch data:      ff25b8b37400
+121. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!SystemTimeToFileTime [0x7C811094]
+  Reference type:  JMP
+  Appl. address:   0x004058ac
+  Patch data:      ff25b4b37400
+122. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!TerminateThread [0x7C81D233]
+  Reference type:  JMP
+  Appl. address:   0x004058b4
+  Patch data:      ff25b0b37400
+123. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!TransactNamedPipe [0x7C831CC1]
+  Reference type:  JMP
+  Appl. address:   0x004058bc
+  Patch data:      ff25acb37400
+124. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!UnmapViewOfFile [0x7C80BA14]
+  Reference type:  JMP
+  Appl. address:   0x004058c4
+  Patch data:      ff25a8b37400
+125. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!WaitForMultipleObjects [0x7C80A0FD]
+  Reference type:  JMP
+  Appl. address:   0x004058d4
+  Patch data:      ff25a0b37400
+126. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!WaitForSingleObject [0x7C802530]
+  Reference type:  JMP
+  Appl. address:   0x004058dc
+  Patch data:      ff259cb37400
+127. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!WinExec [0x7C862585]
+  Reference type:  JMP
+  Appl. address:   0x004058ec
+  Patch data:      ff2594b37400
+128. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!WriteFile [0x7C8112FF]
+  Reference type:  JMP
+  Appl. address:   0x004058f4
+  Patch data:      ff2504b27400
+129. Import patch
+  Protection type: Enhanced standard
+  Import:          kernel32.dll!WritePrivateProfileSectionA [0x7C85CACC]
+  Reference type:  JMP
+  Appl. address:   0x00405904
+  Patch data:      ff258cb37400
+130. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          kernel32.dll!WritePrivateProfileStringA [0x7C835D5C]
+  Reference type:  JMP
+  Appl. address:   0x00405914
+  Patch data:      ff2584b37400
+131. Import patch
+  Protection type: Enhanced standard
+  Import:          user32.dll!BringWindowToTop [0x7E3803A8]
+  Reference type:  JMP
+  Appl. address:   0x00405d24
+  Patch data:      ff2558bb7400
+132. Import patch
+  Protection type: Enhanced standard
+  Import:          user32.dll!CloseClipboard [0x7E380265]
+  Reference type:  JMP
+  Appl. address:   0x00405dd4
+  Patch data:      ff251cbb7400
+133. Import patch
+  Protection type: Enhanced standard
+  Import:          user32.dll!CloseDesktop [0x7E37812F]
+  Reference type:  JMP
+  Appl. address:   0x00405ddc
+  Patch data:      ff2518bb7400
+134. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          user32.dll!CreateDialogParamA [0x7E38C7DB]
+  Reference type:  JMP
+  Appl. address:   0x00405df4
+  Patch data:      ff2510bb7400
+135. Import patch
+  Protection type: Enhanced standard
+  Import:          user32.dll!CreateIcon [0x7E3A70BC]
+  Reference type:  JMP
+  Appl. address:   0x00405dfc
+  Patch data:      ff2508bb7400
+136. Import patch
+  Protection type: Enhanced standard
+  Import:          user32.dll!CreateIconFromResourceEx [0x7E36D354]
+  Reference type:  JMP
+  Appl. address:   0x00405e04
+  Patch data:      ff2504bb7400
+137. Import patch
+  Protection type: Enhanced standard
+  Import:          user32.dll!CreateIconIndirect [0x7E36C86C]
+  Reference type:  JMP
+  Appl. address:   0x00405e0c
+  Patch data:      ff2500bb7400
+138. Import patch
+  Protection type: Enhanced standard
+  Import:          user32.dll!DestroyIcon [0x7E37D312]
+  Reference type:  JMP
+  Appl. address:   0x00405e64
+  Patch data:      ff25d4ba7400
+139. Import patch
+  Protection type: Enhanced standard
+  Import:          user32.dll!LoadIconA [0x7E37E8F6]
+  Reference type:  JMP
+  Appl. address:   0x004061f4
+  Patch data:      ff250cb97400
+140. Import patch
+  Protection type: Enhanced standard
+  Import:          user32.dll!MessageBoxA [0x7E3A07EA]
+  Reference type:  JMP
+  Appl. address:   0x00406254
+  Patch data:      ff2540b27400
+141. Import patch
+  Protection type: Enhanced standard
+  Import:          user32.dll!RegisterClassA [0x7E37EA5E]
+  Reference type:  JMP
+  Appl. address:   0x004062dc
+  Patch data:      ff25a0b87400
+142. Import patch
+  Protection type: Enhanced standard
+  Import:          user32.dll!UnregisterClassA [0x7E3789A3]
+  Reference type:  JMP
+  Appl. address:   0x0040649c
+  Patch data:      ff25c0b77400
+143. Import patch
+  Protection type: Enhanced standard
+  Import:          user32.dll!WinHelpA [0x7E38EE5D]
+  Reference type:  JMP
+  Appl. address:   0x004064c4
+  Patch data:      ff25acb77400
+144. Import patch
+  Protection type: Enhanced standard
+  Import:          shell32.dll!ExtractIconA [0x7CA73547]
+  Reference type:  JMP
+  Appl. address:   0x00409cc0
+  Patch data:      ff25b8bb7400
+145. Import patch
+  Protection type: Enhanced standard
+  Import:          shell32.dll!FindExecutableA [0x7CA3FAAC]
+  Reference type:  JMP
+  Appl. address:   0x00409cd0
+  Patch data:      ff25b0bb7400
+146. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          shell32.dll!SHFileOperationA [0x7CA70C6C]
+  Reference type:  JMP
+  Appl. address:   0x00409cd8
+  Patch data:      ff25a8bb7400
+147. Import patch
+  Protection type: Enhanced standard
+  Import:          shell32.dll!SHGetFileInfoA [0x7CA31601]
+  Reference type:  JMP
+  Appl. address:   0x00409ce0
+  Patch data:      ff25a4bb7400
+148. Import patch
+  Protection type: Enhanced standard
+  Import:          shell32.dll!ShellExecuteA [0x7CA41200]
+  Reference type:  JMP
+  Appl. address:   0x00409cf0
+  Patch data:      ff25a0bb7400
+149. Import patch
+  Protection type: Enhanced standard
+  Import:          shell32.dll!ShellExecuteExA [0x7CA40ED5]
+  Reference type:  JMP
+  Appl. address:   0x00409cf8
+  Patch data:      ff2598bb7400
+150. Import patch
+  Protection type: Enhanced standard
+  Import:          comctl32.dll!InitCommonControls [0x7743B62A]
+  Reference type:  JMP
+  Appl. address:   0x0040a090
+  Patch data:      ff2574bc7400
+151. Import patch
+  Protection type: Enhanced standard
+  Import:          shell32.dll!SHGetPathFromIDList [0x7CA34CE1]
+  Reference type:  JMP
+  Appl. address:   0x0040a16c
+  Patch data:      ff25b8bc7400
+152. Import patch
+  Protection type: Enhanced standard
+  Import:          shell32.dll!SHGetSpecialFolderLocation [0x7C9EF7D3]
+  Reference type:  JMP
+  Appl. address:   0x0040a174
+  Patch data:      ff25b4bc7400
+153. Import patch
+  Protection type: Enhanced standard
+  Import:          shell32.dll!SHGetDesktopFolder [0x7C9EBC58]
+  Reference type:  JMP
+  Appl. address:   0x0040a184
+  Patch data:      ff25acbc7400
+154. Import patch
+  Protection type: Enhanced standard
+  Import:          comdlg32.dll!GetOpenFileNameA [0x7638309F]
+  Reference type:  JMP
+  Appl. address:   0x00416314
+  Patch data:      ff25bcbc7400
+155. Import patch
+  Protection type: Enhanced standard
+  Import:          comdlg32.dll!GetSaveFileNameA [0x76397C10]
+  Reference type:  JMP
+  Appl. address:   0x00416324
+  Patch data:      ff25b4bc7400
+156. Import patch
+  Protection type: Enhanced standard
+  Import:          comdlg32.dll!ChooseColorA [0x7638EE36]
+  Reference type:  JMP
+  Appl. address:   0x0041632c
+  Patch data:      ff25acbc7400
+157. Import patch
+  Protection type: Enhanced standard
+  Import:          comdlg32.dll!ChooseFontA [0x7639C1C1]
+  Reference type:  JMP
+  Appl. address:   0x00416334
+  Patch data:      ff25a8bc7400
+158. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          comdlg32.dll!PrintDlgA [0x763A46FD]
+  Reference type:  JMP
+  Appl. address:   0x0041633c
+  Patch data:      ff25a4bc7400
+159. Import patch
+  Protection type: Enhanced standard
+  Import:          advapi32.dll!CloseServiceHandle [0x77DD6CE5]
+  Reference type:  JMP
+  Appl. address:   0x00474260
+  Patch data:      ff25a0bd7400
+160. Import patch
+  Protection type: Enhanced standard
+  Import:          advapi32.dll!ControlService [0x77DE4A09]
+  Reference type:  JMP
+  Appl. address:   0x00474268
+  Patch data:      ff259cbd7400
+161. Import patch
+  Protection type: Enhanced standard
+  Import:          advapi32.dll!CreateServiceA [0x77E27211]
+  Reference type:  JMP
+  Appl. address:   0x00474270
+  Patch data:      ff2598bd7400
+162. Import patch
+  Protection type: Advanced w/o emulated opcode
+  Import:          advapi32.dll!DeleteService [0x77E274B1]
+  Reference type:  JMP
+  Appl. address:   0x00474278
+  Patch data:      ff2594bd7400
+163. Import patch
+  Protection type: Enhanced standard
+  Import:          advapi32.dll!OpenSCManagerA [0x77DE69AE]
+  Reference type:  JMP
+  Appl. address:   0x00474280
+  Patch data:      ff2590bd7400
+164. Import patch
+  Protection type: Enhanced standard
+  Import:          advapi32.dll!OpenServiceA [0x77DE4C66]
+  Reference type:  JMP
+  Appl. address:   0x00474288
+  Patch data:      ff258cbd7400
+165. Import patch
+  Protection type: Enhanced standard
+  Import:          advapi32.dll!QueryServiceConfigA [0x77DE1596]
+  Reference type:  JMP
+  Appl. address:   0x00474290
+  Patch data:      ff2588bd7400
+166. Import patch
+  Protection type: Enhanced standard
+  Import:          advapi32.dll!InitializeAcl [0x77DC7D09]
+  Reference type:  JMP
+  Appl. address:   0x006748dc
+  Patch data:      ff25e4bd7400
+167. Import patch
+  Protection type: Enhanced standard
+  Import:          advapi32.dll!GetAce [0x77DD4C33]
+  Reference type:  JMP
+  Appl. address:   0x006748e4
+  Patch data:      ff25e0bd7400
+168. Import patch
+  Protection type: Enhanced standard
+  Import:          advapi32.dll!AddAccessAllowedAce [0x77DC7D31]
+  Reference type:  JMP
+  Appl. address:   0x006748ec
+  Patch data:      ff25dcbd7400

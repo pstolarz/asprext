@@ -1,0 +1,106 @@
+ad /q ${/v:__tls}
+
+$$ in (args): mod_base
+$$ out: TLS dir spec in "__tls" alias
+$$ modified pseudo-regs: t0-t12
+
+.block
+{
+  $$ PE optional header (t0), number of sects (t1), sections table (t2)
+  r $t0 = ${$arg1}+dwo(${$arg1}+0x3c)
+  r $t1 = wo(@$t0+6)
+  r $t2 = @$t0+0x18+wo(@$t0+0x14)
+  r $t0 = @$t0+0x18
+
+  $$ number of dirs (t3), dir table (t4), base addr (t5)
+  .if (wo(@$t0)==0x010b) {
+    r $t3 = dwo(@$t0+0x5c)
+    r $t4 = @$t0+0x60
+    r $t5 = dwo(@$t0+0x1c)
+  }
+  .elsif (wo(@$t0)==0x020b) {
+    r $t3 = dwo(@$t0+0x6c)
+    r $t4 = @$t0+0x70
+    r $t5 = qwo(@$t0+0x18)
+  }
+
+  .if (@$t3>=0x0a)
+  {
+    $$ 9th PE dir (TLS), addr (t6), size (t7)
+    r $t6 = @$t5+dwo(@$t4+9*8)
+    r $t7 = dwo(@$t4+9*8+4)
+
+    .if ((@$t6!=0) & (@$t7>0) & (@$t7<=0x100))
+    {
+      $$ parse "db" command result
+      r $t8 = 1
+      .foreach /pS1 (t { db /c@$t7 @$t6 L@$t7 })
+      {
+        .if (@$t8<=@$t7)
+        {
+          .if (@$t8==8) {
+            aS /c ${/v:__tls_dir} !sxtr '${__tls_dir} ${t}'/^([^-]+)[-]*([^-]*)/\1 \2
+            .if (@$t7>8) { r $t8 = @$t8+1 }
+          }
+          .else {
+            .if (@$t8==1) {
+              aS ${/v:__tls_dir} ${t}
+            } .else {
+              aS ${/v:__tls_dir} ${__tls_dir} ${t}
+            }
+          }
+        }
+        r $t8 = @$t8+1
+      }
+
+      $$ number of searched addresses
+      r $t12=0
+
+      .for (r $t8=1; @$t8<=@$t1; r $t8=@$t8+1)
+      {
+        r $t9 = @$t2+(@$t8-1)*0n40
+        r $t10 = ${$arg1}+dwo(@$t9+0x0c)
+        r $t11 = dwo(@$t9+0x08)
+
+        .foreach (t { s -[1]b @$t10 L@$t11 ${__tls_dir} })
+        {
+          r $t9 = ${t}-${$arg1}
+          aS /c ${/v:__tls_rva} .printf "0x%08X", @$t9
+
+          .block {
+            .if (@$t12==0) {
+              aS ${/v:__tls} ${__tls_rva}
+              .printf "INFO: TLS search results: ${t}"
+            } .else {
+              aS ${/v:__tls} ${__tls} ${__tls_rva}
+              .printf ", ${t}"
+            }
+          }
+          r $t12 = @$t12+1
+
+          ad /q ${/v:__tls_rva}
+        }
+      }
+
+      ad /q ${/v:__tls_dir}
+      aS /c ${/v:__tls_sz} .printf "0x%08X", @$t7
+
+      .block {
+        .if (@$t12>0) {
+          .printf "\n"
+           aS /c ${/v:__tls} !sxtr [__tls]/^([^\x20\t]+)/TLSTab.rva = \1\nTLSTab.size = ${__tls_sz}\n
+         }
+       }
+
+      ad /q ${/v:__tls_sz}
+    } .else {
+      .if (@$t7>0x100) {
+        .printf "ERR: TLS dir too long: 0x%04X\n", @$t7
+      } .else {
+        .printf "INFO: No TLS dir in the module\n"
+      }
+    }
+  } .else {
+    .printf "INFO: No TLS in the module\n"
+  }
+}

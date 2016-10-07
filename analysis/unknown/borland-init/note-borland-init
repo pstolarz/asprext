@@ -1,0 +1,129 @@
+; set handlers
+00caea08 33d2            xor     edx,edx
+00caea0a c605f029cb0000  mov     byte ptr ds:[0CB29F0h],0                       ; is_borl_init=0
+00caea11 85c0            test    eax,eax
+00caea13 7435            je      00caea4a
+00caea15 8b10            mov     edx,dword ptr [eax]
+00caea17 8b0dd42bcb00    mov     ecx,dword ptr ds:[0CB2BD4h]
+00caea1d 0311            add     edx,dword ptr [ecx]
+00caea1f 83c204          add     edx,4
+00caea22 8b12            mov     edx,dword ptr [edx]
+00caea24 b950eaca00      mov     ecx,0CAEA50h
+00caea29 890a            mov     dword ptr [edx],ecx
+00caea2b b97ceaca00      mov     ecx,0CAEA7Ch
+00caea30 83c204          add     edx,4
+00caea33 890a            mov     dword ptr [edx],ecx
+00caea35 bab0e9ca00      mov     edx,0CAE9B0h
+00caea3a 83c004          add     eax,4
+00caea3d e81e1efeff      call    00c90860
+00caea42 8bd0            mov     edx,eax
+00caea44 8815f029cb00    mov     byte ptr ds:[0CB29F0h],dl
+00caea4a 8bc2            mov     eax,edx
+00caea4c c3              ret
+
+; constr. hanlder
+00caea50 53              push    ebx
+00caea51 b301            mov     bl,1
+00caea53 803df029cb0000  cmp     byte ptr ds:[0CB29F0h],0
+00caea5a 741a            je      00caea76                                       ; if (!is_borl_init) return
+00caea5c a1d42bcb00      mov     eax,dword ptr ds:[00CB2BD4h]
+00caea61 8b00            mov     eax,dword ptr [eax]
+00caea63 50              push    eax
+00caea64 a1e829cb00      mov     eax,dword ptr ds:[00CB29E8h]
+00caea69 50              push    eax
+00caea6a a1e429cb00      mov     eax,dword ptr ds:[00CB29E4h]
+00caea6f 50              push    eax
+00caea70 ff15ec29cb00    call    dword ptr ds:[0CB29ECh]                        ; call_hndl
+00caea76 8bc3            mov     eax,ebx
+00caea78 5b              pop     ebx
+00caea79 c3              ret
+
+00caea7c 53              push    ebx
+00caea7d b301            mov     bl,1
+00caea7f 803df029cb0000  cmp     byte ptr ds:[0CB29F0h],0
+00caea86 7420            je      00caeaa8                                       ; if (!is_borl_init) return
+00caea88 a1d42bcb00      mov     eax,dword ptr ds:[00CB2BD4h]
+00caea8d 8b00            mov     eax,dword ptr [eax]
+00caea8f 50              push    eax
+00caea90 a1e829cb00      mov     eax,dword ptr ds:[00CB29E8h]
+00caea95 83c004          add     eax,4
+00caea98 50              push    eax
+00caea99 a1e429cb00      mov     eax,dword ptr ds:[00CB29E4h]
+00caea9e 83c004          add     eax,4
+00caeaa1 50              push    eax
+00caeaa2 ff15ec29cb00    call    dword ptr ds:[0CB29ECh]                        ; call_hndl
+00caeaa8 8bc3            mov     eax,ebx
+00caeaaa 5b              pop     ebx
+00caeaab c3              ret
+
+
+; call_hndl - vary from prot. to prot.
+03160000 52              push    edx
+                         sub     edx,ebx
+                         mov     edx,esp
+                         push    edi
+                         push    ecx
+                         push    eax
+                         mov     edi, dword ptr [edx+8]    ds:002b:0018ff18=03140000    (arg1)
+                         mov     ecx, dword ptr [edx+0Ch]  ds:002b:0018ff1c=03150000    (arg2)
+main_loop:
+                         mov     eax, dword ptr [edi]      ds:002b:03140000=44f8f08a
+0316005c 0bc0            or      eax,eax
+                         je      finish
+                         cmp     eax,0F641C60Fh                                 ; NULL item == F641C60F
+                         je      next_item
+
+                         push    ebp
+                         push    esi
+                         push    ebx
+                         xor     ebp, ebp                                       ; crc
+                         mov     esi, 03160000
+                         mov     ebx,esi
+                         add     esi,dword ptr [ecx]  ds:002b:03150000=44f8f207
+                         sub     esi,dword ptr [edi]  ds:002b:03140000=44f8f08a ; size to compute crc
+loop_crc:                sub     ebp,dword ptr [ebx]  ds:002b:03160000=8bd32b52
+                         add     ebx,3
+                         cmp     ebx,esi
+                         jb      loop_crc
+                         pop     ebx
+                         pop     esi
+                         add     eax,ebp                                        ; ebp=crc, eax+=crc
+                         pop     ebp
+
+                         push    edx
+                         push    edi
+                         push    ecx
+
+                         push    esi
+                         push    edi
+                         push    edx
+                         mov     edx,eax
+                         sub     edx,0FFFFFFDEh
+                         inc     edx 
+                         mov     edi, edx
+                         sub     edi,0BB2E6C79h
+                         neg     edi
+                         mov     esi, edi
+031600cc 83c6c3          add     esi,0FFFFFFC3h
+                         mov     eax, esi                                       ; eax=proc_rva
+                         pop     edx
+                         pop     edi
+                         pop     esi
+
+                         add     eax,dword ptr [edx+10h]                        ; arg3 (mod base)
+031600ff ffd0            call    eax                                            ; call proc
+
+                         pop     ecx
+                         pop     edi
+                         pop     edx
+
+next_item:               lea     ecx,[ecx+8]
+                         lea     edi,[edi+8]
+                         jmp     main_loop
+finish:
+                         pop     eax
+                         pop     ecx
+                         pop     edi
+                         xor     edx,ebx
+                         pop     edx
+                         ret     0Ch

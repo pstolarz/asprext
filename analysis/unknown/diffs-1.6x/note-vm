@@ -1,0 +1,77 @@
+differences to v1.6X:
+
+vm_in_t:
+    0004[dword]: opc_descs  *opc_desc_t - pointer on the table of opc_desc elems
+    0008[dword]: n_opc_descs    number of opc_desc elems in the opc_descs table (each elem is confidential data)
+    000c[dword]: permtab    permutation table for reading 'dt_acss' table
+    0020[dword]: dt_acss    dt_acs_t[] table of access handlers for the confidential data
+    0048[dword]: conf_dt_sz Confidential data size
+    004c[dword]: base_addr  base addr vm uses for calculations for addresses of emulated opcodes
+    0050[byte/dword]: obfus const used to obfuscate values in the vm structs (byte for obfuscate opcodes, dword for obfuscate addresses),
+    0054[dword]: pid        Current process id
+
+dt_acs_t:
+    0000[dword]: hndl       Data handler addr
+
+Confidential patch data specification retrieves 1.6x opc_desc_t struct's content:
+    hndl_0: [byte] offset 0
+    hndl_1: [byte] offset 1
+    hndl_2: [byte] offset 2
+    hndl_3: [dword] offset 3..6
+    hndl_4: [byte] offset 7
+    hndl_5: [byte] offset 8
+    hndl_6: [byte] offset 9
+    hndl_7: [dword] offset 10..13
+    hndl_8: [byte] offset 14
+    hndl_9: [dword] offset 15..18
+
+
+vm_opc_exec() --------
+Looks for opc from the eip and executes it
+
+00cab414 53              push    ebx
+00cab415 56              push    esi
+00cab416 57              push    edi
+00cab417 8bda            mov     ebx,edx
+00cab419 8bf0            mov     esi,eax
+00cab41b 8bfb            mov     edi,ebx
+00cab41d eb01            jmp     00cab420
+00cab41f c7              ???
+00cab420 8b5744          mov     edx,dword ptr [edi+44h]
+00cab423 8b8bb9000000    mov     ecx,dword ptr [ebx+0B9h]
+00cab429 8bc6            mov     eax,esi
+00cab42b e818ffffff      call    00cab348                                       ; cmp_eip_with_opc_desc(vm_in, vm_ctx.eip, vm_ctx.opc_desc_next)
+00cab430 84c0            test    al,al
+00cab432 740e            je      00cab442                                       ; check if we're on the proper opc_desc
+00cab434 8b83b9000000    mov     eax,dword ptr [ebx+0B9h]
+00cab43a 8983b5000000    mov     dword ptr [ebx+0B5h],eax                       ; vm_ctx.opc_desc = vm_ctx.opc_desc_next
+00cab440 eb13            jmp     00cab455
+00cab442 8b5744          mov     edx,dword ptr [edi+44h]
+00cab445 8bc6            mov     eax,esi
+00cab447 e850ffffff      call    00cab39c
+00cab44c 8983b5000000    mov     dword ptr [ebx+0B5h],eax                       ; vm_ctx.opc_desc = get_opc_desc(vm_in, vm_ctx.eip)
+00cab452 eb01            jmp     00cab455
+00cab454 69              ???
+00cab455 8b83b5000000    mov     eax,dword ptr [ebx+0B5h]
+00cab45b 85c0            test    eax,eax
+00cab45d 740c            je      00cab46b
+00cab45f 034648          add     eax,dword ptr [esi+48h]
+00cab462 8983b9000000    mov     dword ptr [ebx+0B9h],eax                       ; vm_ctx.opc_desc_next = vm_ctx.opc_desc + vm_in.conf_dt_sz
+00cab468 eb01            jmp     00cab46b
+00cab46a e8              ???
+00cab46b 83bbb500000000  cmp     dword ptr [ebx+0B5h],0
+00cab472 740c            je      00cab480                                       ; vm_ctx.opc_desc==NULL - last opcode
+00cab474 8bd3            mov     edx,ebx
+00cab476 8bc6            mov     eax,esi
+00cab478 e84bfcffff      call    00cab0c8                                       ; vm_opc_exec_engine(vm_in, vm_ctx)    @@@ "!aspr_vmctx_dump edx eax" @@@ - track VM execution
+00cab47d 40              inc     eax
+00cab47e 7504            jne     00cab484
+00cab480 33c0            xor     eax,eax
+00cab482 eb05            jmp     00cab489
+00cab484 b001            mov     al,1
+00cab486 eb01            jmp     00cab489
+00cab488 9a              ???
+00cab489 5f              pop     edi
+00cab48a 5e              pop     esi
+00cab48b 5b              pop     ebx
+00cab48c c3              ret

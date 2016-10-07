@@ -1,0 +1,18 @@
+$$ in (args): search_start search_end srch_bytes ptch_bytes
+$$ modified pseudo-regs: t0
+
+.block
+{
+  r $t0 = 0
+  .foreach (t { s -[1]b ${$arg1} ${$arg2} ${$arg3} })
+  {
+    .if (@$t0==0) {
+      .printf "INFO: Applied patches addr: ${t}"
+    } .else {
+      .printf ", ${t}"
+    }
+    eb ${t} ${$arg4}
+    r $t0 = @$t0+1
+  }
+  .if (@$t0>0) { .printf "\n" }
+}
