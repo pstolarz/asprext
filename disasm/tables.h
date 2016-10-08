@@ -1,4 +1,4 @@
-* ----------------------------------------------------------------------- *
+/* ----------------------------------------------------------------------- *
  *   
  *   Copyright 1996-2009 The NASM Authors - All Rights Reserved
  *   See the file AUTHORS included with the NASM distribution for

@@ -29,7 +29,7 @@ static struct
 {
     aspr_ver_t ver;         /* ver of ASPR patches are loaded */
     UINT nmods;             /* number of importing mods in the list */
-    mod_imp_t *p_mods;      /* importing mods list; NULL" import not loaded */
+    mod_imp_t *p_mods;      /* importing mods list; NULL: import not loaded */
 } ld_mods = {(aspr_ver_t)0, 0, NULL};
 
 /* Get loaded imports */
@@ -244,7 +244,7 @@ void unload_patches()
     }
 }
 
-/* Apply a signle patch */
+/* Apply a single patch */
 static BOOL apply_patch(ULONG64 pt_addr, UINT8 *pt_data, UINT pt_len, BOOL b_logs)
 {
     BOOL ret=FALSE;

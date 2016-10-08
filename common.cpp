@@ -215,7 +215,7 @@ char *get_mod_name(const char *pc_name, size_t *p_len)
     return (char*)pc_mod;
 }
 
-/* bytes to hext conversion */
+/* bytes to hex conversion */
 void bts2hex(const unsigned char *in, size_t in_len, char *out)
 {
     static char HEX_DIGS[] = "0123456789abcdef";

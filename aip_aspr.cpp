@@ -400,8 +400,8 @@ static UINT32 checksum(const UINT8 *p_in, size_t len, UINT32 ivt)
 }
 
 /* Generate the import seed value. 'chk_mem_addr' points to memory location used
-    to checksum calculation on it. 'len' and 'beg_off' are import specific params:
-    imp_spec1 and imp_spec2 taken from the ptch_t struct.
+   to checksum calculation on it. 'len' and 'beg_off' are import specific params:
+   imp_spec1 and imp_spec2 taken from the ptch_t struct.
  */
 static BOOL gen_imp_seed(const aip_env_t *p_env,
     ULONG64 chk_mem_addr, UINT32 len, UINT32 beg_off, UINT32 *p_csum)

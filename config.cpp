@@ -16,13 +16,13 @@
 /* set with default */
 static aspr_ver_t version = aspr_1_6X;   // aspr_unknown;
 
-/* set handled ASPR verion */
+/* set handled ASPR version */
 void set_version(aspr_ver_t ver)
 {
     version = ver;
 }
 
-/* get handled ASPR verion */
+/* get handled ASPR version */
 aspr_ver_t get_version(void)
 {
     return version;
