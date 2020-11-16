@@ -11,9 +11,9 @@ crucial parts of code, Original Entry Point (OEP) location, imports calls etc.
 for the purpose of my analysis allowing effectively reverse engineering this
 software.
 
-Since I have no more time (and interest) to further work on this, I abandoned
-the project. If someone is interested in this topic and wants to continue work
-on it, feel free to contact me.
+NOTE: Since I have no more time (and interest) to further work on this, I
+abandoned the project. If someone is interested in this topic and wants to
+continue work on it, feel free to contact me.
 
 Notes
 -----
